@@ -22,7 +22,7 @@ class Listing : AppCompatActivity() {
     protected override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.listingactivity)
-        toolbar = findViewById<View>(R.id.toolbar) as Toolbar
+        toolbar = findViewById<View>(R.id.toolbar11) as Toolbar
         allSampleData = ArrayList<SectionDataModel>()
         if (toolbar != null) {
             setSupportActionBar(toolbar)

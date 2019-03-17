@@ -6,7 +6,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:showIn="@layout/app_bar_landing_page"
-        tools:context=".LandingPage">
+        tools:showIn="@layout/app_bar_main"
+        tools:context=".MainActivity">
+
+    <android.support.v7.widget.RecyclerView
+            android:id="@+id/my_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"/>
 
 </android.support.constraint.ConstraintLayout>

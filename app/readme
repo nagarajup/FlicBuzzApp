@@ -1,0 +1,51 @@
+Required pages and apis
+
+- Initial Page
+Facebook login integration (pending)
+GMail integration (pending)
+
+1. Register User(SignUp Page)
+post params (full_name,email_id,password,mobile_number,gender,city,pin_code,date_of_birth)
+Required response(authunticate_id, base plan)
+
+2. Update User(SignUp Page)
+post params (full_name,email_id,mobile_number,gender,city,pin_code,date_of_birth)
+Required response(authunticate_id, base plan)
+
+3. Authunticaiton
+post params (email_id, password)
+Requred Res(success res)
+
+4. Forgot Password(email_id)
+Requred Res(Success)
+
+5. Change Password(email_id, Password)
+Requried Res(Success)
+
+6. Logout (email_id, userId)
+Requried Res(Success)
+
+
+Landing Page (Videos Page)
+
+7.HomeApi(user_id, email_id)
+Required Res(plan_name, privacy policy, payment policy, about us)
+
+8. LoadallVideo(user_id, plan_name,serach_key)
+Requred Res(category wise array of videos with (video_title, video_id, video_desc, video_fav)
+
+9. Fav video(user_id, paln_name)
+Requried Res(category wise Favorite videos list based on user id)
+
+10. Search (user_id, plan_name)
+Requred Res(title list of all searchble listings)
+
+
+
+
+
+
+
+-
+
+

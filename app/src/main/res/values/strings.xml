@@ -7,4 +7,16 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="nav_about_us">About FlicBuzz</string>
+    <string name="nav_fav">My Favourites</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_package">Packages</string>
+    <string name="nav_privacy">Privacy Policy</string>
+    <string name="nav_profile">My Profile</string>
+    <string name="nav_refund">Refund and Cancellation Policy</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_share_app">Share the App</string>
+    <string name="nav_logout">Logout</string>
+
 </resources>

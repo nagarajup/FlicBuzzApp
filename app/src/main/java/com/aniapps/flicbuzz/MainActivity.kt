@@ -6,28 +6,61 @@ import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
-import kotlinx.android.synthetic.main.activity_landing_page.*
-import kotlinx.android.synthetic.main.app_bar_landing_page.*
+import android.view.View
+import android.widget.Toast
+import com.aniapps.flicbuzz.adapters.ListingAdapter
+import com.aniapps.flicbuzz.models.SectionDataModel
+import com.aniapps.flicbuzz.models.SingleItemModel
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.app_bar_main.*
+import java.util.ArrayList
 
-class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    internal lateinit var allSampleData: ArrayList<SectionDataModel>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_landing_page)
+        setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-       /* fab.setOnClickListener { view ->
+        allSampleData = ArrayList<SectionDataModel>()
+/*
+        fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }*/
 
+
+        createDummyData()
+        val my_recycler_view = findViewById<View>(R.id.my_recyclerview) as RecyclerView
+        my_recycler_view.setHasFixedSize(true)
+        val adapter = ListingAdapter(this, allSampleData)
+        my_recycler_view.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        my_recycler_view.adapter = adapter
         val toggle = ActionBarDrawerToggle(
             this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
         )
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
+
         nav_view.setNavigationItemSelectedListener(this)
+    }
+
+    fun createDummyData() {
+        val myCategories = resources.getStringArray(R.array.Topics)
+        val myUrls = resources.getStringArray(R.array.Urls)
+        for (i in myCategories.indices) {
+            val singleItem = ArrayList<SingleItemModel>()
+
+            for (j in 0..5) {
+                singleItem.add(SingleItemModel("Title $j", myUrls[i], ""))
+            }
+            val dm = SectionDataModel(myCategories[i], singleItem)
+            allSampleData.add(dm)
+
+        }
     }
 
     override fun onBackPressed() {
@@ -40,7 +73,7 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.landing_page, menu)
+        menuInflater.inflate(R.menu.main, menu)
         return true
     }
 
@@ -58,22 +91,22 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_camera -> {
-                // Handle the camera action
+                Toast.makeText(this, "Clicked item about us", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_gallery -> {
-
+                Toast.makeText(this, "Clicked item profile", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_slideshow -> {
-
+                Toast.makeText(this, "Clicked item fav", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_manage -> {
-
+                Toast.makeText(this, "Clicked item settings", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_share -> {
-
+                Toast.makeText(this, "Clicked item share", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_send -> {
-
+                Toast.makeText(this, "Clicked item send", Toast.LENGTH_SHORT).show()
             }
         }
 
