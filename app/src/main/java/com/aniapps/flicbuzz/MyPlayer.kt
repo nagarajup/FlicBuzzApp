@@ -286,8 +286,7 @@ class MyPlayer : AppCompatActivity() {
 
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration?) {
         if (newConfig != null) {
-            if (null != player!!.currentPosition)
-                playbackPosition = player!!.currentPosition
+            playbackPosition = player!!.currentPosition
             isInPipMode = !isInPictureInPictureMode
         }
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
