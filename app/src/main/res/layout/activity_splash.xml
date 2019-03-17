@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:gravity="center"
+              android:orientation="vertical"
+              android:background="@drawable/rounded_corners_signup"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent">
+    <ImageView android:layout_width="80.0dip"
+               android:layout_height="80.0dip"
+               android:src="@mipmap/splash_white_icon"/>
+    <TextView android:textSize="40.0sp"
+              android:textColor="#ffffffff"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="30.0dip"
+              android:text="FlicBuzz"
+              android:lineSpacingExtra="9.0sp"
+              android:fontFamily="@font/cera_gr_black"/>
+</LinearLayout>

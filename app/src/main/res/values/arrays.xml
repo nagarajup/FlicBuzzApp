@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="Topics">
+        <item>TV and Bollywood News</item>
+        <item>Fashion / Events News</item>
+        <item>Sports Celebrities/other celebs News</item>
+        <item>Food (Your Food Lab)</item>
+        <item>Fitness / Beauty (Beauty Tips &amp; Skin Care)</item>
+        <item>Astrology / Horoscope</item>
+        <item>TV Promos of New shows</item>
+        <item>TV Serial Recap</item>
+    </string-array>
+
+    <string-array name="Urls">
+        <item>https://www.flicbuzz.com/vendor_videos/converted/video7.m3u8</item>
+        <item>https://s3.ap-south-1.amazonaws.com/prod-adgully-vod-946804738078-ap-south-1/output/hls/DABANGG.m3u8</item>
+        <item>https://d3kbta14xk9r45.cloudfront.net/DABANGG.m3u8</item>
+        <item>http://cdn-fms.rbs.com.br/vod/hls_sample1_manifest.m3u8</item>
+        <item>http://dl1.webmfiles.org/elephants-dream.webm</item>
+        <item>https://wowzaec2demo.streamlock.net/live/bigbuckbunny/manifest_mpm4sav_mvtime.mpd</item>
+        <item>https://archive.org/download/count_monte_cristo_0711_librivox/count_of_monte_cristo_004_dumas.mp3</item>
+        <item>http://vod.leasewebcdn.com/bbb.flv?ri=1024&amp;rs=150&amp;start=0</item>
+    </string-array>
+</resources>

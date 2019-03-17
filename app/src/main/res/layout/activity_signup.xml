@@ -1,0 +1,193 @@
+<?xml version="1" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+    <LinearLayout android:orientation="vertical"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:layout_marginLeft="20dp"
+                  android:layout_marginTop="20dp"
+                  android:layout_marginRight="20dp"
+                  android:layout_above="@+id/signup_btn_lay">
+        <TextView android:textSize="20sp"
+                  android:textColor="#ff2f2f2f"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="Few Details About You "
+                  android:lineSpacingExtra="9sp"
+                  android:fontFamily="@font/cera_gr_black"/>
+        <ScrollView android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+            <LinearLayout android:orientation="vertical"
+                          android:layout_width="fill_parent"
+                          android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputLayout
+                        android:orientation="vertical"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp">
+                    <EditText android:textSize="14sp"
+                              android:id="@+id/full_name"
+                              android:layout_width="fill_parent"
+                              android:layout_height="wrap_content"
+                              android:hint="Full Name"/>
+                </android.support.design.widget.TextInputLayout>
+                <android.support.design.widget.TextInputLayout
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp">
+                    <EditText android:textSize="14sp"
+                              android:id="@+id/email"
+                              android:layout_width="fill_parent"
+                              android:layout_height="wrap_content"
+                              android:hint="Email ID"
+                              android:inputType="textEmailAddress"/>
+                </android.support.design.widget.TextInputLayout>
+                <LinearLayout android:orientation="horizontal"
+                              android:layout_width="fill_parent"
+                              android:layout_height="wrap_content">
+                    <TextView android:layout_width="fill_parent"
+                              android:layout_height="wrap_content"
+                              android:layout_marginTop="30dp"
+                              android:text="+91"
+                              android:layout_weight="0.9"/>
+                    <android.support.design.widget.TextInputLayout
+                            android:focusable="true"
+                            android:focusableInTouchMode="true"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="0.1">
+                        <EditText android:textSize="14sp"
+                                  android:id="@+id/mobile"
+                                  android:layout_width="fill_parent"
+                                  android:layout_height="wrap_content"
+                                  android:hint="Mobile Number"
+                                  android:maxLength="10"
+                                  android:inputType="number"/>
+                    </android.support.design.widget.TextInputLayout>
+                </LinearLayout>
+                <android.support.design.widget.TextInputLayout
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp">
+                    <EditText android:textSize="14sp"
+                              android:id="@+id/pwd"
+                              android:layout_width="fill_parent"
+                              android:layout_height="wrap_content"
+                              android:hint="Password"
+                              android:inputType="textPassword"/>
+                </android.support.design.widget.TextInputLayout>
+                <android.support.design.widget.TextInputLayout
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp">
+                    <EditText android:textSize="14sp"
+                              android:id="@+id/confirm_pwd"
+                              android:layout_width="fill_parent"
+                              android:layout_height="wrap_content"
+                              android:hint="Confirm Password"
+                              android:inputType="textPassword"/>
+                </android.support.design.widget.TextInputLayout>
+                <android.support.design.widget.TextInputLayout
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp">
+                    <EditText android:textSize="14sp"
+                              android:id="@+id/city"
+                              android:layout_width="fill_parent"
+                              android:layout_height="wrap_content"
+                              android:hint="City"/>
+                </android.support.design.widget.TextInputLayout>
+                <LinearLayout android:orientation="horizontal"
+                              android:layout_width="fill_parent"
+                              android:layout_height="wrap_content">
+                    <android.support.design.widget.TextInputLayout
+                            android:focusable="true"
+                            android:focusableInTouchMode="true"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="0.5">
+                        <EditText android:textSize="14sp"
+                                  android:id="@+id/pin"
+                                  android:layout_width="fill_parent"
+                                  android:layout_height="wrap_content"
+                                  android:hint="Pin Code"
+                                  android:inputType="number"/>
+                    </android.support.design.widget.TextInputLayout>
+                    <EditText android:textSize="14sp"
+                              android:id="@+id/dob"
+                              android:focusable="false"
+                              android:clickable="true"
+                              android:layout_width="fill_parent"
+                              android:layout_height="wrap_content"
+                              android:layout_marginTop="20dp"
+                              android:hint="Date of Birth"
+                              android:editable="false"
+                              android:layout_weight="0.5"/>
+                </LinearLayout>
+                <LinearLayout android:orientation="horizontal"
+                              android:layout_width="fill_parent"
+                              android:layout_height="wrap_content">
+                    <TextView android:textSize="14sp"
+                              android:textColor="#ff575757"
+                              android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:layout_marginTop="15dp"
+                              android:text="Gender"
+                              android:fontFamily="@font/cera_gr_medium"/>
+                    <RadioGroup android:orientation="horizontal"
+                                android:id="@+id/gender_radio"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginTop="10dp">
+                        <RadioButton android:textSize="14sp"
+                                     android:textColor="#ff575757"
+                                     android:id="@+id/male_radio"
+                                     android:layout_width="wrap_content"
+                                     android:layout_height="wrap_content"
+                                     android:text="Male"
+                                     android:fontFamily="@font/cera_gr_medium"/>
+                        <RadioButton android:textSize="14sp"
+                                     android:textColor="#ff575757"
+                                     android:id="@+id/female_radio"
+                                     android:layout_width="wrap_content"
+                                     android:layout_height="wrap_content"
+                                     android:layout_marginLeft="10dp"
+                                     android:text="Female"
+                                     android:fontFamily="@font/cera_gr_medium"/>
+                    </RadioGroup>
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+    <LinearLayout android:gravity="center"
+                  android:orientation="horizontal"
+                  android:id="@+id/signup_btn_lay"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="15dp"
+                  android:layout_marginBottom="10dp"
+                  android:layout_alignParentBottom="true">
+        <Button android:textSize="14sp"
+                android:textColor="#ffffffff"
+                android:id="@+id/signup_btn_main"
+                android:background="@drawable/rounded_corners_signup"
+                android:layout_width="320dp"
+                android:layout_height="48dp"
+                android:text="SIGNUP"
+                android:fontFamily="@font/cera_gr_medium"/>
+    </LinearLayout>
+</RelativeLayout>

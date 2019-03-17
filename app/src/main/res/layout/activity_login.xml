@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="fill_parent" android:layout_height="fill_parent"
+              xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout android:orientation="vertical" 
+                  android:layout_width="fill_parent" 
+                  android:layout_height="fill_parent" 
+                  android:layout_marginLeft="20dp" 
+                  android:layout_marginTop="70dp" 
+                  android:layout_marginRight="20dp">
+        <TextView android:textSize="20.0sp" 
+                  android:textColor="#ff2f2f2f" 
+                  android:layout_width="wrap_content" 
+                  android:layout_height="wrap_content" 
+                  android:text="Whoo hoo! Welcome back " 
+                  android:lineSpacingExtra="9.0sp" 
+                  android:fontFamily="@font/cera_gr_black" />
+        <TextView android:textSize="14.0sp" 
+                  android:textColor="#ff2f2f2f" 
+                  android:layout_width="wrap_content" 
+                  android:layout_height="wrap_content" 
+                  android:layout_marginTop="10dp" 
+                  android:text="Login Using" 
+                  android:lineSpacingExtra="7.0sp" 
+                  android:fontFamily="@font/cera_gr_regular" />
+        <LinearLayout android:orientation="horizontal" 
+                      android:layout_width="fill_parent" 
+                      android:layout_height="wrap_content" 
+                      android:layout_marginTop="20dp">
+            <ImageButton android:background="@drawable/rounded_corners" 
+                         android:layout_width="150dp" 
+                         android:layout_height="48dp" 
+                         android:src="@mipmap/facebook" 
+                         android:layout_weight="0.5" />
+            <ImageButton android:background="@drawable/rounded_corners_gmail" 
+                         android:layout_width="150dp" 
+                         android:layout_height="48dp" 
+                         android:layout_marginLeft="20dp" 
+                         android:src="@mipmap/gmail" 
+                         android:layout_weight="0.5" />
+        </LinearLayout>
+        <LinearLayout android:gravity="center" 
+                      android:orientation="horizontal" 
+                      android:layout_width="fill_parent" 
+                      android:layout_height="wrap_content" 
+                      android:layout_marginTop="15dp" 
+                      android:layout_marginRight="20dp">
+            <LinearLayout android:background="#ff707070" 
+                          android:layout_width="46dp" 
+                          android:layout_height="1dp" />
+            <TextView android:textSize="16.0sp" 
+                      android:textColor="#ff575757" 
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content" 
+                      android:layout_marginLeft="5dp" 
+                      android:text="OR" 
+                      android:lineSpacingExtra="7.0sp" 
+                      android:fontFamily="@font/cera_gr_black" />
+            <LinearLayout android:background="#ff707070" 
+                          android:layout_width="46dp" 
+                          android:layout_height="1dp" 
+                          android:layout_marginLeft="5dp" />
+        </LinearLayout>
+        <android.support.design.widget.TextInputLayout 
+                android:theme="@style/TextLabel" 
+                android:orientation="vertical" 
+                android:focusable="true" 
+                android:focusableInTouchMode="true" 
+                android:layout_width="fill_parent" 
+                android:layout_height="wrap_content" 
+                android:layout_marginTop="10dp">
+            <EditText android:textSize="14.0sp" 
+                      android:id="@+id/email_txt" 
+                      android:layout_width="fill_parent" 
+                      android:layout_height="wrap_content" 
+                      android:hint="Email ID" />
+        </android.support.design.widget.TextInputLayout>
+        <RelativeLayout android:layout_width="fill_parent" 
+                        android:layout_height="wrap_content">
+            <android.support.design.widget.TextInputLayout 
+                    android:theme="@style/TextLabel" 
+                    android:focusable="true" 
+                    android:focusableInTouchMode="true" 
+                    android:layout_width="fill_parent" 
+                    android:layout_height="wrap_content" 
+                    android:layout_marginTop="10dp">
+                <EditText android:textSize="14.0sp" 
+                          android:id="@+id/pwd_txt" 
+                          android:layout_width="fill_parent" 
+                          android:layout_height="wrap_content" 
+                          android:hint="Password" 
+                          android:inputType="textPassword" />
+            </android.support.design.widget.TextInputLayout>
+            <TextView android:textSize="14.0sp" 
+                      android:textColor="#ff53ba00" 
+                      android:layout_width="wrap_content" 
+                      android:layout_height="wrap_content" 
+                      android:text="Forgot ?" 
+                      android:layout_alignParentRight="true" 
+                      android:layout_centerVertical="true" 
+                      android:fontFamily="@font/cera_gr_medium" />
+        </RelativeLayout>
+        <LinearLayout android:gravity="center" 
+                      android:orientation="horizontal" 
+                      android:layout_width="fill_parent" 
+                      android:layout_height="wrap_content" 
+                      android:layout_marginTop="15dp">
+            <Button android:textSize="14.0sp" 
+                    android:textColor="#ffffffff" 
+                    android:id="@+id/login_btn" 
+                    android:background="@drawable/rounded_corners_signup" 
+                    android:layout_width="320dp" 
+                    android:layout_height="48dp" 
+                    android:text="LOGIN" 
+                    android:fontFamily="@font/cera_gr_medium" />
+        </LinearLayout>
+        <LinearLayout android:gravity="center" 
+                      android:orientation="vertical" 
+                      android:layout_width="fill_parent" 
+                      android:layout_height="wrap_content" 
+                      android:layout_marginTop="10dp">
+            <TextView android:textSize="16.0sp" 
+                      android:textStyle="bold" 
+                      android:textColor="#ff575757" 
+                      android:layout_width="wrap_content" 
+                      android:layout_height="wrap_content" 
+                      android:text="New User?" 
+                      android:lineSpacingExtra="7.0sp" 
+                      android:fontFamily="@font/cera_gr_regular" />
+            <Button android:textSize="14.0sp" 
+                    android:textColor="#ffffffff" 
+                    android:id="@+id/signup_txt" 
+                    android:background="@drawable/corners_login" 
+                    android:layout_width="320dp" 
+                    android:layout_height="48dp" 
+                    android:layout_marginTop="10dp" 
+                    android:text="SignUp" 
+                    android:fontFamily="@font/cera_gr_medium" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
