@@ -41,6 +41,30 @@ Requried Res(category wise Favorite videos list based on user id)
 Requred Res(title list of all searchble listings)
 
 
+// date : 18/03/2019 satish sir inputs
+api: home.php
+input: plan (free), device_id, device name
+response:  json of top videos  20 videos per category
+
+api: getvideos_by_category.php,
+request:   page number, category name or tag name,
+response: list of videos .  20 per page
+
+api: video_impression_tracker.php
+input: device_id, video_id .
+response: ok
+
+api: search_keyword.php
+input keyword
+response: videos list matching keyword.  20 per page.
+
+autosuggest.php?keyword=sa
+response:   array of keywords (
+salman khan
+satish
+suresh
+)  max 100
+
 
 
 

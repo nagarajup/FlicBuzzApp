@@ -3,6 +3,7 @@ package com.aniapps.flicbuzz
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.design.widget.NavigationView
+import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -13,11 +14,17 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import com.aniapps.flicbuzz.adapters.ListingAdapter
+import com.aniapps.flicbuzz.fragments.AboutUs
 import com.aniapps.flicbuzz.models.SectionDataModel
 import com.aniapps.flicbuzz.models.SingleItemModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import java.util.ArrayList
+import android.R.attr.fragment
+import android.content.Intent
+import com.mad.kotlin_navigation_drawer.Fragment1
+import com.mad.kotlin_navigation_drawer.replaceFragmenty
+
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     internal lateinit var allSampleData: ArrayList<SectionDataModel>
@@ -89,27 +96,62 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
+        var fragment: Fragment? = null
+        val fragmentClass: Class<*>
+
         when (item.itemId) {
             R.id.nav_camera -> {
-                Toast.makeText(this, "Clicked item about us", Toast.LENGTH_SHORT).show()
+                val myintent = Intent(this@MainActivity, com.aniapps.flicbuzz.AboutUs::class.java)
+                myintent.putExtra("title","About Us")
+                startActivity(myintent)
+
+               // Toast.makeText(this, "Clicked item about us", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_gallery -> {
-                Toast.makeText(this, "Clicked item profile", Toast.LENGTH_SHORT).show()
+                val myintent = Intent(this@MainActivity, com.aniapps.flicbuzz.AboutUs::class.java)
+                myintent.putExtra("title","My Favourites")
+                startActivity(myintent)
+               //Toast.makeText(this, "Clicked item profile", Toast.LENGTH_SHORT).show()
+            }
+
+            R.id.nav_gallery1 -> {
+                val myintent = Intent(this@MainActivity, com.aniapps.flicbuzz.AboutUs::class.java)
+                myintent.putExtra("title","My Profile")
+                startActivity(myintent)
+                //Toast.makeText(this, "Clicked item profile", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_slideshow -> {
-                Toast.makeText(this, "Clicked item fav", Toast.LENGTH_SHORT).show()
+                val myintent = Intent(this@MainActivity, com.aniapps.flicbuzz.AboutUs::class.java)
+                myintent.putExtra("title","Packages")
+                startActivity(myintent)
+               // Toast.makeText(this, "Clicked item fav", Toast.LENGTH_SHORT).show()
             }
+            R.id.nav_manage1 -> {
+                val myintent = Intent(this@MainActivity, com.aniapps.flicbuzz.AboutUs::class.java)
+                myintent.putExtra("title","Privacy Policy")
+                startActivity(myintent)
+               // Toast.makeText(this, "Clicked item settings", Toast.LENGTH_SHORT).show()
+            }
+
             R.id.nav_manage -> {
-                Toast.makeText(this, "Clicked item settings", Toast.LENGTH_SHORT).show()
+                val myintent = Intent(this@MainActivity, com.aniapps.flicbuzz.AboutUs::class.java)
+                myintent.putExtra("title","Refund and Cancellation")
+                startActivity(myintent)
+                // Toast.makeText(this, "Clicked item settings", Toast.LENGTH_SHORT).show()
             }
+
+
+
+
             R.id.nav_share -> {
-                Toast.makeText(this, "Clicked item share", Toast.LENGTH_SHORT).show()
+
+              Toast.makeText(this, "Clicked item share", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_send -> {
                 Toast.makeText(this, "Clicked item send", Toast.LENGTH_SHORT).show()
             }
-        }
 
+        }
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
