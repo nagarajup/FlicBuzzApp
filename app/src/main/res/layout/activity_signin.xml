@@ -21,6 +21,7 @@
             <LinearLayout android:orientation="vertical"
                           android:layout_width="fill_parent"
                           android:layout_height="fill_parent"
+                          android:layout_gravity="center"
                           android:layout_marginLeft="15dp"
                           android:layout_marginRight="15dp"
                           android:layout_marginBottom="15dp">
@@ -36,11 +37,13 @@
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
                           android:layout_marginTop="10dp"
+                          android:visibility="gone"
                           android:text="Create an account using"
                           android:lineSpacingExtra="7sp"
                           android:fontFamily="@font/cera_gr_regular"/>
                 <LinearLayout android:orientation="horizontal"
                               android:layout_width="fill_parent"
+                              android:visibility="gone"
                               android:layout_height="wrap_content"
                               android:layout_marginTop="20dp">
                     <ImageButton android:background="@drawable/rounded_corners"
@@ -60,6 +63,7 @@
                               android:layout_width="fill_parent"
                               android:layout_height="wrap_content"
                               android:layout_marginTop="15dp"
+                              android:visibility="gone"
                               android:layout_marginRight="20dp">
                     <LinearLayout android:background="#ff707070"
                                   android:layout_width="46dp"
@@ -80,7 +84,7 @@
                 <LinearLayout android:orientation="horizontal"
                               android:layout_width="fill_parent"
                               android:layout_height="wrap_content"
-                              android:layout_marginTop="15dp">
+                              android:layout_marginTop="20dp">
                     <Button android:textSize="14sp"
                             android:textColor="#ffffffff"
                             android:id="@+id/btn_signup"

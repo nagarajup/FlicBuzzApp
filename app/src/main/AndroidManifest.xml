@@ -36,7 +36,7 @@
                 android:theme="@style/PlayerTheme"
                 tools:targetApi="n"/>
         <activity
-                android:name=".MainActivity"
+                android:name=".Base"
                 android:label="@string/title_activity_landing_page"
                 android:theme="@style/AppTheme.NoActionBar"
                 android:windowSoftInputMode="adjustPan|adjustResize">

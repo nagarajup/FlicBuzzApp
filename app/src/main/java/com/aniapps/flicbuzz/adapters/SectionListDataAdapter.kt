@@ -12,11 +12,11 @@ import android.widget.TextView
 import android.widget.Toast
 import com.aniapps.flicbuzz.MyPlayer
 import com.aniapps.flicbuzz.R
-import com.aniapps.flicbuzz.models.SingleItemModel
+import com.aniapps.flicbuzz.models.MyVideos
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 
-class SectionListDataAdapter(var context: Context, var itemsList: ArrayList<SingleItemModel>) :
+class SectionListDataAdapter(var context: Context, var itemsList: ArrayList<MyVideos>) :
     RecyclerView.Adapter<SectionListDataAdapter.SingleItemRowHolder>() {
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): SingleItemRowHolder {
         val v = LayoutInflater.from(viewGroup.context).inflate(R.layout.list_single_card, null)
@@ -27,9 +27,11 @@ class SectionListDataAdapter(var context: Context, var itemsList: ArrayList<Sing
 
         val singleItem = itemsList[i]
 
-        holder.tvTitle.setText(singleItem.name)
+        holder.tvTitle.setText(singleItem.headline)
+        holder.tvDesc.setText(singleItem.description)
+
        Glide.with(context)
-            .load(ContextCompat.getDrawable(context, R.drawable.ddlg))
+            .load(singleItem.thumb)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .centerCrop()
             .error(R.mipmap.launcher_icon)
@@ -39,7 +41,7 @@ class SectionListDataAdapter(var context: Context, var itemsList: ArrayList<Sing
         holder.itemImage.setOnClickListener({
 
             val player_in = Intent(it.context, MyPlayer::class.java)
-            player_in.putExtra("url",itemsList[i].url)
+            player_in.putExtra("url",singleItem.video_filename)
             it.context.startActivity(player_in)
         })
 
@@ -58,6 +60,7 @@ class SectionListDataAdapter(var context: Context, var itemsList: ArrayList<Sing
     inner class SingleItemRowHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         var tvTitle: TextView
+        var tvDesc: TextView
 
          var itemImage: ImageView
 
@@ -65,6 +68,7 @@ class SectionListDataAdapter(var context: Context, var itemsList: ArrayList<Sing
         init {
 
             this.tvTitle = view.findViewById<View>(R.id.tvTitle) as TextView
+            this.tvDesc = view.findViewById<View>(R.id.tvDesc) as TextView
             this.itemImage = view.findViewById<View>(R.id.itemImage) as ImageView
 
 

@@ -7,8 +7,8 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.View
 import com.aniapps.flicbuzz.adapters.ListingAdapter
+import com.aniapps.flicbuzz.models.MyVideos
 import com.aniapps.flicbuzz.models.SectionDataModel
-import com.aniapps.flicbuzz.models.SingleItemModel
 import java.util.ArrayList
 
 class Listing : AppCompatActivity() {
@@ -40,10 +40,10 @@ class Listing : AppCompatActivity() {
         val myCategories = resources.getStringArray(R.array.Topics)
         val myUrls = resources.getStringArray(R.array.Urls)
         for (i in myCategories.indices) {
-            val singleItem = ArrayList<SingleItemModel>()
+            val singleItem = ArrayList<MyVideos>()
 
             for (j in 0..5) {
-                singleItem.add(SingleItemModel("Title $j", myUrls[i], ""))
+                singleItem.add(MyVideos("","","Title $j", myUrls[i], ""))
             }
             val dm = SectionDataModel(myCategories[i], singleItem)
             allSampleData.add(dm)

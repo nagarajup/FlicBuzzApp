@@ -1,7 +1,6 @@
 package com.aniapps.flicbuzz
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
@@ -14,19 +13,18 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import com.aniapps.flicbuzz.adapters.ListingAdapter
-import com.aniapps.flicbuzz.fragments.AboutUs
 import com.aniapps.flicbuzz.models.SectionDataModel
-import com.aniapps.flicbuzz.models.SingleItemModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import java.util.ArrayList
-import android.R.attr.fragment
 import android.content.Intent
-import com.mad.kotlin_navigation_drawer.Fragment1
-import com.mad.kotlin_navigation_drawer.replaceFragmenty
+import com.aniapps.flicbuzz.models.MyVideos
+import com.google.gson.Gson
+import org.json.JSONArray
+import java.lang.Exception
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class Base : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     internal lateinit var allSampleData: ArrayList<SectionDataModel>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +38,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }*/
 
 
-        createDummyData()
+        val jsonArray = intent.getStringExtra("jsonArray")
+
+        createDummyData(jsonArray)
         val my_recycler_view = findViewById<View>(R.id.my_recyclerview) as RecyclerView
         my_recycler_view.setHasFixedSize(true)
         val adapter = ListingAdapter(this, allSampleData)
@@ -54,20 +54,34 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         nav_view.setNavigationItemSelectedListener(this)
     }
+    fun createDummyData(myData:String) {
+        try {
+            val array = JSONArray(myData)
+            for (i in 0 until array.length()) {
+                var lead = Gson().fromJson(
+                    array.get(i).toString(),
+                    SectionDataModel::class.java
+                )
+                allSampleData.add(lead)
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
 
-    fun createDummyData() {
-        val myCategories = resources.getStringArray(R.array.Topics)
+      /*  val myCategories = resources.getStringArray(R.array.Topics)
         val myUrls = resources.getStringArray(R.array.Urls)
+
+
         for (i in myCategories.indices) {
-            val singleItem = ArrayList<SingleItemModel>()
+            val singleItem = ArrayList<MyVideos>()
 
             for (j in 0..5) {
-                singleItem.add(SingleItemModel("Title $j", myUrls[i], ""))
+                singleItem.add(MyVideos("","","","Title $j", myUrls[i]))
             }
             val dm = SectionDataModel(myCategories[i], singleItem)
             allSampleData.add(dm)
 
-        }
+        }*/
     }
 
     override fun onBackPressed() {
@@ -89,7 +103,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         when (item.itemId) {
-            R.id.action_settings -> return true
+            R.id.action_search -> return true
             else -> return super.onOptionsItemSelected(item)
         }
     }
@@ -101,40 +115,40 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         when (item.itemId) {
             R.id.nav_camera -> {
-                val myintent = Intent(this@MainActivity, com.aniapps.flicbuzz.AboutUs::class.java)
+                val myintent = Intent(this@Base, com.aniapps.flicbuzz.AboutUs::class.java)
                 myintent.putExtra("title","About Us")
                 startActivity(myintent)
 
                // Toast.makeText(this, "Clicked item about us", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_gallery -> {
-                val myintent = Intent(this@MainActivity, com.aniapps.flicbuzz.AboutUs::class.java)
+                val myintent = Intent(this@Base, com.aniapps.flicbuzz.AboutUs::class.java)
                 myintent.putExtra("title","My Favourites")
                 startActivity(myintent)
                //Toast.makeText(this, "Clicked item profile", Toast.LENGTH_SHORT).show()
             }
 
             R.id.nav_gallery1 -> {
-                val myintent = Intent(this@MainActivity, com.aniapps.flicbuzz.AboutUs::class.java)
+                val myintent = Intent(this@Base, com.aniapps.flicbuzz.AboutUs::class.java)
                 myintent.putExtra("title","My Profile")
                 startActivity(myintent)
                 //Toast.makeText(this, "Clicked item profile", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_slideshow -> {
-                val myintent = Intent(this@MainActivity, com.aniapps.flicbuzz.AboutUs::class.java)
+                val myintent = Intent(this@Base, com.aniapps.flicbuzz.AboutUs::class.java)
                 myintent.putExtra("title","Packages")
                 startActivity(myintent)
                // Toast.makeText(this, "Clicked item fav", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_manage1 -> {
-                val myintent = Intent(this@MainActivity, com.aniapps.flicbuzz.AboutUs::class.java)
+                val myintent = Intent(this@Base, com.aniapps.flicbuzz.AboutUs::class.java)
                 myintent.putExtra("title","Privacy Policy")
                 startActivity(myintent)
                // Toast.makeText(this, "Clicked item settings", Toast.LENGTH_SHORT).show()
             }
 
             R.id.nav_manage -> {
-                val myintent = Intent(this@MainActivity, com.aniapps.flicbuzz.AboutUs::class.java)
+                val myintent = Intent(this@Base, com.aniapps.flicbuzz.AboutUs::class.java)
                 myintent.putExtra("title","Refund and Cancellation")
                 startActivity(myintent)
                 // Toast.makeText(this, "Clicked item settings", Toast.LENGTH_SHORT).show()

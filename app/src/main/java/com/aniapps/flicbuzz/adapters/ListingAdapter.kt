@@ -27,9 +27,8 @@ class ListingAdapter(var mContext: Context, var dataList: ArrayList<SectionDataM
 
     override fun onBindViewHolder(itemRowHolder: ItemRowHolder, i: Int) {
 
-        val sectionName = dataList[i].headerTitle
-
-        val singleSectionItems = dataList[i].allItemsInSection
+        val sectionName = dataList[i].category_name
+        val singleSectionItems = dataList[i].videos
 
         itemRowHolder.itemTitle.setText(sectionName)
 
