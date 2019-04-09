@@ -13,7 +13,7 @@ class SignUp : AppCompatActivity() {
         setContentView(R.layout.activity_signup)
         signup_btn_main=findViewById<View>(R.id.signup_btn_main) as Button
         signup_btn_main.setOnClickListener {
-            val i = Intent(this@SignUp, Base::class.java)
+            val i = Intent(this@SignUp, Login::class.java)
             startActivity(i)
         }
     }

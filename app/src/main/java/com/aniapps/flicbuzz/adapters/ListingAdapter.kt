@@ -1,5 +1,6 @@
 package com.aniapps.flicbuzz.adapters
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.support.v7.widget.LinearLayoutManager
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import com.aniapps.flicbuzz.Listing
 import com.aniapps.flicbuzz.MyPlayer
 import com.aniapps.flicbuzz.R
@@ -16,7 +18,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import java.util.*
 
-class ListingAdapter(var mContext: Context, var dataList: ArrayList<SectionDataModel>) :
+class ListingAdapter(var mContext: Activity, var dataList: ArrayList<SectionDataModel>) :
     RecyclerView.Adapter<ListingAdapter.ItemRowHolder>() {
 
 
@@ -32,7 +34,7 @@ class ListingAdapter(var mContext: Context, var dataList: ArrayList<SectionDataM
 
         itemRowHolder.itemTitle.setText(sectionName)
 
-        val itemListDataAdapter = SectionListDataAdapter(mContext, singleSectionItems)
+        val itemListDataAdapter = SectionListDataAdapter(mContext, singleSectionItems,"")
 
         itemRowHolder.recycler_view_list.setHasFixedSize(true)
         itemRowHolder.recycler_view_list.setLayoutManager(
@@ -46,14 +48,14 @@ class ListingAdapter(var mContext: Context, var dataList: ArrayList<SectionDataM
 
 
         itemRowHolder.btnMore.setOnClickListener(View.OnClickListener { v ->
-            /*  Toast.makeText(
+              Toast.makeText(
                   v.context,
-                  "click event on more, $sectionName",
+                  "clicked event on more, $sectionName",
                   Toast.LENGTH_SHORT
-              ).show()*/
+              ).show()
 
-            val i = Intent(v.context, MyPlayer::class.java)
-            v.context.startActivity(i)
+           /* val i = Intent(v.context, MyPlayer::class.java)
+            v.context.startActivity(i)*/
         })
 
        /* GlideApp.with(context)

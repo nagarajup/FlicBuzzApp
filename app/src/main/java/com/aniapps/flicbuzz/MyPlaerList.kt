@@ -1,5 +1,6 @@
 package com.aniapps.flicbuzz
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
@@ -11,39 +12,33 @@ import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import com.aniapps.flicbuzz.adapters.ListingAdapter
+import com.aniapps.flicbuzz.adapters.SectionListDataAdapter
+import com.aniapps.flicbuzz.models.MyVideos
 import com.aniapps.flicbuzz.models.SectionDataModel
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import java.util.ArrayList
-import android.content.Intent
-import com.aniapps.flicbuzz.models.MyVideos
-import com.google.gson.Gson
 import org.json.JSONArray
 import java.lang.Exception
+import java.util.ArrayList
 
+class MyPlaerList : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    internal lateinit var rc_list: RecyclerView
+    internal lateinit var myvideos: ArrayList<MyVideos>
 
-open class Base : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-    internal lateinit var allSampleData: ArrayList<SectionDataModel>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-        allSampleData = ArrayList<SectionDataModel>()
-/*
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }*/
-
-
-       val jsonArray = intent.getStringExtra("jsonArray")
-
-        createDummyData(jsonArray)
+        myvideos = ArrayList()
+        val jsonArray = intent.getStringExtra("jsonArray")
+        myData(jsonArray)
         val my_recycler_view = findViewById<View>(R.id.my_recyclerview) as RecyclerView
         my_recycler_view.setHasFixedSize(true)
-        val adapter = ListingAdapter(this, allSampleData)
+        val adapter = SectionListDataAdapter(this, myvideos,"main")
         my_recycler_view.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         my_recycler_view.adapter = adapter
         val toggle = ActionBarDrawerToggle(
@@ -53,36 +48,23 @@ open class Base : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLi
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
+
     }
 
-    fun createDummyData(myData:String) {
+    fun myData(myData: String) {
         try {
             val array = JSONArray(myData)
             for (i in 0 until array.length()) {
                 var lead = Gson().fromJson(
                     array.get(i).toString(),
-                    SectionDataModel::class.java
+                    MyVideos::class.java
                 )
-                allSampleData.add(lead)
+                myvideos.add(lead)
             }
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
 
-      /*  val myCategories = resources.getStringArray(R.array.Topics)
-        val myUrls = resources.getStringArray(R.array.Urls)
-
-
-        for (i in myCategories.indices) {
-            val singleItem = ArrayList<MyVideos>()
-
-            for (j in 0..5) {
-                singleItem.add(MyVideos("","","","Title $j", myUrls[i]))
-            }
-            val dm = SectionDataModel(myCategories[i], singleItem)
-            allSampleData.add(dm)
-
-        }*/
     }
 
     override fun onBackPressed() {
@@ -116,40 +98,40 @@ open class Base : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLi
 
         when (item.itemId) {
             R.id.nav_camera -> {
-                val myintent = Intent(this@Base, com.aniapps.flicbuzz.AboutUs::class.java)
+                val myintent = Intent(this@MyPlaerList, com.aniapps.flicbuzz.AboutUs::class.java)
                 myintent.putExtra("title","About Us")
                 startActivity(myintent)
 
-               // Toast.makeText(this, "Clicked item about us", Toast.LENGTH_SHORT).show()
+                // Toast.makeText(this, "Clicked item about us", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_gallery -> {
-                val myintent = Intent(this@Base, com.aniapps.flicbuzz.AboutUs::class.java)
+                val myintent = Intent(this@MyPlaerList, com.aniapps.flicbuzz.AboutUs::class.java)
                 myintent.putExtra("title","My Favourites")
                 startActivity(myintent)
-               //Toast.makeText(this, "Clicked item profile", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this, "Clicked item profile", Toast.LENGTH_SHORT).show()
             }
 
             R.id.nav_gallery1 -> {
-                val myintent = Intent(this@Base, com.aniapps.flicbuzz.AboutUs::class.java)
+                val myintent = Intent(this@MyPlaerList, com.aniapps.flicbuzz.AboutUs::class.java)
                 myintent.putExtra("title","My Profile")
                 startActivity(myintent)
                 //Toast.makeText(this, "Clicked item profile", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_slideshow -> {
-                val myintent = Intent(this@Base, com.aniapps.flicbuzz.AboutUs::class.java)
+                val myintent = Intent(this@MyPlaerList, com.aniapps.flicbuzz.AboutUs::class.java)
                 myintent.putExtra("title","Packages")
                 startActivity(myintent)
-               // Toast.makeText(this, "Clicked item fav", Toast.LENGTH_SHORT).show()
+                // Toast.makeText(this, "Clicked item fav", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_manage1 -> {
-                val myintent = Intent(this@Base, com.aniapps.flicbuzz.AboutUs::class.java)
+                val myintent = Intent(this@MyPlaerList, com.aniapps.flicbuzz.AboutUs::class.java)
                 myintent.putExtra("title","Privacy Policy")
                 startActivity(myintent)
-               // Toast.makeText(this, "Clicked item settings", Toast.LENGTH_SHORT).show()
+                // Toast.makeText(this, "Clicked item settings", Toast.LENGTH_SHORT).show()
             }
 
             R.id.nav_manage -> {
-                val myintent = Intent(this@Base, com.aniapps.flicbuzz.AboutUs::class.java)
+                val myintent = Intent(this@MyPlaerList, com.aniapps.flicbuzz.AboutUs::class.java)
                 myintent.putExtra("title","Refund and Cancellation")
                 startActivity(myintent)
                 // Toast.makeText(this, "Clicked item settings", Toast.LENGTH_SHORT).show()
@@ -160,14 +142,16 @@ open class Base : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLi
 
             R.id.nav_share -> {
 
-              Toast.makeText(this, "Clicked item share", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Clicked item share", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_send -> {
-                Toast.makeText(this, "Clicked item send", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Clicked item Logout", Toast.LENGTH_SHORT).show()
             }
 
         }
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
+
+
 }

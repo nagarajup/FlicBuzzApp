@@ -2,10 +2,12 @@
 <android.support.v7.widget.CardView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="200sp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:cardCornerRadius="5dp"
+        android:layout_marginBottom="40sp"
+        android:layout_marginTop="15sp"
         app:cardUseCompatPadding="true">
     <LinearLayout
             android:layout_width="match_parent"
@@ -14,14 +16,14 @@
             android:background="?android:selectableItemBackground"
             android:orientation="vertical">
 
-        <FrameLayout android:layout_width="200sp"
+        <FrameLayout android:layout_width="match_parent"
                      android:layout_gravity="center"
-                     android:layout_height="115sp">
+                     android:layout_height="match_parent">
 
             <ImageView
                     android:id="@+id/itemImage"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="180sp"
                     android:layout_gravity="center"
                     android:scaleType="fitCenter"
                     android:src="@mipmap/launcher_icon"/>
@@ -34,8 +36,8 @@
 
         </FrameLayout>
 
-        <TextView android:textSize="14sp"
-                  android:textColor="#ff53ba00"
+        <TextView android:textSize="18sp"
+                  android:textColor="@color/title"
                   android:ellipsize="end"
                   android:layout_marginLeft="3sp"
                   android:id="@+id/tvTitle"
@@ -53,7 +55,7 @@
                   android:layout_width="fill_parent"
                   android:layout_height="wrap_content"
                   android:text="description about sample video...."
-                  android:maxLines="3"/>
+                  android:maxLines="2"/>
 
 
     </LinearLayout>

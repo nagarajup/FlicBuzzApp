@@ -2,6 +2,7 @@ package com.aniapps.flicbuzz
 
 import android.annotation.SuppressLint
 import android.app.PictureInPictureParams
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
@@ -10,10 +11,25 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.annotation.RequiresApi
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.text.Html
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.method.LinkMovementMethod
 import android.util.Log
+import android.util.Rational
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
+import com.aniapps.flicbuzz.adapters.MySpannable
+import com.aniapps.flicbuzz.adapters.PlayerAdapter
+import com.aniapps.flicbuzz.adapters.SectionListDataAdapter
+import com.aniapps.flicbuzz.models.MyVideos
+import com.aniapps.flicbuzz.networkcall.APIResponse
+import com.aniapps.flicbuzz.networkcall.RetrofitClient
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.Player
@@ -31,6 +47,11 @@ import com.google.android.exoplayer2.upstream.*
 import com.google.android.exoplayer2.util.Util
 import com.google.android.exoplayer2.util.Util.SDK_INT
 import com.google.android.exoplayer2.util.Util.getUserAgent
+import com.google.gson.Gson
+import kotlinx.android.synthetic.main.myplayer.*
+import org.json.JSONArray
+import org.json.JSONObject
+import java.util.ArrayList
 
 class MyPlayer : AppCompatActivity() {
 
@@ -40,7 +61,7 @@ class MyPlayer : AppCompatActivity() {
         private const val KEY_POSITION = "position"
     }
 
-    private var player: SimpleExoPlayer? = null
+    private lateinit var player: SimpleExoPlayer
     private val playerView: PlayerView by lazy { findViewById<PlayerView>(R.id.video_view) }
 
 
@@ -58,15 +79,34 @@ class MyPlayer : AppCompatActivity() {
     private var currentWindow: Int = 0
     private var playbackPosition: Long = 0
     private var mUrl: String = "";
+    private var play_title: String = "";
+    private var play_desc: String = "";
+    private var play_id: String = "";
+
     var mediaSource: MediaSource? = null;
     private val progressBar: ProgressBar by lazy { findViewById<ProgressBar>(R.id.progress_bar) }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_player)
+        setContentView(R.layout.myplayer)
         mUrl = intent.getStringExtra("url")
-        Log.e("myUrl", "" + mUrl)
+        play_desc = intent.getStringExtra("desc")
+        play_title = intent.getStringExtra("title")
+        play_id = intent.getStringExtra("id")
+
+
+        Log.e("player title", play_title)
+        Log.e("player desc", play_desc)
+
+
+        tv_play_title.setText(play_title)
+        tv_play_description.setText(play_desc)
+
+        makeTextViewResizable(tv_play_description,3,"View More",true)
+
+        LoginApi()
+
         if (savedInstanceState != null) {
 
             with(savedInstanceState) {
@@ -75,6 +115,7 @@ class MyPlayer : AppCompatActivity() {
                 playbackPosition = getLong(KEY_POSITION)
             }
         }
+
 
         shouldAutoPlay = true
         mediaDataSourceFactory = DefaultDataSourceFactory(
@@ -87,6 +128,123 @@ class MyPlayer : AppCompatActivity() {
         dataFactory = DefaultDataSourceFactory(this@MyPlayer, "ua")
 
 
+    }
+
+
+
+    fun makeTextViewResizable(tv: TextView, maxLine: Int, expandText: String, viewMore: Boolean) {
+
+        if (tv.tag == null) {
+            tv.tag = tv.text
+        }
+        val vto = tv.viewTreeObserver
+        vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+
+            override fun onGlobalLayout() {
+                val text: String
+                val lineEndIndex: Int
+                val obs = tv.viewTreeObserver
+                obs.removeGlobalOnLayoutListener(this)
+                if (maxLine == 0) {
+                    lineEndIndex = tv.layout.getLineEnd(0)
+                    text = tv.text.subSequence(0, lineEndIndex - expandText.length + 1).toString() + " " + expandText
+                } else if (maxLine > 0 && tv.lineCount >= maxLine) {
+                    lineEndIndex = tv.layout.getLineEnd(maxLine - 1)
+                    text = tv.text.subSequence(0, lineEndIndex - expandText.length + 1).toString() + " " + expandText
+                } else {
+                    lineEndIndex = tv.layout.getLineEnd(tv.layout.lineCount - 1)
+                    text = tv.text.subSequence(0, lineEndIndex).toString() + " " + expandText
+                }
+                tv.text = text
+                tv.movementMethod = LinkMovementMethod.getInstance()
+                tv.setText(
+                    addClickablePartTextViewResizable(
+                        Html.fromHtml(tv.text.toString()), tv, lineEndIndex, expandText,
+                        viewMore
+                    ), TextView.BufferType.SPANNABLE
+                )
+            }
+        })
+
+    }
+
+    private fun addClickablePartTextViewResizable(
+        strSpanned: Spanned, tv: TextView,
+        maxLine: Int, spanableText: String, viewMore: Boolean
+    ): SpannableStringBuilder {
+        val str = strSpanned.toString()
+        val ssb = SpannableStringBuilder(strSpanned)
+
+        if (str.contains(spanableText)) {
+
+
+            ssb.setSpan(object : MySpannable(false) {
+                override fun onClick(widget: View) {
+                    tv.layoutParams = tv.layoutParams
+                    tv.setText(tv.tag.toString(), TextView.BufferType.SPANNABLE)
+                    tv.invalidate()
+                    if (viewMore) {
+                        makeTextViewResizable(tv, -1, "View Less", false)
+                    } else {
+                        makeTextViewResizable(tv, 3, "View More", true)
+                    }
+                }
+            }, str.indexOf(spanableText), str.indexOf(spanableText) + spanableText.length, 0)
+
+        }
+        return ssb
+
+    }
+    private fun getParams2(): Map<String, String> {
+        val params = HashMap<String, String>()
+        params["action"] = "get_similar_by_video_id"
+        params["video_id"] = play_id
+        params["page_number"] = "1"
+        params["device_name"] = "abcd"
+        return params
+    }
+
+    internal lateinit var myvideos: ArrayList<MyVideos>
+
+    private fun LoginApi() {
+        RetrofitClient.getInstance()
+            .doBackProcess(this@MyPlayer, getParams2(), "", object : APIResponse {
+                override fun onSuccess(res: String?) {
+                    try {
+                        val jobj = JSONObject(res)
+                        val status = jobj.getInt("status")
+                        val details = jobj.getString("details")
+
+                        if (status == 1) {
+                            Log.e("RES", res)
+                            val jsonArray = jobj.getJSONArray("data")
+                            Log.e("RES my Array", "" + jsonArray.length())
+                            myvideos = ArrayList()
+                            for (i in 0 until jsonArray.length()) {
+                                var lead = Gson().fromJson(
+                                    jsonArray.get(i).toString(),
+                                    MyVideos::class.java
+                                )
+                                myvideos.add(lead)
+                            }
+                            val my_recycler_view = findViewById<View>(R.id.rc_list) as RecyclerView
+                            my_recycler_view.setHasFixedSize(true)
+                            val adapter = PlayerAdapter(this@MyPlayer, myvideos, "player")
+                            my_recycler_view.layoutManager =
+                                LinearLayoutManager(this@MyPlayer, LinearLayoutManager.VERTICAL, false)
+                            my_recycler_view.adapter = adapter
+                        } else {
+                            Toast.makeText(this@MyPlayer, "status" + status, Toast.LENGTH_LONG).show()
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+
+                override fun onFailure(res: String?) {
+                    Toast.makeText(this@MyPlayer, "status" + res, Toast.LENGTH_LONG).show()
+                }
+            })
     }
 
     public override fun onStart() {
@@ -217,8 +375,7 @@ class MyPlayer : AppCompatActivity() {
         if (player != null) {
             updateStartPosition()
             shouldAutoPlay = player!!.playWhenReady
-            player!!.release()
-            player = null
+            player.release()
             trackSelector = null
         }
     }
@@ -298,6 +455,19 @@ class MyPlayer : AppCompatActivity() {
         enterPIPMode()
     }
 
+
+    fun pipmode(){
+        if (android.os.Build.VERSION.SDK_INT >= 26) {
+            try {
+                val rational = Rational(playerView.width, playerView.height)
+                val mParams=PictureInPictureParams.Builder().setAspectRatio(rational)
+                    .build()
+                enterPictureInPictureMode(mParams);
+            }catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
     @Suppress("DEPRECATION")
     fun enterPIPMode() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
@@ -306,7 +476,8 @@ class MyPlayer : AppCompatActivity() {
             playbackPosition = player!!.currentPosition
             playerView.useController = false
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val params = PictureInPictureParams.Builder()
+                val rational = Rational(playerView.width, playerView.height)
+                val params = PictureInPictureParams.Builder().setAspectRatio(rational)
                 this.enterPictureInPictureMode(params.build())
             } else {
                 this.enterPictureInPictureMode()
@@ -342,5 +513,8 @@ class MyPlayer : AppCompatActivity() {
             super.onBackPressed()
         }
     }
+
+
+
 
 }

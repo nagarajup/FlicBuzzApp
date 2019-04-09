@@ -1,5 +1,6 @@
 package com.aniapps.flicbuzz.networkcall;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -56,18 +57,21 @@ public class RetrofitClient extends AppCompatActivity {
         }
         return retrofit;
     }
-
+    Dialog dialog;
     //RetrofitCallBack
     public void doBackProcess(final Context context, Map<String, String> postParams,
                               String from, APIResponse api_res) {
         this.context = context;
         this.params = postParams;
         this.from = from;
+        dialog=ProgressDialog.Companion.progressDialog(context);
         if (from.length() == 0 && null != context) {
             try {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+
+                        dialog.show();
                         //  CTEProgress.getInstance().show(context);
                     }
                 });
@@ -96,7 +100,7 @@ public class RetrofitClient extends AppCompatActivity {
 
         //Log.e(TAG, "I am in NoCrypt Core: " + context.getResources().getString(R.string.core_live));
          Log.e(TAG, "No Cypt Params:" + postParams);
-        apiService.coreApiResult(context.getResources().getString(R.string.core_live)+"/home", postParams).enqueue(new Callback<String>() {
+        apiService.coreApiResult(context.getResources().getString(R.string.core_live)+"/"+postParams.get("action"), postParams).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, final Response<String> res) {
                 Log.e("RES","res"+res.body());
@@ -106,6 +110,7 @@ public class RetrofitClient extends AppCompatActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    dialog.dismiss();
                                     //  CTEProgress.getInstance().dismiss((Activity) context);
                                 }
                             });

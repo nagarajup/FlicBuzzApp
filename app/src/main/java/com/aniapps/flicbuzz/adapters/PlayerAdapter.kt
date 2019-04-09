@@ -16,39 +16,35 @@ import com.aniapps.flicbuzz.R
 import com.aniapps.flicbuzz.models.MyVideos
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import android.widget.TextView.BufferType
-import android.text.method.LinkMovementMethod
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
-import android.text.SpannableStringBuilder
-import android.text.Spanned
 
-
-
-
-
-class SectionListDataAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var from:String) :
-    RecyclerView.Adapter<SectionListDataAdapter.SingleItemRowHolder>() {
-    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): SingleItemRowHolder {
-        val v = LayoutInflater.from(viewGroup.context).inflate(R.layout.list_single_card, null)
-        return SingleItemRowHolder(v)
+class PlayerAdapter (var context: Activity, var itemsList: ArrayList<MyVideos>, var from:String) :
+    RecyclerView.Adapter<PlayerAdapter.PlayerRowHolder>() {
+    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): PlayerRowHolder {
+        val v = LayoutInflater.from(viewGroup.context).inflate(R.layout.playeradapter, null)
+        return PlayerRowHolder(v)
     }
 
-    override fun onBindViewHolder(holder: SingleItemRowHolder, i: Int) {
+    override fun onBindViewHolder(holder: PlayerRowHolder, i: Int) {
 
         val singleItem = itemsList[i]
 
         holder.tvTitle.setText(singleItem.headline)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            holder.tvDesc.setText(Html.fromHtml("<b>Adgully Network</b> &nbsp; &nbsp;&nbsp; 1K Views &nbsp;&nbsp;&nbsp; - 1 day ago", Html.FROM_HTML_MODE_COMPACT));
+            holder.tvDesc.setText(
+                Html.fromHtml(
+                    "Adgully Network &nbsp; &nbsp; 1K Views &nbsp;&nbsp; - 1 day ago",
+                    Html.FROM_HTML_MODE_COMPACT
+                )
+            );
         } else {
-            holder.tvDesc.setText(Html.fromHtml("<b>Adgully Network</b> &nbsp; &nbsp;&nbsp; 1K Views &nbsp;&nbsp;&nbsp; - 1 day ago"));
+            holder.tvDesc.setText(Html.fromHtml("Adgully Network &nbsp; &nbsp; 1K Views &nbsp;&nbsp; - 1 day ago"));
         }
-       // holder.tvDesc.setText(singleItem.description)
+        holder.tvDesc.setText(singleItem.description)
 
 
 
-       Glide.with(context)
+        Glide.with(context)
             .load(singleItem.thumb)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .centerCrop()
@@ -58,7 +54,7 @@ class SectionListDataAdapter(var context: Activity, var itemsList: ArrayList<MyV
 
         holder.itemImage.setOnClickListener({
 
-            if(from.equals("main")) {
+            if (from.equals("main")) {
                 val player_in = Intent(it.context, MyPlayer::class.java)
                 player_in.putExtra("url", singleItem.video_filename)
                 player_in.putExtra("title", singleItem.headline)
@@ -67,8 +63,8 @@ class SectionListDataAdapter(var context: Activity, var itemsList: ArrayList<MyV
 
                 it.context.startActivity(player_in)
                 context.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-            }else{
-                Toast.makeText(it.context,"Clicked on "+singleItem.headline,Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(it.context, "Clicked on " + singleItem.headline, Toast.LENGTH_SHORT).show()
             }
         })
 
@@ -84,12 +80,12 @@ class SectionListDataAdapter(var context: Activity, var itemsList: ArrayList<MyV
         return itemsList.size
     }
 
-    inner class SingleItemRowHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class PlayerRowHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         var tvTitle: TextView
         var tvDesc: TextView
 
-         var itemImage: ImageView
+        var itemImage: ImageView
 
 
         init {
@@ -105,7 +101,4 @@ class SectionListDataAdapter(var context: Activity, var itemsList: ArrayList<MyV
         }
 
     }
-
-
-
 }
