@@ -6,7 +6,9 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
+import com.aniapps.flicbuzz.activities.LoginActivity
 import com.aniapps.flicbuzz.networkcall.APIResponse
 import com.aniapps.flicbuzz.networkcall.RetrofitClient
 import org.json.JSONObject
@@ -15,15 +17,15 @@ import org.json.JSONArray
 
 
 class SignIn : AppCompatActivity() {
-    internal lateinit var btn_login: Button
+    internal lateinit var btn_login: TextView
     internal lateinit var btn_signup: Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signin)
-        btn_login = findViewById<View>(R.id.btn_login) as Button
+        btn_login = findViewById<View>(R.id.loginTV) as TextView
         btn_signup = findViewById<View>(R.id.btn_signup) as Button
         btn_login.setOnClickListener {
-             val i = Intent(this@SignIn, Login::class.java)
+             val i = Intent(this@SignIn, LoginActivity::class.java)
               startActivity(i)
            // LoginApi()
         }

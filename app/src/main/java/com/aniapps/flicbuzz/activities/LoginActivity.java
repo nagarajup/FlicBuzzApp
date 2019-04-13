@@ -61,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
         if (Utility.validateEmail(emailEditText)) {
             emailEditText.requestFocus();
             emailError.setVisibility(View.VISIBLE);
-        } else if (Utility.validatePassword(passwordEditText)) {
+        } else if (passwordEditText.getText().toString().length()==0) {
             passwordEditText.requestFocus();
             passwordError.setVisibility(View.VISIBLE);
         } else {

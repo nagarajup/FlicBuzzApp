@@ -37,13 +37,13 @@
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
                           android:layout_marginTop="10dp"
-                          android:visibility="gone"
+                          android:visibility="visible"
                           android:text="Create an account using"
                           android:lineSpacingExtra="7sp"
                           android:fontFamily="@font/cera_gr_regular"/>
                 <LinearLayout android:orientation="horizontal"
                               android:layout_width="fill_parent"
-                              android:visibility="gone"
+                              android:visibility="visible"
                               android:layout_height="wrap_content"
                               android:layout_marginTop="20dp">
                     <ImageButton android:background="@drawable/rounded_corners"
@@ -63,7 +63,7 @@
                               android:layout_width="fill_parent"
                               android:layout_height="wrap_content"
                               android:layout_marginTop="15dp"
-                              android:visibility="gone"
+                              android:visibility="visible"
                               android:layout_marginRight="20dp">
                     <LinearLayout android:background="#ff707070"
                                   android:layout_width="46dp"
@@ -95,29 +95,31 @@
                             android:text="SIGNUP WITH EMAIL"
                             android:fontFamily="@font/cera_gr_medium"/>
                 </LinearLayout>
-                <LinearLayout android:gravity="center"
-                              android:orientation="vertical"
-                              android:layout_width="fill_parent"
-                              android:layout_height="wrap_content"
-                              android:layout_marginTop="10dp">
-                    <TextView android:textSize="16sp"
-                              android:textStyle="bold"
-                              android:textColor="#ff575757"
-                              android:layout_width="wrap_content"
-                              android:layout_height="wrap_content"
-                              android:text="Have an account?"
-                              android:lineSpacingExtra="7sp"
-                              android:fontFamily="@font/cera_gr_regular"/>
-                    <Button android:textSize="14sp"
-                            android:textColor="#ffffffff"
-                            android:id="@+id/btn_login"
-                            android:background="@drawable/corners_login"
-                            android:layout_width="match_parent"
-                            android:layout_height="48dp"
-                            android:layout_gravity="center"
-                            android:layout_marginTop="10dp"
-                            android:text="Login"
-                            android:fontFamily="@font/cera_gr_medium"/>
+                <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/activity_horizontal_margin"
+                        android:gravity="center">
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="have an Account?"
+                            android:fontFamily="@font/cera_gr_medium"
+                            android:textColor="@color/lightgray"
+                            android:textSize="@dimen/text_size_normal"/>
+
+                    <TextView
+                            android:id="@+id/loginTV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="end"
+                            android:textStyle="bold"
+                            android:padding="5.0dip"
+                            android:text="Log in"
+                            android:textColor="@color/darkgray"
+                            android:fontFamily="@font/cera_gr_black"
+                            android:textSize="@dimen/text_size_normal"/>
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>

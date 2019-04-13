@@ -120,7 +120,7 @@
         <TextView
                 android:id="@+id/req_customer_password_error"
                 android:layout_width="match_parent"
-                android:text="Password should contains atleast one number , special character"
+                android:text="Please enter password"
                 android:layout_height="wrap_content"
                 android:visibility="invisible"
                 android:textColor="@color/red"

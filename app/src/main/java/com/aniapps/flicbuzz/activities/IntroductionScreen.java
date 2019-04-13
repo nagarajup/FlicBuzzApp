@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.aniapps.flicbuzz.Login;
 import com.aniapps.flicbuzz.R;
+import com.aniapps.flicbuzz.SignIn;
 import com.aniapps.flicbuzz.utils.PrefManager;
 
 public class IntroductionScreen extends Activity {
@@ -112,7 +113,7 @@ public class IntroductionScreen extends Activity {
 
     private void launchHomeScreen() {
         PrefManager.getIn().setFirstTimeLaunch(false);
-        startActivity(new Intent(IntroductionScreen.this, LoginActivity.class));
+        startActivity(new Intent(IntroductionScreen.this, SignIn.class));
         finish();
     }
 
