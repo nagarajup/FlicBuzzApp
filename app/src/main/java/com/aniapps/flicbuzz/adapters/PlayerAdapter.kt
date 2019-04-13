@@ -20,7 +20,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 class PlayerAdapter (var context: Activity, var itemsList: ArrayList<MyVideos>, var from:String) :
     RecyclerView.Adapter<PlayerAdapter.PlayerRowHolder>() {
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): PlayerRowHolder {
-        val v = LayoutInflater.from(viewGroup.context).inflate(R.layout.playeradapter, null)
+        val v = LayoutInflater.from(viewGroup.context).inflate(R.layout.list_single_card, null)
         return PlayerRowHolder(v)
     }
 

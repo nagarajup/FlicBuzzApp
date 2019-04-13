@@ -31,7 +31,16 @@ class SignIn : AppCompatActivity() {
         btn_signup.setOnClickListener {
           /*  val i = Intent(this@SignIn, SignUp::class.java)
             startActivity(i)*/
-            LoginApi2()
+
+            val player_in = Intent(it.context, MyPlayer::class.java)
+            player_in.putExtra("url", "https://www.flicbuzz.com/vendor_videos/converted/vendor_3/video_56_20190401_1539.mp4.m3u8")
+            player_in.putExtra("title", "Test Test Test")
+            player_in.putExtra("desc", "Test Test Test TestTest Test Test TestTest Test Test TestTest Test Test TestTest Test Test TestTest Test Test TestTest Test Test TestTest Test Test Test ")
+            player_in.putExtra("id", "10")
+
+            it.context.startActivity(player_in)
+            overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+           // LoginApi2()
         }
     }
 

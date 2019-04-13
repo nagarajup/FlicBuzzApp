@@ -14,7 +14,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
-import com.aniapps.flicbuzz.adapters.ListingAdapter
 import com.aniapps.flicbuzz.adapters.SectionListDataAdapter
 import com.aniapps.flicbuzz.models.MyVideos
 import com.aniapps.flicbuzz.models.SectionDataModel

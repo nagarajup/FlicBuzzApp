@@ -1,6 +1,7 @@
 package com.aniapps.flicbuzz
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.app.PictureInPictureParams
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -9,7 +10,9 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.PersistableBundle
 import android.support.annotation.RequiresApi
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -20,10 +23,9 @@ import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.util.Rational
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.aniapps.flicbuzz.adapters.MySpannable
 import com.aniapps.flicbuzz.adapters.PlayerAdapter
 import com.aniapps.flicbuzz.adapters.SectionListDataAdapter
@@ -42,7 +44,9 @@ import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
+import com.google.android.exoplayer2.ui.PlaybackControlView
 import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView
 import com.google.android.exoplayer2.upstream.*
 import com.google.android.exoplayer2.util.Util
 import com.google.android.exoplayer2.util.Util.SDK_INT
@@ -83,6 +87,20 @@ class MyPlayer : AppCompatActivity() {
     private var play_desc: String = "";
     private var play_id: String = "";
 
+    private var STATE_RESUME_WINDOW = "resumeWindow";
+    private var STATE_RESUME_POSITION = "resumePosition";
+    private var STATE_PLAYER_FULLSCREEN = "playerFullscreen";
+
+    private lateinit var mExoPlayerView: PlayerView;
+    private lateinit var mVideoSource: MediaSource;
+    private var mExoPlayerFullscreen: Boolean = false;
+    private lateinit var mFullScreenButton: FrameLayout;
+    private lateinit var mFullScreenIcon: ImageView;
+    private lateinit var  mFullScreenDialog: Dialog;
+    private var mResumeWindow: Int = 0
+    private var mResumePosition: Long = 0
+    // https://github.com/GeoffLedak/ExoplayerFullscreen/blob/master/app/src/main/java/com/geoffledak/exoplayerfullscreen/MainActivity.java*/
+
     var mediaSource: MediaSource? = null;
     private val progressBar: ProgressBar by lazy { findViewById<ProgressBar>(R.id.progress_bar) }
 
@@ -95,17 +113,21 @@ class MyPlayer : AppCompatActivity() {
         play_title = intent.getStringExtra("title")
         play_id = intent.getStringExtra("id")
 
-
+        if (savedInstanceState != null) {
+            mResumeWindow = savedInstanceState.getInt(STATE_RESUME_WINDOW);
+            mResumePosition = savedInstanceState.getLong(STATE_RESUME_POSITION);
+            mExoPlayerFullscreen = savedInstanceState.getBoolean(STATE_PLAYER_FULLSCREEN);
+        }
         Log.e("player title", play_title)
         Log.e("player desc", play_desc)
 
-
+        LoginApi()
         tv_play_title.setText(play_title)
         tv_play_description.setText(play_desc)
 
-        makeTextViewResizable(tv_play_description,3,"View More",true)
+        makeTextViewResizable(tv_play_description, 2, "View More", true)
 
-        LoginApi()
+
 
         if (savedInstanceState != null) {
 
@@ -130,7 +152,50 @@ class MyPlayer : AppCompatActivity() {
 
     }
 
+    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+        if (outState != null) {
+            outState.putInt(STATE_RESUME_WINDOW, mResumeWindow)
+            outState.putLong(STATE_RESUME_POSITION, mResumePosition);
+            outState.putBoolean(STATE_PLAYER_FULLSCREEN, mExoPlayerFullscreen);
+        }
+        super.onSaveInstanceState(outState, outPersistentState)
+    }
 
+    /*private fun initFullscreenDialog() {
+
+        mFullScreenDialog = object : Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
+            override fun onBackPressed() {
+                if (mExoPlayerFullscreen)
+                   closeFullscreenDialog()
+                super.onBackPressed()
+            }
+        }
+    }*/
+
+    /*private fun closeFullscreenDialog(){
+        *//*((ViewGroup) mExoPlayerView!!.getParent()).removeView(mExoPlayerView);
+        playerView.parent.
+        ((FrameLayout) findViewById(R.id.main_media_frame)).addView(mExoPlayerView);*//*
+        mExoPlayerFullscreen = false;
+        mFullScreenDialog.dismiss();
+        mFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(this@MyPlayer, R.drawable.ic_fullscreen_expand));
+    }
+
+
+    private fun initFullscreenButton(){
+        PlaybackControlView controlView = mExoPlayerView.findViewById(R.id.exo_controller);
+        mFullScreenIcon = controlView.findViewById(R.id.exo_fullscreen_icon);
+        mFullScreenButton = controlView.findViewById(R.id.exo_fullscreen_button);
+        mFullScreenButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mExoPlayerFullscreen)
+                    openFullscreenDialog();
+                else
+                    closeFullscreenDialog();
+            }
+        });
+    }*/
 
     fun makeTextViewResizable(tv: TextView, maxLine: Int, expandText: String, viewMore: Boolean) {
 
@@ -195,6 +260,7 @@ class MyPlayer : AppCompatActivity() {
         return ssb
 
     }
+
     private fun getParams2(): Map<String, String> {
         val params = HashMap<String, String>()
         params["action"] = "get_similar_by_video_id"
@@ -227,11 +293,13 @@ class MyPlayer : AppCompatActivity() {
                                 )
                                 myvideos.add(lead)
                             }
+                            //  if (SDK_INT > 23) initializePlayer()
                             val my_recycler_view = findViewById<View>(R.id.rc_list) as RecyclerView
                             my_recycler_view.setHasFixedSize(true)
                             val adapter = PlayerAdapter(this@MyPlayer, myvideos, "player")
                             my_recycler_view.layoutManager =
                                 LinearLayoutManager(this@MyPlayer, LinearLayoutManager.VERTICAL, false)
+                            my_recycler_view.setNestedScrollingEnabled(false)
                             my_recycler_view.adapter = adapter
                         } else {
                             Toast.makeText(this@MyPlayer, "status" + status, Toast.LENGTH_LONG).show()
@@ -363,26 +431,25 @@ class MyPlayer : AppCompatActivity() {
         //https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8
         val haveStartPosition = currentWindow != C.INDEX_UNSET
         if (haveStartPosition) {
-            player!!.seekTo(currentWindow, playbackPosition)
+            player.seekTo(currentWindow, playbackPosition)
         }
 
-        player!!.prepare(mediaSource, !haveStartPosition, false)
+        player.prepare(mediaSource, !haveStartPosition, false)
         updateButtonVisibilities()
 
     }
 
     private fun releasePlayer() {
-        if (player != null) {
-            updateStartPosition()
-            shouldAutoPlay = player!!.playWhenReady
-            player.release()
-            trackSelector = null
-        }
+        updateStartPosition()
+        shouldAutoPlay = player.playWhenReady
+        player.release()
+        trackSelector = null
+
     }
 
     private fun updateStartPosition() {
 
-        with(player!!) {
+        with(player) {
             playbackPosition = currentPosition
             currentWindow = currentWindowIndex
             playWhenReady = playWhenReady
@@ -390,20 +457,17 @@ class MyPlayer : AppCompatActivity() {
     }
 
     private fun updateButtonVisibilities() {
-        if (player == null) {
-            return
-        }
 
         val mappedTrackInfo = trackSelector!!.currentMappedTrackInfo ?: return
 
         for (i in 0 until mappedTrackInfo.rendererCount) {
             val trackGroups = mappedTrackInfo.getTrackGroups(i)
             if (trackGroups.length != 0) {
-                /*   if (player!!.getRendererType(i) == C.TRACK_TYPE_VIDEO) {
-                       ivSettings.visibility = View.VISIBLE
-                       ivSettings.setOnClickListener(this)
-                       ivSettings.tag = i
-                   }*/
+                /*if (player.getRendererType(i) == C.TRACK_TYPE_VIDEO) {
+                    ivSettings.visibility = View.VISIBLE
+                    ivSettings.setOnClickListener(this)
+                    ivSettings.tag = i
+                }*/
             }
         }
     }
@@ -456,18 +520,19 @@ class MyPlayer : AppCompatActivity() {
     }
 
 
-    fun pipmode(){
+    fun pipmode() {
         if (android.os.Build.VERSION.SDK_INT >= 26) {
             try {
                 val rational = Rational(playerView.width, playerView.height)
-                val mParams=PictureInPictureParams.Builder().setAspectRatio(rational)
+                val mParams = PictureInPictureParams.Builder().setAspectRatio(rational)
                     .build()
                 enterPictureInPictureMode(mParams);
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
+
     @Suppress("DEPRECATION")
     fun enterPIPMode() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
@@ -513,8 +578,6 @@ class MyPlayer : AppCompatActivity() {
             super.onBackPressed()
         }
     }
-
-
 
 
 }
