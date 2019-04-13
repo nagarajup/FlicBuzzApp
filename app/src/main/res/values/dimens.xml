@@ -7,4 +7,6 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="dots_height">30dp</dimen>
     <dimen name="dots_margin_bottom">20dp</dimen>
+    <dimen name="text_size_normal">18.0sp</dimen>
+    <dimen name="error_text_size">10.0sp</dimen>
 </resources>

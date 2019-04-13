@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import com.aniapps.flicbuzz.BuildConfig;
 import com.aniapps.flicbuzz.R;
+import com.aniapps.flicbuzz.utils.PrefManager;
 import okhttp3.OkHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -92,14 +93,8 @@ public class RetrofitClient extends AppCompatActivity {
                                    final APIResponse api_res) {
         this.context = context;
         apiService = RetrofitClient.getClient(context).create(APIService.class);
-        //postParams.put("version_code", "" + BuildConfig.VERSION_CODE);
-        postParams.put("device_id", "999d88a63153b135");
-
-
-
-
-        //Log.e(TAG, "I am in NoCrypt Core: " + context.getResources().getString(R.string.core_live));
-         Log.e(TAG, "No Cypt Params:" + postParams);
+        postParams.put("version_code", "" + BuildConfig.VERSION_CODE);
+        postParams.put("device_id", PrefManager.getIn().getDeviceId());
         apiService.coreApiResult(context.getResources().getString(R.string.core_live)+"/"+postParams.get("action"), postParams).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, final Response<String> res) {

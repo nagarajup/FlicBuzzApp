@@ -25,13 +25,11 @@ public class IntroductionScreen extends Activity {
     private TextView[] dots;
     private int[] layouts;
     private Button btnSkip, btnNext;
-    private PrefManager prefManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        prefManager = new PrefManager(this);
-        if (!prefManager.isFirstTimeLaunch()) {
+        if (!PrefManager.getIn().isFirstTimeLaunch()) {
             launchHomeScreen();
             finish();
         }
@@ -113,8 +111,8 @@ public class IntroductionScreen extends Activity {
     }
 
     private void launchHomeScreen() {
-        prefManager.setFirstTimeLaunch(false);
-        startActivity(new Intent(IntroductionScreen.this, Login.class));
+        PrefManager.getIn().setFirstTimeLaunch(false);
+        startActivity(new Intent(IntroductionScreen.this, LoginActivity.class));
         finish();
     }
 

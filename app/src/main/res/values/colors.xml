@@ -5,6 +5,9 @@
     <color name="colorPrimaryDark">#ff88ba00</color>
     <color name="gray">#dee1d6</color>
     <color name="title">#003300</color>
+    <color name="darkgray">#575757</color>
+    <color name="lightgray">#888888</color>
+    <color name="red">#E51F20</color>
 
     <!-- dots inactive colors -->
     <color name="dot_dark_screen1">#d1395c</color>
