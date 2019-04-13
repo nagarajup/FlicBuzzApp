@@ -6,7 +6,10 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
+import com.aniapps.flicbuzz.activities.LoginActivity
+import com.aniapps.flicbuzz.activities.SignUpActivity
 import com.aniapps.flicbuzz.networkcall.APIResponse
 import com.aniapps.flicbuzz.networkcall.RetrofitClient
 import org.json.JSONObject
@@ -15,32 +18,23 @@ import org.json.JSONArray
 
 
 class SignIn : AppCompatActivity() {
-    internal lateinit var btn_login: Button
+    internal lateinit var btn_login: TextView
     internal lateinit var btn_signup: Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signin)
-        btn_login = findViewById<View>(R.id.btn_login) as Button
+        btn_login = findViewById<View>(R.id.loginTV) as TextView
         btn_signup = findViewById<View>(R.id.btn_signup) as Button
         btn_login.setOnClickListener {
-             val i = Intent(this@SignIn, Login::class.java)
+             val i = Intent(this@SignIn, LoginActivity::class.java)
               startActivity(i)
            // LoginApi()
         }
 
         btn_signup.setOnClickListener {
-          /*  val i = Intent(this@SignIn, SignUp::class.java)
-            startActivity(i)*/
-
-            val player_in = Intent(it.context, MyPlayer::class.java)
-            player_in.putExtra("url", "https://www.flicbuzz.com/vendor_videos/converted/vendor_3/video_56_20190401_1539.mp4.m3u8")
-            player_in.putExtra("title", "Test Test Test")
-            player_in.putExtra("desc", "Test Test Test TestTest Test Test TestTest Test Test TestTest Test Test TestTest Test Test TestTest Test Test TestTest Test Test TestTest Test Test Test ")
-            player_in.putExtra("id", "10")
-
-            it.context.startActivity(player_in)
-            overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-           // LoginApi2()
+            val i = Intent(this@SignIn, SignUpActivity::class.java)
+            startActivity(i)
+            //LoginApi2()
         }
     }
 

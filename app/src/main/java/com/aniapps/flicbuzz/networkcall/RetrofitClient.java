@@ -6,9 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import com.aniapps.flicbuzz.BuildConfig;
 import com.aniapps.flicbuzz.R;
+import com.aniapps.flicbuzz.utils.PrefManager;
 import okhttp3.OkHttpClient;
-import org.json.JSONException;
-import org.json.JSONObject;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -57,14 +56,16 @@ public class RetrofitClient extends AppCompatActivity {
         }
         return retrofit;
     }
+
     Dialog dialog;
+
     //RetrofitCallBack
     public void doBackProcess(final Context context, Map<String, String> postParams,
                               String from, APIResponse api_res) {
         this.context = context;
         this.params = postParams;
         this.from = from;
-        dialog=ProgressDialog.Companion.progressDialog(context);
+        dialog = ProgressDialog.Companion.progressDialog(context);
         if (from.length() == 0 && null != context) {
             try {
                 runOnUiThread(new Runnable() {
@@ -92,18 +93,12 @@ public class RetrofitClient extends AppCompatActivity {
                                    final APIResponse api_res) {
         this.context = context;
         apiService = RetrofitClient.getClient(context).create(APIService.class);
-        //postParams.put("version_code", "" + BuildConfig.VERSION_CODE);
-        postParams.put("device_id", "999d88a63153b135");
-
-
-
-
-        //Log.e(TAG, "I am in NoCrypt Core: " + context.getResources().getString(R.string.core_live));
-         Log.e(TAG, "No Cypt Params:" + postParams);
-        apiService.coreApiResult(context.getResources().getString(R.string.core_live)+"/"+postParams.get("action"), postParams).enqueue(new Callback<String>() {
+        postParams.put("version_code", "" + BuildConfig.VERSION_CODE);
+        postParams.put("device_id", PrefManager.getIn().getDeviceId());
+        apiService.coreApiResult(context.getResources().getString(R.string.core_live) + "/" + postParams.get("action"), postParams).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, final Response<String> res) {
-                Log.e("RES","res"+res.body());
+                Log.e("RES", "res" + res.body());
                 if (res.isSuccessful()) {
                     if (from.length() == 0) {
                         try {
@@ -122,21 +117,21 @@ public class RetrofitClient extends AppCompatActivity {
                     try {
                         int status = 0;
                         if (null != res.body() && !res.body().equals("")) {
-                            try {
+                            /*try {
                                 JSONObject jObj = new JSONObject(res.body());
                                 status = jObj.getInt("status");
                             } catch (JSONException e) {
                                 Log.e("JSON Parser", "Error parsing data [" + e.getMessage() + "] " + status);
-                            }
+                            }*/
                             //  Log.e(TAG, "No Cypt Results:" + res.body());
 
-                            if (status == 1) {
-                                api_res.onSuccess(res.body().trim());
-                            }
+                            //if (status == 1) {
+                            api_res.onSuccess(res.body().trim());
+                            //}
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-
+                        api_res.onFailure(e.getMessage());
                     }
                 } else {
                     api_res.onFailure("");
@@ -150,7 +145,7 @@ public class RetrofitClient extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                //    CTEProgress.getInstance().dismiss((Activity) context);
+                                dialog.dismiss();
                             }
                         });
                     } catch (Exception e) {
@@ -158,7 +153,7 @@ public class RetrofitClient extends AppCompatActivity {
                     }
                 }
                 retrofit = null;
-
+                api_res.onFailure(t.getMessage());
             }
         });
     }

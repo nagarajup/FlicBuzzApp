@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -17,10 +18,14 @@ import android.widget.Toast
 import com.aniapps.flicbuzz.adapters.SectionListDataAdapter
 import com.aniapps.flicbuzz.models.MyVideos
 import com.aniapps.flicbuzz.models.SectionDataModel
+import com.aniapps.flicbuzz.networkcall.APIResponse
+import com.aniapps.flicbuzz.networkcall.RetrofitClient
+import com.aniapps.flicbuzz.utils.PrefManager
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import org.json.JSONArray
+import org.json.JSONObject
 import java.lang.Exception
 import java.util.ArrayList
 
@@ -33,8 +38,8 @@ class MyPlaerList : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         myvideos = ArrayList()
-        val jsonArray = intent.getStringExtra("jsonArray")
-        myData(jsonArray)
+       // val jsonArray = intent.getStringExtra("jsonArray")
+        //myData(jsonArray)
         val my_recycler_view = findViewById<View>(R.id.my_recyclerview) as RecyclerView
         my_recycler_view.setHasFixedSize(true)
         val adapter = SectionListDataAdapter(this, myvideos,"main")
@@ -47,6 +52,7 @@ class MyPlaerList : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
+        apiCall()
 
     }
 
@@ -144,13 +150,56 @@ class MyPlaerList : AppCompatActivity(), NavigationView.OnNavigationItemSelected
                 Toast.makeText(this, "Clicked item share", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_send -> {
-                Toast.makeText(this, "Clicked item Logout", Toast.LENGTH_SHORT).show()
+                PrefManager.getIn().setLogin(false);
+                val intent = Intent(this@MyPlaerList, SignIn::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intent)
             }
 
         }
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
+    private fun getParams2(): Map<String, String> {
+        val params = HashMap<String, String>()
+        params["action"] = "home2"
+        params["plan"] = "free"
+        params["page_number"] = "1"
+        params["device_name"] = "abcd"
+        return params
+    }
+    private fun apiCall() {
+        RetrofitClient.getInstance()
+            .doBackProcess(this@MyPlaerList, getParams2(), "", object : APIResponse {
+                override fun onSuccess(res: String?) {
+                    try {
+                        val jobj = JSONObject(res)
+                        val status = jobj.getInt("status")
+                        val details = jobj.getString("details")
 
+                        if (status == 1) {
+                            Log.e("RES", res)
+                            val jsonArray = jobj.getJSONArray("data")
+                            Log.e("RES my Array",""+jsonArray.length())
+                            myData(jsonArray.toString())
+                           /* val i = Intent(this@MyPlaerList, MyPlaerList::class.java)
+                            i.putExtra("jsonArray", jsonArray.toString());
+                            startActivity(i)*/
+
+                        } else {
+                            Toast.makeText(this@MyPlaerList, "status" + status, Toast.LENGTH_LONG).show()
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+
+                override fun onFailure(res: String?) {
+                    Toast.makeText(this@MyPlaerList, "status" + res, Toast.LENGTH_LONG).show()
+                }
+            })
+    }
 
 }
