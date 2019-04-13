@@ -131,7 +131,7 @@ public class RetrofitClient extends AppCompatActivity {
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-
+                        api_res.onFailure(e.getMessage());
                     }
                 } else {
                     api_res.onFailure("");
@@ -153,7 +153,7 @@ public class RetrofitClient extends AppCompatActivity {
                     }
                 }
                 retrofit = null;
-
+                api_res.onFailure(t.getMessage());
             }
         });
     }

@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import com.aniapps.flicbuzz.activities.LoginActivity
+import com.aniapps.flicbuzz.activities.SignUpActivity
 import com.aniapps.flicbuzz.networkcall.APIResponse
 import com.aniapps.flicbuzz.networkcall.RetrofitClient
 import org.json.JSONObject
@@ -31,9 +32,9 @@ class SignIn : AppCompatActivity() {
         }
 
         btn_signup.setOnClickListener {
-          /*  val i = Intent(this@SignIn, SignUp::class.java)
-            startActivity(i)*/
-            LoginApi2()
+            val i = Intent(this@SignIn, SignUpActivity::class.java)
+            startActivity(i)
+            //LoginApi2()
         }
     }
 
