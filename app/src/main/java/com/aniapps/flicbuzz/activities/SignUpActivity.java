@@ -215,7 +215,7 @@ public class SignUpActivity extends AppCompatActivity {
                             /* Intent intent = new Intent(SignUpActivity.this, MyPlaerList.class);
                             startActivity(intent);*/
                         }else if (from == 3 ) {
-                            Toast.makeText(SignUpActivity.this, jsonObject.getString("sms_details"), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignUpActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Utility.alertDialog(SignUpActivity.this, "Alert", jsonObject.getString("message"));
