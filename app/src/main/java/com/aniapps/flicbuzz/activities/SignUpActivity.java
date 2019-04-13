@@ -11,9 +11,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.*;
+import com.aniapps.flicbuzz.MyPlaerList;
 import com.aniapps.flicbuzz.R;
 import com.aniapps.flicbuzz.networkcall.APIResponse;
 import com.aniapps.flicbuzz.networkcall.RetrofitClient;
+import com.aniapps.flicbuzz.utils.PrefManager;
 import com.aniapps.flicbuzz.utils.Utility;
 import org.json.JSONObject;
 
@@ -212,8 +214,12 @@ public class SignUpActivity extends AppCompatActivity {
                             countDown(resendOTP);
                         } else if (from == 1) {
                             Toast.makeText(SignUpActivity.this, "Otp Succussfully verified", Toast.LENGTH_SHORT).show();
-                            /* Intent intent = new Intent(SignUpActivity.this, MyPlaerList.class);
-                            startActivity(intent);*/
+                            PrefManager.getIn().setLogin(true);
+                            Intent intent = new Intent(SignUpActivity.this, MyPlaerList.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
                         }else if (from == 3 ) {
                             Toast.makeText(SignUpActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                         }

@@ -15,6 +15,14 @@ public class PrefManager {
     private static final String PREF_NAME = "flicbuzz";
 
     private static final String IS_FIRST_TIME_LAUNCH = "IsFirstTimeLaunch";
+    public static PrefManager getIn() {
+        if (uniqInstance == null) {
+            uniqInstance = new PrefManager();
+            pref = PreferenceManager.getDefaultSharedPreferences(AppApplication.app_ctx);
+        }
+        editor = pref.edit();
+        return uniqInstance;
+    }
 
     public void saveDeviceId(String id) {
         editor.putString("device_id", id);
@@ -28,18 +36,16 @@ public class PrefManager {
         editor.putBoolean(IS_FIRST_TIME_LAUNCH, isFirstTime);
         editor.commit();
     }
-
-    public static PrefManager getIn() {
-        if (uniqInstance == null) {
-            uniqInstance = new PrefManager();
-            pref = PreferenceManager.getDefaultSharedPreferences(AppApplication.app_ctx);
-        }
-        editor = pref.edit();
-        return uniqInstance;
-    }
-
     public boolean isFirstTimeLaunch() {
         return pref.getBoolean(IS_FIRST_TIME_LAUNCH, true);
     }
+    public void setLogin(boolean login) {
+        editor.putBoolean("login", login);
+        editor.commit();
+    }
+    public boolean getLogin() {
+        return pref.getBoolean("login", false);
+    }
+
 
 }

@@ -14,6 +14,7 @@ import com.aniapps.flicbuzz.R;
 import com.aniapps.flicbuzz.SignUp;
 import com.aniapps.flicbuzz.networkcall.APIResponse;
 import com.aniapps.flicbuzz.networkcall.RetrofitClient;
+import com.aniapps.flicbuzz.utils.PrefManager;
 import com.aniapps.flicbuzz.utils.Utility;
 import org.json.JSONObject;
 
@@ -105,7 +106,11 @@ public class LoginActivity extends AppCompatActivity {
                     jsonObject = new JSONObject(result);
                     int status = jsonObject.getInt("status");
                     if (status == 1) {
+                        PrefManager.getIn().setLogin(true);
                         Intent intent = new Intent(LoginActivity.this, MyPlaerList.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                     } else {
                         Utility.alertDialog(LoginActivity.this, "Alert", jsonObject.getString("message"));

@@ -32,6 +32,7 @@
         <activity
                 android:name=".MyPlaerList"
                 android:label="@string/title_activity_landing_page"
+                android:screenOrientation="portrait"
                 android:theme="@style/AppTheme.NoActionBar"
                 android:windowSoftInputMode="adjustPan|adjustResize"/>
         <activity
@@ -39,12 +40,14 @@
                 android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
                 android:exported="false"
                 android:launchMode="singleTask"
+                android:screenOrientation="portrait"
                 android:resizeableActivity="true"
                 android:supportsPictureInPicture="true"
                 android:theme="@style/PlayerTheme"
                 tools:targetApi="n"/>
         <activity
                 android:name=".Base"
+                android:screenOrientation="portrait"
                 android:label="@string/title_activity_landing_page"
                 android:theme="@style/AppTheme.NoActionBar"
                 android:windowSoftInputMode="adjustPan|adjustResize">
