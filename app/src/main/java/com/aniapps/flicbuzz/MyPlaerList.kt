@@ -40,11 +40,7 @@ class MyPlaerList : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         myvideos = ArrayList()
        // val jsonArray = intent.getStringExtra("jsonArray")
         //myData(jsonArray)
-        val my_recycler_view = findViewById<View>(R.id.my_recyclerview) as RecyclerView
-        my_recycler_view.setHasFixedSize(true)
-        val adapter = SectionListDataAdapter(this, myvideos,"main")
-        my_recycler_view.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        my_recycler_view.adapter = adapter
+
         val toggle = ActionBarDrawerToggle(
             this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
         )
@@ -170,6 +166,7 @@ class MyPlaerList : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         params["device_name"] = "abcd"
         return params
     }
+
     private fun apiCall() {
         RetrofitClient.getInstance()
             .doBackProcess(this@MyPlaerList, getParams2(), "", object : APIResponse {
@@ -184,6 +181,11 @@ class MyPlaerList : AppCompatActivity(), NavigationView.OnNavigationItemSelected
                             val jsonArray = jobj.getJSONArray("data")
                             Log.e("RES my Array",""+jsonArray.length())
                             myData(jsonArray.toString())
+                            val my_recycler_view = findViewById<View>(R.id.my_recyclerview) as RecyclerView
+                            my_recycler_view.setHasFixedSize(true)
+                            val adapter = SectionListDataAdapter(this@MyPlaerList, myvideos,"main")
+                            my_recycler_view.layoutManager = LinearLayoutManager(this@MyPlaerList, LinearLayoutManager.VERTICAL, false)
+                            my_recycler_view.adapter = adapter
                            /* val i = Intent(this@MyPlaerList, MyPlaerList::class.java)
                             i.putExtra("jsonArray", jsonArray.toString());
                             startActivity(i)*/
