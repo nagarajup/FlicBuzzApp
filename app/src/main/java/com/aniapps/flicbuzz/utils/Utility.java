@@ -73,13 +73,13 @@ public class Utility {
         builder.setMessage(msg);
         builder.setTitle(title);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
+
             }
         });
-        builder.setNegativeButton("NO", null);
+        //builder.setNegativeButton("NO", null);
         builder.show();
     }
     public static boolean isConnectingToInternet (Context context) {
