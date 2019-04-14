@@ -103,6 +103,8 @@ class MyPlayer : AppCompatActivity() {
 
     var mediaSource: MediaSource? = null;
     private val progressBar: ProgressBar by lazy { findViewById<ProgressBar>(R.id.progress_bar) }
+    private val settings: ImageButton by lazy { findViewById<ImageButton>(R.id.icon_setting) }
+    private val share: ImageButton by lazy { findViewById<ImageButton>(R.id.icon_share) }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -124,6 +126,13 @@ class MyPlayer : AppCompatActivity() {
         LoginApi()
         tv_play_title.setText(play_title)
         tv_play_description.setText(play_desc)
+
+        settings.setOnClickListener{
+            Toast.makeText(this@MyPlayer,"Clicked on Settings",Toast.LENGTH_SHORT).show()
+        }
+        share.setOnClickListener{
+            Toast.makeText(this@MyPlayer,"Clicked on Share",Toast.LENGTH_SHORT).show()
+        }
 
         makeTextViewResizable(tv_play_description, 2, "View More", true)
 

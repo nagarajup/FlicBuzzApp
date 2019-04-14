@@ -39,6 +39,7 @@ public class PrefManager {
     public boolean isFirstTimeLaunch() {
         return pref.getBoolean(IS_FIRST_TIME_LAUNCH, true);
     }
+
     public void setLogin(boolean login) {
         editor.putBoolean("login", login);
         editor.commit();
@@ -46,6 +47,15 @@ public class PrefManager {
     public boolean getLogin() {
         return pref.getBoolean("login", false);
     }
+
+    public void setLanguage(String language){
+        editor.putString("language",language);
+        editor.commit();
+    }
+    public String getLanguage() {
+        return pref.getString("language", "hindi");
+    }
+
 
 
 }

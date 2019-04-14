@@ -38,7 +38,7 @@ class MyPlaerList : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         myvideos = ArrayList()
-       // val jsonArray = intent.getStringExtra("jsonArray")
+        // val jsonArray = intent.getStringExtra("jsonArray")
         //myData(jsonArray)
 
         val toggle = ActionBarDrawerToggle(
@@ -54,6 +54,7 @@ class MyPlaerList : AppCompatActivity(), NavigationView.OnNavigationItemSelected
 
     fun myData(myData: String) {
         try {
+            myvideos.clear()
             val array = JSONArray(myData)
             for (i in 0 until array.length()) {
                 var lead = Gson().fromJson(
@@ -88,8 +89,20 @@ class MyPlaerList : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         // as you specify a parent activity in AndroidManifest.xml.
         when (item.itemId) {
             R.id.action_search -> return true
+            R.id.action_language ->
+                if (PrefManager.getIn().language == "hindi") {
+                    PrefManager.getIn().language = "english"
+                    apiCall()
+                } else {
+                    PrefManager.getIn().language = "hindi"
+                    apiCall()
+                }
+
+
             else -> return super.onOptionsItemSelected(item)
+
         }
+        return true
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -100,45 +113,43 @@ class MyPlaerList : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         when (item.itemId) {
             R.id.nav_camera -> {
                 val myintent = Intent(this@MyPlaerList, com.aniapps.flicbuzz.AboutUs::class.java)
-                myintent.putExtra("title","About Us")
+                myintent.putExtra("title", "About Us")
                 startActivity(myintent)
 
                 // Toast.makeText(this, "Clicked item about us", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_gallery -> {
                 val myintent = Intent(this@MyPlaerList, com.aniapps.flicbuzz.AboutUs::class.java)
-                myintent.putExtra("title","My Favourites")
+                myintent.putExtra("title", "My Favourites")
                 startActivity(myintent)
                 //Toast.makeText(this, "Clicked item profile", Toast.LENGTH_SHORT).show()
             }
 
             R.id.nav_gallery1 -> {
                 val myintent = Intent(this@MyPlaerList, com.aniapps.flicbuzz.AboutUs::class.java)
-                myintent.putExtra("title","My Profile")
+                myintent.putExtra("title", "My Profile")
                 startActivity(myintent)
                 //Toast.makeText(this, "Clicked item profile", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_slideshow -> {
                 val myintent = Intent(this@MyPlaerList, com.aniapps.flicbuzz.AboutUs::class.java)
-                myintent.putExtra("title","Packages")
+                myintent.putExtra("title", "Packages")
                 startActivity(myintent)
                 // Toast.makeText(this, "Clicked item fav", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_manage1 -> {
                 val myintent = Intent(this@MyPlaerList, com.aniapps.flicbuzz.AboutUs::class.java)
-                myintent.putExtra("title","Privacy Policy")
+                myintent.putExtra("title", "Privacy Policy")
                 startActivity(myintent)
                 // Toast.makeText(this, "Clicked item settings", Toast.LENGTH_SHORT).show()
             }
 
             R.id.nav_manage -> {
                 val myintent = Intent(this@MyPlaerList, com.aniapps.flicbuzz.AboutUs::class.java)
-                myintent.putExtra("title","Refund and Cancellation")
+                myintent.putExtra("title", "Refund and Cancellation")
                 startActivity(myintent)
                 // Toast.makeText(this, "Clicked item settings", Toast.LENGTH_SHORT).show()
             }
-
-
 
 
             R.id.nav_share -> {
@@ -158,12 +169,15 @@ class MyPlaerList : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
+
     private fun getParams2(): Map<String, String> {
         val params = HashMap<String, String>()
         params["action"] = "home2"
         params["plan"] = "free"
         params["page_number"] = "1"
         params["device_name"] = "abcd"
+        Log.e("###","qqqq"+PrefManager.getIn().language)
+        params["language"] = "" + PrefManager.getIn().language
         return params
     }
 
@@ -179,16 +193,20 @@ class MyPlaerList : AppCompatActivity(), NavigationView.OnNavigationItemSelected
                         if (status == 1) {
                             Log.e("RES", res)
                             val jsonArray = jobj.getJSONArray("data")
-                            Log.e("RES my Array",""+jsonArray.length())
+                            Log.e("RES my Array", "" + jsonArray.length())
                             myData(jsonArray.toString())
+
                             val my_recycler_view = findViewById<View>(R.id.my_recyclerview) as RecyclerView
+
                             my_recycler_view.setHasFixedSize(true)
-                            val adapter = SectionListDataAdapter(this@MyPlaerList, myvideos,"main")
-                            my_recycler_view.layoutManager = LinearLayoutManager(this@MyPlaerList, LinearLayoutManager.VERTICAL, false)
+
+                            val adapter = SectionListDataAdapter(this@MyPlaerList, myvideos, "main")
+                            my_recycler_view.layoutManager =
+                                LinearLayoutManager(this@MyPlaerList, LinearLayoutManager.VERTICAL, false)
                             my_recycler_view.adapter = adapter
-                           /* val i = Intent(this@MyPlaerList, MyPlaerList::class.java)
-                            i.putExtra("jsonArray", jsonArray.toString());
-                            startActivity(i)*/
+                            /* val i = Intent(this@MyPlaerList, MyPlaerList::class.java)
+                             i.putExtra("jsonArray", jsonArray.toString());
+                             startActivity(i)*/
 
                         } else {
                             Toast.makeText(this@MyPlaerList, "status" + status, Toast.LENGTH_LONG).show()

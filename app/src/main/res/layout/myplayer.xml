@@ -21,26 +21,20 @@
             android:layout_height="wrap_content"
             android:background="#000000">
 
+
+
+
         <com.google.android.exoplayer2.ui.PlayerView
                 android:id="@+id/video_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 app:use_controller="true"
                 android:gravity="center"
                 app:auto_show="false"
                 app:player_layout_id="@layout/exo_simple_player_view"
                 app:controller_layout_id="@layout/custom_playback_control"/>
 
-        <!-- <com.google.android.exoplayer2.ui.PlayerView
-                 android:id="@+id/video_view"
-                 android:layout_width="match_parent"
-                 app:repeat_toggle_modes="none"
-                 app:show_buffering="true"
-                 app:use_controller="true"
-                 app:show_timeout="5000"
-                 android:layout_height="match_parent"
-                 app:player_layout_id="@layout/custom_playback_control"/>-->
-        <!--app:controller_layout_id="@layout/custom_playback_control"/>-->
+
         <ProgressBar
                 android:id="@+id/progress_bar"
                 android:layout_width="wrap_content"
@@ -108,6 +102,15 @@
                     android:id="@+id/tv_play_description"
                     android:layout_width="match_parent"
                     android:layout_margin="5sp"
+                    android:textColor="@android:color/white"
+                    android:layout_height="wrap_content"/>
+
+            <TextView
+                    android:id="@+id/tv_play_header"
+                    android:layout_width="match_parent"
+                    android:layout_margin="5sp"
+                    android:textSize="18sp"
+                    android:text="Related Videos"
                     android:textColor="@android:color/white"
                     android:layout_height="wrap_content"/>
 
