@@ -215,7 +215,7 @@ public class SignUpActivity extends AppCompatActivity {
                         } else if (from == 1) {
                             Toast.makeText(SignUpActivity.this, "Otp Succussfully verified", Toast.LENGTH_SHORT).show();
                             PrefManager.getIn().setLogin(true);
-                            Intent intent = new Intent(SignUpActivity.this, MyPlaerList.class);
+                            Intent intent = new Intent(SignUpActivity.this, PaymentScreen.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);

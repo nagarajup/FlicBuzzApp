@@ -107,7 +107,7 @@ public class LoginActivity extends AppCompatActivity {
                     int status = jsonObject.getInt("status");
                     if (status == 1) {
                         PrefManager.getIn().setLogin(true);
-                        Intent intent = new Intent(LoginActivity.this, MyPlaerList.class);
+                        Intent intent = new Intent(LoginActivity.this, PaymentScreen.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
