@@ -1,0 +1,94 @@
+<?xml version="1" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="fill_parent"
+              android:orientation="vertical"
+              android:background="@android:color/white"
+              android:layout_height="fill_parent">
+    <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccent"
+            android:minHeight="?attr/actionBarSize"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark"/>
+    <ScrollView android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+    <LinearLayout android:layout_width="match_parent"
+                  android:orientation="vertical"
+                  android:layout_height="fill_parent">
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="350dp"
+                        android:layout_gravity="center"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="@color/colorAccent">
+            <LinearLayout android:layout_width="match_parent"
+                          android:gravity="center"
+                          android:background="@mipmap/background" android:layout_height="350dp">
+                <ImageView android:layout_width="wrap_content"
+                           android:layout_gravity="center"
+                           android:layout_centerInParent="true" android:layout_height="wrap_content"
+                           android:src="@mipmap/limited_acess_icon"/>
+
+            </LinearLayout>
+        </RelativeLayout>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                  android:layout_alignParentBottom="true"
+                  android:layout_marginTop="-10dp"
+                  android:background="@mipmap/strip"/>
+
+        <TextView android:textSize="22.0sp"
+                  android:layout_marginTop="25dp"
+                  android:padding="10dp"
+                  android:textColor="@color/black"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:textStyle="bold"
+                  android:text="@string/limitedaccestext"
+                  android:fontFamily="@font/cera_gr_black"/>
+        <TextView android:textSize="18.0sp"
+                  android:layout_marginTop="10dp"
+                  android:padding="10dp"
+                  android:textColor="@color/black"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="You will be charged Rs 351/- after 10th day."
+                  android:fontFamily="@font/cera_gr_regular"/>
+        <TextView android:textSize="18.0sp"
+                  android:layout_marginTop="10dp"
+                  android:padding="10dp"
+                  android:textColor="@color/black"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="As a reminder we will notify 2 day prior."
+                  android:fontFamily="@6font/cera_gr_regular"/>
+        <TextView android:textSize="18.0sp"
+                  android:layout_marginTop="10dp"
+                  android:padding="10dp"
+                  android:textColor="@color/black"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="Cancel before one day if you dont wish to be charged"
+                  android:fontFamily="@font/cera_gr_regular"/>
+
+        <CheckBox  android:textSize="18.0sp"
+                   android:layout_marginTop="10dp"
+                   android:padding="10dp"
+                   android:id="@+id/termsofservice"
+                   android:textColor="@color/black"
+                   android:fontFamily="@font/cera_gr_regular"
+                   android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="I accept the terms of Service"/>
+        <Button android:textSize="16.0sp"
+                android:textColor="#ffffffff"
+                android:id="@+id/proceed"
+                android:textStyle="bold"
+                android:background="@drawable/corners_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="LETS PROCEED"
+                android:fontFamily="@font/cera_gr_medium"/>
+    </LinearLayout>
+</ScrollView>
+</LinearLayout>

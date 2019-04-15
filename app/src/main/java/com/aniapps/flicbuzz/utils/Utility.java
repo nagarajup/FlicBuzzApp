@@ -13,6 +13,11 @@ import com.aniapps.flicbuzz.activities.LoginActivity;
 import com.aniapps.flicbuzz.activities.SignUpActivity;
 
 public class Utility {
+
+    public static String sharedKey ="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzr+a6xv9poxx25sfgIhmC4i1Msg7uOenQC6Bb6RieL0NXQV5g9voJef1GtrjLxfLIJXDFmqRBxEePM3UzceCjSq3MLvlCnhmOTYWP7EXRzb8A0fnn8jHM2KO17N7yl/Go1801CbsMQ7f0u5UR02LNdQfy7xfdZ2wGDkiusuZcHNrGUitL5EJib97FMxg8fbEGrsTAwXMabueS4V955i3Lony2b4MmJuztfLinW+8HK/M5IB8HC+GCZJ6UztCClY4Z/6Ir3sxEj8z4vYInVKsVhSZs7GvPGEorz3rbFkX4tXkyUzwM7tl6/dVrXTgN3fhV/++cJBGXNv944kVeoKVHwIDAQAB";
+
+
+
     public static boolean hasMobileNumber(EditText editText) {
         String text = editText.getText().toString().trim();
         if (text.length() == 10) {
