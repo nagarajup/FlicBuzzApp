@@ -175,9 +175,7 @@ class MyPlaerList : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         params["action"] = "home2"
         params["plan"] = "free"
         params["page_number"] = "1"
-        params["device_name"] = "abcd"
-        Log.e("###","qqqq"+PrefManager.getIn().language)
-        params["language"] = "" + PrefManager.getIn().language
+
         return params
     }
 

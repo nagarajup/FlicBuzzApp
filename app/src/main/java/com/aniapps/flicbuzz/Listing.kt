@@ -43,7 +43,7 @@ class Listing : AppCompatActivity() {
             val singleItem = ArrayList<MyVideos>()
 
             for (j in 0..5) {
-                singleItem.add(MyVideos("","","Title $j", myUrls[i], ""))
+             //   singleItem.add(MyVideos("","","Title $j", myUrls[i], ""))
             }
             val dm = SectionDataModel(myCategories[i], singleItem)
             allSampleData.add(dm)

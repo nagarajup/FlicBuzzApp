@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import com.aniapps.flicbuzz.Listing;
 import com.aniapps.flicbuzz.MyPlaerList;
 import com.aniapps.flicbuzz.R;
 import com.aniapps.flicbuzz.SignUp;
@@ -79,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
             if (!Utility.isConnectingToInternet(this)) {
                 Utility.alertDialog(LoginActivity.this,
                         "No Internet Connection",
-                        "Please check your internet connectivity and try again!");
+                        "Please check your internet connectivity and try again!","");
 
             } else {
                 HashMap<String, String> params = new HashMap<>();
@@ -107,23 +106,24 @@ public class LoginActivity extends AppCompatActivity {
                     int status = jsonObject.getInt("status");
                     if (status == 1) {
                         PrefManager.getIn().setLogin(true);
+                        PrefManager.getIn().saveUserId(jsonObject.getString("user_id"));
                         Intent intent = new Intent(LoginActivity.this, MyPlaerList.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                     } else {
-                        Utility.alertDialog(LoginActivity.this, "Alert", jsonObject.getString("message"));
+                        Utility.alertDialog(LoginActivity.this, "Alert", jsonObject.getString("message"),"");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Utility.alertDialog(LoginActivity.this, "Alert", e.getMessage());
+                    Utility.alertDialog(LoginActivity.this, "Alert", e.getMessage(),"");
                 }
             }
 
             @Override
             public void onFailure(String res) {
-                Utility.alertDialog(LoginActivity.this, "Alert", res);
+                Utility.alertDialog(LoginActivity.this, "Alert", res,"");
             }
         });
     }

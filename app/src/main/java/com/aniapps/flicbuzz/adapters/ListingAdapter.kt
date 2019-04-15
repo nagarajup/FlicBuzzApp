@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import com.aniapps.flicbuzz.Listing
 import com.aniapps.flicbuzz.MyPlayer
 import com.aniapps.flicbuzz.R
 import com.aniapps.flicbuzz.models.SectionDataModel

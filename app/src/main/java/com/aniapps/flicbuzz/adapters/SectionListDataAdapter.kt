@@ -1,5 +1,6 @@
 package com.aniapps.flicbuzz.adapters
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
@@ -33,20 +34,20 @@ class SectionListDataAdapter(var context: Activity, var itemsList: ArrayList<MyV
         return SingleItemRowHolder(v)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: SingleItemRowHolder, i: Int) {
 
         val singleItem = itemsList[i]
 
         holder.tvTitle.setText(singleItem.headline)
+        holder.tvDesc.setText(singleItem.description)
+        holder.tvViews.setText(""+singleItem.views+" "+"Views")
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+       /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             holder.tvDesc.setText(Html.fromHtml("<b>Adgully Network</b> &nbsp; &nbsp;&nbsp; 1K Views &nbsp;&nbsp;&nbsp; - 1 day ago", Html.FROM_HTML_MODE_COMPACT));
         } else {
             holder.tvDesc.setText(Html.fromHtml("<b>Adgully Network</b> &nbsp; &nbsp;&nbsp; 1K Views &nbsp;&nbsp;&nbsp; - 1 day ago"));
-        }
-       // holder.tvDesc.setText(singleItem.description)
-
-
+        }*/
 
        Glide.with(context)
             .load(singleItem.thumb)
@@ -55,29 +56,19 @@ class SectionListDataAdapter(var context: Activity, var itemsList: ArrayList<MyV
             .error(R.mipmap.launcher_icon)
             .into(holder.itemImage);
 
-
         holder.itemImage.setOnClickListener({
-
             if(from.equals("main")) {
                 val player_in = Intent(it.context, MyPlayer::class.java)
                 player_in.putExtra("url", singleItem.video_filename)
                 player_in.putExtra("title", singleItem.headline)
                 player_in.putExtra("desc", singleItem.description)
                 player_in.putExtra("id", singleItem.id)
-
                 it.context.startActivity(player_in)
                 context.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
             }else{
                 Toast.makeText(it.context,"Clicked on "+singleItem.headline,Toast.LENGTH_SHORT).show()
             }
         })
-
-        /* Glide.with(mContext)
-                .load(feedItem.getImageURL())
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .centerCrop()
-                .error(R.drawable.bg)
-                .into(feedListRowHolder.thumbView);*/
     }
 
     override fun getItemCount(): Int {
@@ -88,6 +79,7 @@ class SectionListDataAdapter(var context: Activity, var itemsList: ArrayList<MyV
 
         var tvTitle: TextView
         var tvDesc: TextView
+        var tvViews: TextView
 
          var itemImage: ImageView
 
@@ -96,6 +88,7 @@ class SectionListDataAdapter(var context: Activity, var itemsList: ArrayList<MyV
 
             this.tvTitle = view.findViewById<View>(R.id.tvTitle) as TextView
             this.tvDesc = view.findViewById<View>(R.id.tvDesc) as TextView
+            this.tvViews = view.findViewById<View>(R.id.tvViews) as TextView
             this.itemImage = view.findViewById<View>(R.id.itemImage) as ImageView
 
 

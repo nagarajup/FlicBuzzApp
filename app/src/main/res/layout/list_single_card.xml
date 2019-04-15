@@ -39,23 +39,36 @@
         <TextView android:textSize="18sp"
                   android:textColor="@color/colorPrimary"
                   android:ellipsize="end"
-                  android:layout_marginLeft="3sp"
+                  android:layout_margin="3sp"
                   android:id="@+id/tvTitle"
                   android:layout_width="fill_parent"
                   android:layout_height="wrap_content"
                   android:text="hello"
-                  android:maxLines="2"
-        />
+                  android:maxLines="2"/>
+
         <TextView android:textSize="14sp"
-                  android:textColor="#ffa5a5a5"
                   android:ellipsize="end"
                   android:id="@+id/tvDesc"
                   android:layout_marginLeft="3sp"
-                  android:layout_marginBottom="2sp"
+                  android:layout_marginRight="3sp"
                   android:layout_width="fill_parent"
                   android:layout_height="wrap_content"
-                  android:text="description about sample video...."
-                  android:maxLines="2"/>
+                  android:text="description about sample video asdfasdfasdf asdfa dfsdfsdfsd...."
+                  android:maxLines="1"/>
+
+        <TextView
+                android:textSize="11sp"
+                android:ellipsize="end"
+                android:id="@+id/tvViews"
+                android:textColor="#ffa5a5a5"
+                android:layout_margin="3sp"
+                android:layout_gravity="left"
+                android:gravity="right"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="1M Views"
+                android:textStyle="bold"
+                android:maxLines="2"/>
 
 
     </LinearLayout>

@@ -27,7 +27,7 @@ import java.util.Map;
 
 public class SignUpActivity extends AppCompatActivity {
     Button signUp, validateMobile;
-    TextView emailError, passwordError, confirmPasswordError, dobError, cityError, mobileError, genderError, nameError, pincodeError, otpErro,resendOTP;
+    TextView emailError, passwordError, confirmPasswordError, dobError, cityError, mobileError, genderError, nameError, pincodeError, otpErro, resendOTP;
     EditText otpEditText, nameEditText, emailEditText, passwordEditText, confirmPasswordEditText, cityEditText, mobileEditText, pincodeEditText, dobEditText;
     JSONObject jsonObject;
     LinearLayout loginLL;
@@ -173,7 +173,7 @@ public class SignUpActivity extends AppCompatActivity {
             if (!Utility.isConnectingToInternet(this)) {
                 Utility.alertDialog(SignUpActivity.this,
                         "No Internet Connection",
-                        "Please check your internet connectivity and try again!");
+                        "Please check your internet connectivity and try again!", "");
 
             } else {
                 HashMap<String, String> params = new HashMap<>();
@@ -220,32 +220,38 @@ public class SignUpActivity extends AppCompatActivity {
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
-                        }else if (from == 3 ) {
+                        } else if (from == 3) {
                             Toast.makeText(SignUpActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Utility.alertDialog(SignUpActivity.this, "Alert", jsonObject.getString("message"));
+                        if (status == 13) {
+                            Utility.alertDialog(SignUpActivity.this, "Alert", jsonObject.getString("message"), "13");
+                        } else {
+                            Utility.alertDialog(SignUpActivity.this, "Alert", jsonObject.getString("message"), "");
+
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Utility.alertDialog(SignUpActivity.this, "Alert", e.getMessage());
+                    Utility.alertDialog(SignUpActivity.this, "Alert", e.getMessage(), "");
                 }
             }
 
             @Override
             public void onFailure(String res) {
-                Utility.alertDialog(SignUpActivity.this, "Alert", res);
+                Utility.alertDialog(SignUpActivity.this, "Alert", res, "");
             }
         });
     }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void countDown(final TextView mTextField){
+    public void countDown(final TextView mTextField) {
         validateMobile.setBackground(getDrawable(R.drawable.rounded_corners_grey));
         validateMobile.setEnabled(false);
         new CountDownTimer(30000, 1000) {
 
             public void onTick(long millisUntilFinished) {
-                mTextField.setText(millisUntilFinished / 1000+" Sec");
+                mTextField.setText(millisUntilFinished / 1000 + " Sec");
                 //here you can have your logic to set text to edittext
             }
 
@@ -257,6 +263,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         }.start();
     }
+
     public static void datePickerDialog(Context context, final EditText editText, final Calendar myCalendar) {
         Calendar mcurrentDate = Calendar.getInstance();
         int mYear = mcurrentDate.get(Calendar.YEAR);

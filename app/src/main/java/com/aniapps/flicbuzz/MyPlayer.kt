@@ -25,6 +25,8 @@ import android.util.Rational
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.*
 import com.aniapps.flicbuzz.adapters.MySpannable
 import com.aniapps.flicbuzz.adapters.PlayerAdapter
@@ -92,11 +94,14 @@ class MyPlayer : AppCompatActivity() {
     private var STATE_PLAYER_FULLSCREEN = "playerFullscreen";
 
     private lateinit var mExoPlayerView: PlayerView;
+    private lateinit var lay_fav: FrameLayout;
+    private lateinit var img_fav: ImageView;
+    private lateinit var img_fav_done: ImageView;
     private lateinit var mVideoSource: MediaSource;
     private var mExoPlayerFullscreen: Boolean = false;
     private lateinit var mFullScreenButton: FrameLayout;
     private lateinit var mFullScreenIcon: ImageView;
-    private lateinit var  mFullScreenDialog: Dialog;
+    private lateinit var mFullScreenDialog: Dialog;
     private var mResumeWindow: Int = 0
     private var mResumePosition: Long = 0
     // https://github.com/GeoffLedak/ExoplayerFullscreen/blob/master/app/src/main/java/com/geoffledak/exoplayerfullscreen/MainActivity.java*/
@@ -127,14 +132,33 @@ class MyPlayer : AppCompatActivity() {
         tv_play_title.setText(play_title)
         tv_play_description.setText(play_desc)
 
-        settings.setOnClickListener{
-            Toast.makeText(this@MyPlayer,"Clicked on Settings",Toast.LENGTH_SHORT).show()
+        settings.setOnClickListener {
+            Toast.makeText(this@MyPlayer, "Clicked on Settings", Toast.LENGTH_SHORT).show()
         }
-        share.setOnClickListener{
-            Toast.makeText(this@MyPlayer,"Clicked on Share",Toast.LENGTH_SHORT).show()
+        share.setOnClickListener {
+            Toast.makeText(this@MyPlayer, "Clicked on Share", Toast.LENGTH_SHORT).show()
         }
 
         makeTextViewResizable(tv_play_description, 2, "View More", true)
+
+        lay_fav = findViewById(R.id.lay_fav)
+        img_fav = findViewById(R.id.img_fav)
+        img_fav_done = findViewById(R.id.img_fav_done)
+
+        lay_fav.setOnClickListener{
+            if (img_fav.getVisibility() == View.VISIBLE) {
+                img_fav.setVisibility(View.GONE);
+                img_fav_done.setVisibility(View.VISIBLE);
+                val animFadeIn = AnimationUtils.loadAnimation(this@MyPlayer,
+                            R.anim.fav_done);
+                img_fav.startAnimation(animFadeIn);
+                Toast.makeText(this@MyPlayer, "Added into favorites list", Toast.LENGTH_SHORT).show();
+            }else{
+                img_fav_done.setVisibility(View.GONE);
+                img_fav.setVisibility(View.VISIBLE);
+                Toast.makeText(this@MyPlayer, "Removed from the favorites list", Toast.LENGTH_SHORT).show();
+            }
+        }
 
 
 
@@ -207,7 +231,7 @@ class MyPlayer : AppCompatActivity() {
     }*/
 
     fun makeTextViewResizable(tv: TextView, maxLine: Int, expandText: String, viewMore: Boolean) {
-
+/*https://stackoverflow.com/questions/31668697/android-expandable-text-view-with-view-more-button-displaying-at-center-after*/
         if (tv.tag == null) {
             tv.tag = tv.text
         }
@@ -305,7 +329,7 @@ class MyPlayer : AppCompatActivity() {
                             //  if (SDK_INT > 23) initializePlayer()
                             val my_recycler_view = findViewById<View>(R.id.rc_list) as RecyclerView
                             my_recycler_view.setHasFixedSize(true)
-                            val adapter = PlayerAdapter(this@MyPlayer, myvideos, "player")
+                            val adapter = SectionListDataAdapter(this@MyPlayer, myvideos, "player")
                             my_recycler_view.layoutManager =
                                 LinearLayoutManager(this@MyPlayer, LinearLayoutManager.VERTICAL, false)
                             my_recycler_view.setNestedScrollingEnabled(false)

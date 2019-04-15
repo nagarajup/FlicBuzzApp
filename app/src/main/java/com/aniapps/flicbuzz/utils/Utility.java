@@ -1,5 +1,6 @@
 package com.aniapps.flicbuzz.utils;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,6 +8,9 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.EditText;
+import com.aniapps.flicbuzz.SignUp;
+import com.aniapps.flicbuzz.activities.LoginActivity;
+import com.aniapps.flicbuzz.activities.SignUpActivity;
 
 public class Utility {
     public static boolean hasMobileNumber(EditText editText) {
@@ -68,21 +72,29 @@ public class Utility {
         return !(text.length() != 0 && text.charAt(0) != '_' && text.matches(emailPattern) && text.length() > 5);
     }
 
-    public static void alertDialog(Context context,String title,String msg){
+    public static void alertDialog(final Context context, String title, String msg, final String from) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(msg);
         builder.setTitle(title);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                switch (from) {
+                    case "13":
+                        Intent intent = new Intent(context, LoginActivity.class);
+                        context.startActivity(intent);
+                        break;
+                    default:
+                        break;
+                }
 
             }
         });
         //builder.setNegativeButton("NO", null);
         builder.show();
     }
-    public static boolean isConnectingToInternet (Context context) {
+
+    public static boolean isConnectingToInternet(Context context) {
         ConnectivityManager connectivity = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivity != null) {

@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 import com.aniapps.flicbuzz.BuildConfig;
 import com.aniapps.flicbuzz.R;
 import com.aniapps.flicbuzz.utils.PrefManager;
@@ -95,6 +96,9 @@ public class RetrofitClient extends AppCompatActivity {
         apiService = RetrofitClient.getClient(context).create(APIService.class);
         postParams.put("version_code", "" + BuildConfig.VERSION_CODE);
         postParams.put("device_id", PrefManager.getIn().getDeviceId());
+        postParams.put("user_id", PrefManager.getIn().getUserId());
+        postParams.put("language", PrefManager.getIn().getLanguage());
+        Log.e("#API#", "Post Params" + postParams);
         apiService.coreApiResult(context.getResources().getString(R.string.core_live) + "/" + postParams.get("action"), postParams).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, final Response<String> res) {
@@ -113,21 +117,11 @@ public class RetrofitClient extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
-
                     try {
-                        int status = 0;
                         if (null != res.body() && !res.body().equals("")) {
-                            /*try {
-                                JSONObject jObj = new JSONObject(res.body());
-                                status = jObj.getInt("status");
-                            } catch (JSONException e) {
-                                Log.e("JSON Parser", "Error parsing data [" + e.getMessage() + "] " + status);
-                            }*/
-                            //  Log.e(TAG, "No Cypt Results:" + res.body());
-
-                            //if (status == 1) {
                             api_res.onSuccess(res.body().trim());
-                            //}
+                        } else {
+                            Toast.makeText(context, "Res" + res.body(), Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

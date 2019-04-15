@@ -29,6 +29,15 @@ public class PrefManager {
         editor.apply();
     }
 
+    public String getUserId() {
+        return pref.getString("user_id", "");
+    }
+
+    public void saveUserId(String id) {
+        editor.putString("user_id", id);
+        editor.apply();
+    }
+
     public String getDeviceId() {
         return pref.getString("device_id", "");
     }
