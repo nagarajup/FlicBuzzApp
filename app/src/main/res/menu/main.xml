@@ -5,7 +5,7 @@
 
     <item
             android:id="@+id/action_language"
-            android:icon="@drawable/icon_language"
+            android:icon="@mipmap/icon_language"
             android:title="Language"
             app:showAsAction="ifRoom"/>
     <item

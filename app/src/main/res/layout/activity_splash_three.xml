@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:gravity="center"
               android:orientation="vertical"
-              android:background="@drawable/splash_three"
+              android:background="@mipmap/splash_three"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent">
     <!--<ImageView android:layout_width="80.0dip"

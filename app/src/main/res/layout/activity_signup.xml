@@ -26,7 +26,7 @@
                   android:layout_height="wrap_content"
                   android:text="Validate your mobile number so that we know it's you"
                   android:lineSpacingExtra="9.0sp"
-                  android:fontFamily="@font/cera_gr_black"/>
+                  android:fontFamily="@font/cera_gr_bold"/>
         <RelativeLayout android:layout_width="fill_parent"
                         android:layout_below="@+id/text"
                         android:layout_height="wrap_content">
@@ -93,7 +93,7 @@
                       android:layout_height="wrap_content"
                       android:text="Few Details About You "
                       android:lineSpacingExtra="9sp"
-                      android:fontFamily="@font/cera_gr_black"/>
+                      android:fontFamily="@font/cera_gr_bold"/>
             <ScrollView android:layout_width="fill_parent"
                         android:layout_height="fill_parent">
                 <LinearLayout android:orientation="vertical"
@@ -372,7 +372,7 @@
                         android:padding="5.0dip"
                         android:text="Log in"
                         android:textColor="@color/darkgray"
-                        android:fontFamily="@font/cera_gr_black"
+                        android:fontFamily="@font/cera_gr_bold"
                         android:textSize="@dimen/text_size_normal"/>
             </LinearLayout>
         </LinearLayout>

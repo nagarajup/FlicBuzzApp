@@ -14,7 +14,7 @@
                   android:layout_height="wrap_content" 
                   android:text="Whoo hoo! Welcome back " 
                   android:lineSpacingExtra="9.0sp" 
-                  android:fontFamily="@font/cera_gr_black" />
+                  android:fontFamily="@font/cera_gr_bold" />
         <TextView android:textSize="14.0sp" 
                   android:textColor="#ff2f2f2f"
                   android:visibility="gone"
@@ -58,7 +58,7 @@
                       android:layout_marginLeft="5dp" 
                       android:text="OR" 
                       android:lineSpacingExtra="7.0sp" 
-                      android:fontFamily="@font/cera_gr_black" />
+                      android:fontFamily="@font/cera_gr_bold" />
             <LinearLayout android:background="#ff707070" 
                           android:layout_width="46dp" 
                           android:layout_height="1dp" 

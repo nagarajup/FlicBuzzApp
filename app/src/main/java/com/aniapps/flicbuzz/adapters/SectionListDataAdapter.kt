@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.text.Html
 import android.view.LayoutInflater
@@ -48,6 +49,12 @@ class SectionListDataAdapter(var context: Activity, var itemsList: ArrayList<MyV
         } else {
             holder.tvDesc.setText(Html.fromHtml("<b>Adgully Network</b> &nbsp; &nbsp;&nbsp; 1K Views &nbsp;&nbsp;&nbsp; - 1 day ago"));
         }*/
+
+        if(!from.equals("main")) {
+            holder.tvDesc.setTextColor(ContextCompat.getColor(context, R.color.white))
+        }else{
+            holder.tvDesc.setTextColor(ContextCompat.getColor(context, R.color.lightgray))
+        }
 
        Glide.with(context)
             .load(singleItem.thumb)

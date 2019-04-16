@@ -31,7 +31,7 @@
                           android:layout_height="wrap_content"
                           android:text="Let's get to know you in detail."
                           android:lineSpacingExtra="9sp"
-                          android:fontFamily="@font/cera_gr_black"/>
+                          android:fontFamily="@font/cera_gr_bold"/>
                 <TextView android:textSize="14sp"
                           android:textColor="#ff2f2f2f"
                           android:layout_width="wrap_content"
@@ -75,7 +75,7 @@
                               android:layout_marginLeft="5dp"
                               android:text="OR"
                               android:lineSpacingExtra="7sp"
-                              android:fontFamily="@font/cera_gr_black"/>
+                              android:fontFamily="@font/cera_gr_bold"/>
                     <LinearLayout android:background="#ff707070"
                                   android:layout_width="46dp"
                                   android:layout_height="1dp"
@@ -118,7 +118,7 @@
                             android:padding="5.0dip"
                             android:text="Log in"
                             android:textColor="@color/darkgray"
-                            android:fontFamily="@font/cera_gr_black"
+                            android:fontFamily="@font/cera_gr_bold"
                             android:textSize="@dimen/text_size_normal"/>
                 </LinearLayout>
             </LinearLayout>

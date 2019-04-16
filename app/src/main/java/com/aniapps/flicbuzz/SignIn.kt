@@ -13,8 +13,6 @@ import com.aniapps.flicbuzz.activities.SignUpActivity
 import com.aniapps.flicbuzz.networkcall.APIResponse
 import com.aniapps.flicbuzz.networkcall.RetrofitClient
 import org.json.JSONObject
-import org.json.JSONArray
-
 
 
 class SignIn : AppCompatActivity() {
@@ -103,7 +101,7 @@ class SignIn : AppCompatActivity() {
                             val jsonArray = jobj.getJSONArray("data")
                             Log.e("RES my Array",""+jsonArray.length())
 
-                            val i = Intent(this@SignIn, MyPlaerList::class.java)
+                            val i = Intent(this@SignIn, LandingPage::class.java)
                             i.putExtra("jsonArray", jsonArray.toString());
                             startActivity(i)
 

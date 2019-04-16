@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.*;
-import com.aniapps.flicbuzz.MyPlaerList;
 import com.aniapps.flicbuzz.R;
 import com.aniapps.flicbuzz.networkcall.APIResponse;
 import com.aniapps.flicbuzz.networkcall.RetrofitClient;

@@ -45,7 +45,7 @@
                   android:layout_height="wrap_content"
                   android:textStyle="bold"
                   android:text="@string/limitedaccestext"
-                  android:fontFamily="@font/cera_gr_black"/>
+                  android:fontFamily="@font/cera_gr_bold"/>
         <TextView android:textSize="18.0sp"
                   android:layout_marginTop="10dp"
                   android:padding="10dp"

@@ -2,8 +2,10 @@ package com.aniapps.flicbuzz
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.app.PendingIntent.getActivity
 import android.app.PictureInPictureParams
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
@@ -22,9 +24,7 @@ import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.util.Rational
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.*
@@ -46,6 +46,7 @@ import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlaybackControlView
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView
@@ -93,7 +94,8 @@ class MyPlayer : AppCompatActivity() {
     private var STATE_RESUME_POSITION = "resumePosition";
     private var STATE_PLAYER_FULLSCREEN = "playerFullscreen";
 
-    private lateinit var mExoPlayerView: PlayerView;
+    private lateinit var lay_playerview: FrameLayout;
+
     private lateinit var lay_fav: FrameLayout;
     private lateinit var img_fav: ImageView;
     private lateinit var img_fav_done: ImageView;
@@ -110,10 +112,12 @@ class MyPlayer : AppCompatActivity() {
     private val progressBar: ProgressBar by lazy { findViewById<ProgressBar>(R.id.progress_bar) }
     private val settings: ImageButton by lazy { findViewById<ImageButton>(R.id.icon_setting) }
     private val share: ImageButton by lazy { findViewById<ImageButton>(R.id.icon_share) }
+    private val fullscreen: FrameLayout by lazy { findViewById<FrameLayout>(R.id.exo_fullscreen_button) }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.myplayer)
         mUrl = intent.getStringExtra("url")
         play_desc = intent.getStringExtra("desc")
@@ -131,6 +135,7 @@ class MyPlayer : AppCompatActivity() {
         LoginApi()
         tv_play_title.setText(play_title)
         tv_play_description.setText(play_desc)
+        lay_playerview = findViewById<FrameLayout>(R.id.lay_playerview)
 
         settings.setOnClickListener {
             Toast.makeText(this@MyPlayer, "Clicked on Settings", Toast.LENGTH_SHORT).show()
@@ -139,21 +144,35 @@ class MyPlayer : AppCompatActivity() {
             Toast.makeText(this@MyPlayer, "Clicked on Share", Toast.LENGTH_SHORT).show()
         }
 
+        /*  fullscreen.setOnClickListener{
+              Toast.makeText(this@MyPlayer, "Clicked on Full Screen", Toast.LENGTH_SHORT).show()
+              if(actionBar!=null){
+                  actionBar!!.hide()
+              }
+              if (getResources().getConfiguration().orientation ==Configuration.ORIENTATION_LANDSCAPE) {
+                  var  params: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT);
+                  playerView.getLayoutParams();
+                  playerView.setLayoutParams(params);
+              }
+          }*/
+
         makeTextViewResizable(tv_play_description, 2, "View More", true)
 
         lay_fav = findViewById(R.id.lay_fav)
         img_fav = findViewById(R.id.img_fav)
         img_fav_done = findViewById(R.id.img_fav_done)
 
-        lay_fav.setOnClickListener{
+        lay_fav.setOnClickListener {
             if (img_fav.getVisibility() == View.VISIBLE) {
                 img_fav.setVisibility(View.GONE);
                 img_fav_done.setVisibility(View.VISIBLE);
-                val animFadeIn = AnimationUtils.loadAnimation(this@MyPlayer,
-                            R.anim.fav_done);
+                val animFadeIn = AnimationUtils.loadAnimation(
+                    this@MyPlayer,
+                    R.anim.fav_done
+                );
                 img_fav.startAnimation(animFadeIn);
                 Toast.makeText(this@MyPlayer, "Added into favorites list", Toast.LENGTH_SHORT).show();
-            }else{
+            } else {
                 img_fav_done.setVisibility(View.GONE);
                 img_fav.setVisibility(View.VISIBLE);
                 Toast.makeText(this@MyPlayer, "Removed from the favorites list", Toast.LENGTH_SHORT).show();
@@ -171,6 +190,7 @@ class MyPlayer : AppCompatActivity() {
             }
         }
 
+        initFullscreenButton()
 
         shouldAutoPlay = true
         mediaDataSourceFactory = DefaultDataSourceFactory(
@@ -194,41 +214,78 @@ class MyPlayer : AppCompatActivity() {
         super.onSaveInstanceState(outState, outPersistentState)
     }
 
-    /*private fun initFullscreenDialog() {
-
+   /* private fun initFullscreenDialog() {
         mFullScreenDialog = object : Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
             override fun onBackPressed() {
                 if (mExoPlayerFullscreen)
-                   closeFullscreenDialog()
+                    closeFullscreenDialog()
                 super.onBackPressed()
             }
         }
-    }*/
-
-    /*private fun closeFullscreenDialog(){
-        *//*((ViewGroup) mExoPlayerView!!.getParent()).removeView(mExoPlayerView);
-        playerView.parent.
-        ((FrameLayout) findViewById(R.id.main_media_frame)).addView(mExoPlayerView);*//*
-        mExoPlayerFullscreen = false;
-        mFullScreenDialog.dismiss();
-        mFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(this@MyPlayer, R.drawable.ic_fullscreen_expand));
     }
 
 
-    private fun initFullscreenButton(){
-        PlaybackControlView controlView = mExoPlayerView.findViewById(R.id.exo_controller);
-        mFullScreenIcon = controlView.findViewById(R.id.exo_fullscreen_icon);
-        mFullScreenButton = controlView.findViewById(R.id.exo_fullscreen_button);
-        mFullScreenButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!mExoPlayerFullscreen)
-                    openFullscreenDialog();
-                else
-                    closeFullscreenDialog();
-            }
-        });
+    private fun openFullscreenDialog() {
+        lay_playerview.removeView(playerView)
+        mFullScreenDialog.addContentView(
+            playerView,
+            ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        )
+        mFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(this@MyPlayer, R.drawable.ic_fullscreen_skrink));
+        mExoPlayerFullscreen = true;
+        mFullScreenDialog.show();
+    }
+
+
+    private fun closeFullscreenDialog() {
+        lay_playerview.removeView(playerView)
+        findViewById<FrameLayout>(R.id.lay_playerview).addView(playerView)
+        mExoPlayerFullscreen = false;
+        mFullScreenDialog.dismiss();
+        mFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(this@MyPlayer, R.drawable.ic_fullscreen_expand));
     }*/
+
+
+    private fun initFullscreenButton() {
+        mFullScreenIcon = findViewById(R.id.exo_fullscreen_icon);
+        mFullScreenButton = findViewById(R.id.exo_fullscreen_button);
+        mFullScreenButton.setOnClickListener {
+           /* if (supportActionBar != null) {
+                supportActionBar!!.hide()
+
+            }*/
+            val orientation = this.resources.configuration.orientation
+            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+               /*// requestWindowFeature(Window.FEATURE_NO_TITLE); //will hide the title
+                getSupportActionBar()!!.hide(); // hide the title bar
+                this.getWindow().setFlags(
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                mFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(this@MyPlayer, R.drawable.ic_fullscreen_skrink));
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
+            } else {
+                mFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(this@MyPlayer, R.drawable.ic_fullscreen_expand));
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+            }
+
+        }
+    }
+
+
+
+    /* Toast.makeText(this@MyPlayer, "Clicked on Full ........", Toast.LENGTH_SHORT).show()
+     initFullscreenDialog()
+     if(!mExoPlayerFullscreen){
+         openFullscreenDialog()
+     }else{
+         closeFullscreenDialog()
+     }*/
+
 
     fun makeTextViewResizable(tv: TextView, maxLine: Int, expandText: String, viewMore: Boolean) {
 /*https://stackoverflow.com/questions/31668697/android-expandable-text-view-with-view-more-button-displaying-at-center-after*/
@@ -571,7 +628,7 @@ class MyPlayer : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
             && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
         ) {
-            playbackPosition = player!!.currentPosition
+            playbackPosition = player.currentPosition
             playerView.useController = false
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val rational = Rational(playerView.width, playerView.height)

@@ -13,7 +13,7 @@
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:text="Get Full"
-                  android:fontFamily="@font/cera_gr_black"/>
+                  android:fontFamily="@font/cera_gr_bold"/>
         <TextView android:textSize="15.0sp"
                   android:layout_marginTop="10dp"
                   android:layout_marginLeft="30dp"
@@ -21,7 +21,7 @@
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:text="@string/fullaccess"
-                  android:fontFamily="@font/cera_gr_black"/>
+                  android:fontFamily="@font/cera_gr_bold"/>
         <Button android:layout_width="100dp" android:layout_height="100dp"
                 android:id="@+id/full_access"
                 android:layout_marginLeft="30dp"
@@ -41,7 +41,7 @@
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:text="Get Limited"
-                  android:fontFamily="@font/cera_gr_black"/>
+                  android:fontFamily="@font/cera_gr_bold"/>
         <TextView android:textSize="15.0sp"
                   android:layout_marginTop="10dp"
                   android:layout_below="@+id/full"
@@ -50,7 +50,7 @@
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:text="@string/limitedacces"
-                  android:fontFamily="@font/cera_gr_black"/>
+                  android:fontFamily="@font/cera_gr_bold"/>
         <Button android:layout_width="100dp" android:layout_height="100dp"
                 android:id="@+id/limited_access"
                 android:layout_marginLeft="30dp"
