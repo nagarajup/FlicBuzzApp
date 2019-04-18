@@ -136,7 +136,7 @@ class MyPlayer : AppCompatActivity() {
 
         settings.setOnClickListener {
             myTracker()
-            Toast.makeText(this@MyPlayer, "Clicked on Settings", Toast.LENGTH_SHORT).show()
+           // Toast.makeText(this@MyPlayer, "Clicked on Settings", Toast.LENGTH_SHORT).show()
         }
         share.setOnClickListener {
             Toast.makeText(this@MyPlayer, "Clicked on Share", Toast.LENGTH_SHORT).show()
@@ -472,14 +472,7 @@ class MyPlayer : AppCompatActivity() {
         val videoTrackSelectionFactory = AdaptiveTrackSelection.Factory(bandwidthMeter)
 
 
-        /*@DefaultRenderersFactory.ExtensionRendererMode int extensionRendererMode =
-                ((App) getApplication()).useExtensionRenderers()
-                        ? (true ? DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER
-                        : DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
-                        : DefaultRenderersFactory.EXTENSION_RENDERER_MODE_OFF;
 
-        DefaultRenderersFactory renderersFactory = new DefaultRenderersFactory(this, null,
-                DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER);*/
 
         trackSelector = DefaultTrackSelector(videoTrackSelectionFactory)
 
@@ -611,6 +604,7 @@ class MyPlayer : AppCompatActivity() {
             // The video tracks are no supported in this device.
             if (trackGroups !== lastSeenTrackGroupArray) {
                 val mappedTrackInfo = trackSelector!!.currentMappedTrackInfo
+                Log.e("###",mappedTrackInfo.toString())
                 if (mappedTrackInfo != null) {
                     if (mappedTrackInfo.getTypeSupport(C.TRACK_TYPE_VIDEO) == MappingTrackSelector.MappedTrackInfo.RENDERER_SUPPORT_UNSUPPORTED_TRACKS) {
                         Toast.makeText(this@MyPlayer, "Error unsupported track", Toast.LENGTH_SHORT).show()
@@ -623,14 +617,35 @@ class MyPlayer : AppCompatActivity() {
 
 
     fun myTracker() {
+        //https://medium.com/google-exoplayer/exoplayer-2-x-track-selection-2b62ff712cc9
+        //https://medium.com/@mayur_solanki/adaptive-streaming-with-exoplayer-c77b0032acdd
+        //https://android.jlelse.eu/exoplayer-components-explained-9937e3a5d2f5
+        //https://android.jlelse.eu/exoplayer-components-explained-9937e3a5d2f5
+        //https://exoplayer.dev/guide.html
+        //https://medium.com/google-exoplayer/exoplayer-2-x-track-selection-2b62ff712cc9
+        //https://gist.github.com/abhiint16/b473e9b1111bd8bda4833c288ae6a1b4
+       //https://stackoverflow.com/questions/52112981/customizing-exoplayer-quality-dialog-in-my-app
         val mappedTrackInfo = trackSelector!!.getCurrentMappedTrackInfo();
+        Log.e("####",""+MappingTrackSelector.MappedTrackInfo.RENDERER_SUPPORT_PLAYABLE_TRACKS)
+        Log.e("####","11"+mappedTrackInfo!!.getRendererType(0))
+        Log.e("####","22"+mappedTrackInfo!!.getTypeSupport(0))
+        Log.e("####","33"+mappedTrackInfo!!.getTrackGroups(0))
+
         if (mappedTrackInfo != null) {
             MappingTrackSelector.MappedTrackInfo.RENDERER_SUPPORT_NO_TRACKS
             var dialogPair =
                 TrackSelectionView.getDialog(this, "Select Video Resolution", trackSelector, 0);
             dialogPair.second.setShowDisableOption(false);
             dialogPair.second.setAllowAdaptiveSelections(false);
+            dialogPair.first.setIcon(R.mipmap.ic_launcher)
+
             dialogPair.first.show();
+
+            /*trackSelector.setParameters(
+    trackSelector
+        .buildUponParameters()
+        .setMaxVideoSizeSd()
+        .setPreferredAudioLanguage("deu"));*/
         }
     }
 
@@ -697,7 +712,14 @@ class MyPlayer : AppCompatActivity() {
           ) {
               enterPIPMode()
           } else {*/
-        super.onBackPressed()
+
+        val orientation = this.resources.configuration.orientation
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+        }else{
+            super.onBackPressed()
+        }
         /* }*/
     }
 

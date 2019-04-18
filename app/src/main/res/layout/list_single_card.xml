@@ -29,7 +29,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="160sp"
                         android:layout_gravity="center"
-                        android:scaleType="fitCenter"
+                        android:scaleType="fitXY"
                         android:src="@mipmap/launcher_icon"/>
 
                 <ImageView android:id="@+id/iv_playVideo"

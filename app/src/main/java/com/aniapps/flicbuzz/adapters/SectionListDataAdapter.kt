@@ -73,7 +73,16 @@ class SectionListDataAdapter(var context: Activity, var itemsList: ArrayList<MyV
                 it.context.startActivity(player_in)
                 context.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
             }else{
-                Toast.makeText(it.context,"Clicked on "+singleItem.headline,Toast.LENGTH_SHORT).show()
+                val player_in = Intent(it.context, MyPlayer::class.java)
+                player_in.putExtra("url", singleItem.video_filename)
+                player_in.putExtra("title", singleItem.headline)
+                player_in.putExtra("desc", singleItem.description)
+                player_in.putExtra("id", singleItem.id)
+                context.finish()
+                it.context.startActivity(player_in)
+                context.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+
+               // Toast.makeText(it.context,"Clicked on "+singleItem.headline,Toast.LENGTH_SHORT).show()
             }
         })
     }
