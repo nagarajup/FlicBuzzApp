@@ -53,6 +53,14 @@ public class PrefManager {
         editor.putBoolean("login", login);
         editor.commit();
     }
+    public boolean getPackage() {
+        return pref.getBoolean("package", false);
+    }
+
+    public void setPackage(boolean login) {
+        editor.putBoolean("package", login);
+        editor.commit();
+    }
     public boolean getLogin() {
         return pref.getBoolean("login", false);
     }

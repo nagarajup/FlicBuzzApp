@@ -3,19 +3,64 @@ package com.aniapps.flicbuzz.activities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
+import com.aniapps.flicbuzz.LandingPage;
 import com.aniapps.flicbuzz.R;
+import com.aniapps.flicbuzz.util.IabHelper;
+import com.aniapps.flicbuzz.util.IabResult;
+import com.aniapps.flicbuzz.util.Inventory;
+import com.aniapps.flicbuzz.util.Purchase;
+import com.aniapps.flicbuzz.utils.PrefManager;
+import com.aniapps.flicbuzz.utils.Utility;
 
 public class PaymentScreenLimitedAccess extends Activity {
     Button proceed;
     CheckBox termsofservice;
+    public static IabHelper mHelper;
+    private final int PURCHSE_REQUEST = 3;
+
+    IabHelper.QueryInventoryFinishedListener mReceivedInventoryListener
+            = new IabHelper.QueryInventoryFinishedListener() {
+        public void onQueryInventoryFinished(IabResult result,
+                                             Inventory inventory) throws IabHelper.IabAsyncInProgressException {
+
+
+            if (result.isFailure()) {
+                // Handle failure
+            }
+            if(inventory.hasPurchase(Utility.tendaysubs)) {
+                Toast.makeText(PaymentScreenLimitedAccess.this,inventory.getPurchase("10days").toString() ,Toast.LENGTH_SHORT).show();
+                Log.e("inventory", inventory.getPurchase("10days").toString() + "inventory" + inventory.toString());
+            }else if(inventory.hasPurchase(Utility.threemonths)) {
+                Toast.makeText(PaymentScreenLimitedAccess.this,inventory.getPurchase(Utility.threemonths).toString() ,Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
+        public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
+            if (result.isFailure()) {
+                // Handle error
+                Log.e("failure", "failure");
+
+            } else {
+                Toast.makeText(PaymentScreenLimitedAccess.this,""+purchase.getPurchaseTime(),Toast.LENGTH_SHORT).show();
+                Log.e("",""+purchase);
+                PrefManager.getIn().setPackage(true);
+                Intent intent = new Intent(PaymentScreenLimitedAccess.this, LandingPage.class);
+                startActivity(intent);
+                // consumeItem();
+
+            }
+
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,23 +75,85 @@ public class PaymentScreenLimitedAccess extends Activity {
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               finish();
+                finish();
             }
         });
-        proceed =(Button)findViewById(R.id.proceed);
-        termsofservice =(CheckBox) findViewById(R.id.termsofservice);
+        proceed = (Button) findViewById(R.id.proceed);
+        termsofservice = (CheckBox) findViewById(R.id.termsofservice);
 
         proceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if(!termsofservice.isChecked()){
-                    Toast.makeText(PaymentScreenLimitedAccess.this,"Please check terms of service",Toast.LENGTH_SHORT).show();
+                if (!termsofservice.isChecked()) {
+                    Toast.makeText(PaymentScreenLimitedAccess.this, "Please check terms of service", Toast.LENGTH_SHORT).show();
+                }else{
+                    try {
+                        mHelper.flagEndAsync();
+                        mHelper.launchPurchaseFlow(PaymentScreenLimitedAccess.this, Utility.tendaysubs, PURCHSE_REQUEST, mPurchaseFinishedListener, null);
+                    } catch (IabHelper.IabAsyncInProgressException e) {
+                        e.printStackTrace();
+                        Toast.makeText(PaymentScreenLimitedAccess.this, "Please retry in a few seconds.", Toast.LENGTH_SHORT).show();
+                    }
                 }
 
             }
         });
+        mHelper = new IabHelper(PaymentScreenLimitedAccess.this, Utility.sharedKey);
+        mHelper.startSetup(new
+                                   IabHelper.OnIabSetupFinishedListener() {
+                                       public void onIabSetupFinished(IabResult result) {
+                                           if (!result.isSuccess()) {
+                                               Log.e("limited", "In-app Billing is not set up OK");
+                                           } else {
+
+                                               Log.v("Limites", "YAY, in app billing set up! " + result);
+                                               try {
+                                                   mHelper.queryInventoryAsync(mReceivedInventoryListener); //Getting inventory of purchases and assigning listener
+                                               } catch (IabHelper.IabAsyncInProgressException e) {
+                                                   e.printStackTrace();
+                                               }
+                                           }
+
+                                       }
+
+
+                                   });
 
     }
 
-   }
+        @Override
+        public void onDestroy () {
+            super.onDestroy();
+            if (mHelper != null) try {
+                mHelper.dispose();
+            } catch (IabHelper.IabAsyncInProgressException e) {
+                e.printStackTrace();
+            }
+            mHelper = null;
+        }
+
+        @Override
+        public void onActivityResult ( int requestCode, int resultCode,
+        Intent data){
+            try {
+                if (!mHelper.handleActivityResult(requestCode,
+                        resultCode, data)) {
+                    super.onActivityResult(requestCode, resultCode, data);
+                }
+            } catch (IabHelper.IabAsyncInProgressException e) {
+                e.printStackTrace();
+            }
+        }
+    public void consumeItem() throws IabHelper.IabAsyncInProgressException {
+        mHelper.queryInventoryAsync(mReceivedInventoryListener);
+    }
+
+    boolean verifyDeveloperPayload(Purchase p) {
+        String payload = p.getDeveloperPayload();
+
+
+        return true;
+    }
+
+}
