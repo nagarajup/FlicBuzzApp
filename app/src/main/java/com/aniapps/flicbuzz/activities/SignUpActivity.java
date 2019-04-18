@@ -172,7 +172,7 @@ public class SignUpActivity extends AppCompatActivity {
             if (!Utility.isConnectingToInternet(this)) {
                 Utility.alertDialog(SignUpActivity.this,
                         "No Internet Connection",
-                        "Please check your internet connectivity and try again!", "");
+                        "Please check your internet connectivity and try again!");
 
             } else {
                 HashMap<String, String> params = new HashMap<>();
@@ -214,7 +214,7 @@ public class SignUpActivity extends AppCompatActivity {
                         } else if (from == 1) {
                             Toast.makeText(SignUpActivity.this, "Otp Succussfully verified", Toast.LENGTH_SHORT).show();
                             PrefManager.getIn().setLogin(true);
-                            Intent intent = new Intent(SignUpActivity.this, PaymentScreen.class);
+                            Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -224,21 +224,21 @@ public class SignUpActivity extends AppCompatActivity {
                         }
                     } else {
                         if (status == 13) {
-                            Utility.alertDialog(SignUpActivity.this, "Alert", jsonObject.getString("message"), "13");
+                            Utility.alertDialog(SignUpActivity.this, "Alert", jsonObject.getString("message"));
                         } else {
-                            Utility.alertDialog(SignUpActivity.this, "Alert", jsonObject.getString("message"), "");
+                            Utility.alertDialog(SignUpActivity.this, "Alert", jsonObject.getString("message"));
 
                         }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Utility.alertDialog(SignUpActivity.this, "Alert", e.getMessage(), "");
+                    Utility.alertDialog(SignUpActivity.this, "Alert", e.getMessage());
                 }
             }
 
             @Override
             public void onFailure(String res) {
-                Utility.alertDialog(SignUpActivity.this, "Alert", res, "");
+                Utility.alertDialog(SignUpActivity.this, "Alert", res);
             }
         });
     }

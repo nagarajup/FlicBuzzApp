@@ -10,12 +10,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import com.aniapps.flicbuzz.LandingPage;
 import com.aniapps.flicbuzz.R;
-import com.aniapps.flicbuzz.SignUp;
 import com.aniapps.flicbuzz.networkcall.APIResponse;
 import com.aniapps.flicbuzz.networkcall.RetrofitClient;
 import com.aniapps.flicbuzz.utils.PrefManager;
 import com.aniapps.flicbuzz.utils.Utility;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -37,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               finish();
+                finish();
             }
         });
         initViews();
@@ -54,8 +52,9 @@ public class LoginActivity extends AppCompatActivity {
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, SignUp.class);
+                Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
         signIn.setOnClickListener(new View.OnClickListener() {
@@ -72,14 +71,14 @@ public class LoginActivity extends AppCompatActivity {
         if (Utility.validateEmail(emailEditText)) {
             emailEditText.requestFocus();
             emailError.setVisibility(View.VISIBLE);
-        } else if (passwordEditText.getText().toString().length()==0) {
+        } else if (passwordEditText.getText().toString().length() == 0) {
             passwordEditText.requestFocus();
             passwordError.setVisibility(View.VISIBLE);
         } else {
             if (!Utility.isConnectingToInternet(this)) {
                 Utility.alertDialog(LoginActivity.this,
                         "No Internet Connection",
-                        "Please check your internet connectivity and try again!","");
+                        "Please check your internet connectivity and try again!");
 
             } else {
                 HashMap<String, String> params = new HashMap<>();
@@ -107,28 +106,23 @@ public class LoginActivity extends AppCompatActivity {
                     int status = jsonObject.getInt("status");
                     if (status == 1) {
                         PrefManager.getIn().setLogin(true);
-                       PrefManager.getIn().saveUserId("T2VNK1N2MjBsa3dCK2pETzRSUElNZz09");
-                        JSONArray myData=jsonObject.getJSONArray("data");
-                      /*  for(int i=0;i<myData.length();i++){
-                            PrefManager.getIn().saveUserId(myData.getJSONObject(0).getString("id"));
-                        }*/
                         Intent intent = new Intent(LoginActivity.this, LandingPage.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                     } else {
-                        Utility.alertDialog(LoginActivity.this, "Alert", jsonObject.getString("message"),"");
+                        Utility.alertDialog(LoginActivity.this, "Alert", jsonObject.getString("message"));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Utility.alertDialog(LoginActivity.this, "Alert", e.getMessage(),"");
+                    Utility.alertDialog(LoginActivity.this, "Alert", e.getMessage());
                 }
             }
 
             @Override
             public void onFailure(String res) {
-                Utility.alertDialog(LoginActivity.this, "Alert", res,"");
+                Utility.alertDialog(LoginActivity.this, "Alert", res);
             }
         });
     }

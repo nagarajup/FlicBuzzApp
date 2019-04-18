@@ -1,22 +1,20 @@
 package com.aniapps.flicbuzz.utils;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.EditText;
-import com.aniapps.flicbuzz.SignUp;
-import com.aniapps.flicbuzz.activities.LoginActivity;
-import com.aniapps.flicbuzz.activities.SignUpActivity;
 
 public class Utility {
 
-    public static String sharedKey ="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzr+a6xv9poxx25sfgIhmC4i1Msg7uOenQC6Bb6RieL0NXQV5g9voJef1GtrjLxfLIJXDFmqRBxEePM3UzceCjSq3MLvlCnhmOTYWP7EXRzb8A0fnn8jHM2KO17N7yl/Go1801CbsMQ7f0u5UR02LNdQfy7xfdZ2wGDkiusuZcHNrGUitL5EJib97FMxg8fbEGrsTAwXMabueS4V955i3Lony2b4MmJuztfLinW+8HK/M5IB8HC+GCZJ6UztCClY4Z/6Ir3sxEj8z4vYInVKsVhSZs7GvPGEorz3rbFkX4tXkyUzwM7tl6/dVrXTgN3fhV/++cJBGXNv944kVeoKVHwIDAQAB";
-
-
+    public static String sharedKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzr+a6xv9poxx25sfgIhmC4i1Msg7uOenQC6Bb6RieL0NXQV5g9voJef1GtrjLxfLIJXDFmqRBxEePM3UzceCjSq3MLvlCnhmOTYWP7EXRzb8A0fnn8jHM2KO17N7yl/Go1801CbsMQ7f0u5UR02LNdQfy7xfdZ2wGDkiusuZcHNrGUitL5EJib97FMxg8fbEGrsTAwXMabueS4V955i3Lony2b4MmJuztfLinW+8HK/M5IB8HC+GCZJ6UztCClY4Z/6Ir3sxEj8z4vYInVKsVhSZs7GvPGEorz3rbFkX4tXkyUzwM7tl6/dVrXTgN3fhV/++cJBGXNv944kVeoKVHwIDAQAB";
+    public static boolean purchaseFlag;
+    public static final String tendaysubs = "10days";
+    public static final String six_months = "six_months";
+    public static final String one_year = "one_year";
+    public static final String threemonths = "threemonths";
 
     public static boolean hasMobileNumber(EditText editText) {
         String text = editText.getText().toString().trim();
@@ -77,21 +75,14 @@ public class Utility {
         return !(text.length() != 0 && text.charAt(0) != '_' && text.matches(emailPattern) && text.length() > 5);
     }
 
-    public static void alertDialog(final Context context, String title, String msg, final String from) {
+    public static void alertDialog(final Context context, String title, String msg) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(msg);
         builder.setTitle(title);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                switch (from) {
-                    case "13":
-                        Intent intent = new Intent(context, LoginActivity.class);
-                        context.startActivity(intent);
-                        break;
-                    default:
-                        break;
-                }
+
 
             }
         });
