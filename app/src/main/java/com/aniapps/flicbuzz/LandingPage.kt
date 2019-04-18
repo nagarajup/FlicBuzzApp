@@ -1,14 +1,19 @@
 package com.aniapps.flicbuzz
 
+import android.app.PendingIntent.getActivity
+import android.app.SearchManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.SearchView
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -26,6 +31,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.lang.Exception
 import java.util.ArrayList
+import android.widget.SearchView.OnQueryTextListener as OnQueryTextListener1
 
 class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     internal lateinit var rc_list: RecyclerView
@@ -74,30 +80,85 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         }
     }
 
+    private var menu: Menu? = null
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        this.menu = menu;
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
 
+    private var searchView: SearchView? = null
+    private var queryTextListener: OnQueryTextListener1? = null
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         when (item.itemId) {
-            R.id.action_search -> return true
-            R.id.action_language ->
-                if (PrefManager.getIn().language == "hindi") {
-                    PrefManager.getIn().language = "english"
-                    apiCall()
-                } else {
-                    PrefManager.getIn().language = "hindi"
-                    apiCall()
+            R.id.action_search -> {
+                menu!!.findItem(R.id.action_language).setVisible(false)
+                val searchItem = menu!!.findItem(R.id.action_search) as MenuItem
+                val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+
+                val manager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+
+                if (searchItem != null) {
+                    searchView = searchItem.getActionView() as SearchView
+                }
+                if (searchView != null) {
+                    searchView!!.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+                    queryTextListener = object : SearchView.OnQueryTextListener,
+                        android.widget.SearchView.OnQueryTextListener {
+                        override fun onQueryTextChange(newText: String): Boolean {
+                            Log.e("####onQueryTextChange", newText)
+                            menu!!.findItem(R.id.action_language).setVisible(false)
+                            return true
+                        }
+
+                        override fun onQueryTextSubmit(query: String): Boolean {
+                            Log.e("####onQueryTextSubmit", query)
+                            menu!!.findItem(R.id.action_language).setVisible(true)
+                            return true
+                        }
+                    }
+
                 }
 
 
-            else -> return super.onOptionsItemSelected(item)
+                /*search.setOnQueryTextListener(object : OnQueryTextListener1 {
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 
+                        menu!!.findItem(R.id.action_language).setVisible(true)
+                    }
+
+                    override fun onQueryTextChange(newText: String?): Boolean {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+                })
+                return true*/
+            }
+
+
+            R.id.action_language ->
+                if (PrefManager.getIn().language == "hindi") {
+                    PrefManager.getIn().language = "english"
+                    menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.icon_language_e))
+                    apiCall()
+                } else {
+                    PrefManager.getIn().language = "hindi"
+                    menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.icon_language_h))
+                    apiCall()
+                }
+
+            else -> return super.onOptionsItemSelected(item)
+        }
+
+        if (PrefManager.getIn().language.equals("hindi")) {
+            menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.icon_language_h))
+        } else {
+            menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.icon_language_e))
         }
         return true
     }
