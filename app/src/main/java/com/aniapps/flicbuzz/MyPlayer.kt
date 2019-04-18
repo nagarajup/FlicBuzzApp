@@ -1,6 +1,7 @@
 package com.aniapps.flicbuzz
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.app.Dialog
 import android.app.PendingIntent.getActivity
 import android.app.PictureInPictureParams
@@ -34,10 +35,7 @@ import com.aniapps.flicbuzz.adapters.SectionListDataAdapter
 import com.aniapps.flicbuzz.models.MyVideos
 import com.aniapps.flicbuzz.networkcall.APIResponse
 import com.aniapps.flicbuzz.networkcall.RetrofitClient
-import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.ExoPlayerFactory
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
@@ -46,11 +44,9 @@ import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.PlaybackControlView
-import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.ui.SimpleExoPlayerView
+import com.google.android.exoplayer2.ui.*
 import com.google.android.exoplayer2.upstream.*
+import com.google.android.exoplayer2.util.EventLogger
 import com.google.android.exoplayer2.util.Util
 import com.google.android.exoplayer2.util.Util.SDK_INT
 import com.google.android.exoplayer2.util.Util.getUserAgent
@@ -109,6 +105,7 @@ class MyPlayer : AppCompatActivity() {
     // https://github.com/GeoffLedak/ExoplayerFullscreen/blob/master/app/src/main/java/com/geoffledak/exoplayerfullscreen/MainActivity.java*/
 
     var mediaSource: MediaSource? = null;
+    /*https://medium.com/@mayur_solanki/adaptive-streaming-with-exoplayer-c77b0032acdd*/
     private val progressBar: ProgressBar by lazy { findViewById<ProgressBar>(R.id.progress_bar) }
     private val settings: ImageButton by lazy { findViewById<ImageButton>(R.id.icon_setting) }
     private val share: ImageButton by lazy { findViewById<ImageButton>(R.id.icon_share) }
@@ -117,7 +114,7 @@ class MyPlayer : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        // requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.myplayer)
         mUrl = intent.getStringExtra("url")
         play_desc = intent.getStringExtra("desc")
@@ -135,9 +132,10 @@ class MyPlayer : AppCompatActivity() {
         LoginApi()
         tv_play_title.setText(play_title)
         tv_play_description.setText(play_desc)
-        lay_playerview = findViewById<FrameLayout>(R.id.lay_playerview)
+        lay_playerview = findViewById<FrameLayout>(R.id.playerview)
 
         settings.setOnClickListener {
+            myTracker()
             Toast.makeText(this@MyPlayer, "Clicked on Settings", Toast.LENGTH_SHORT).show()
         }
         share.setOnClickListener {
@@ -209,73 +207,89 @@ class MyPlayer : AppCompatActivity() {
         if (outState != null) {
             outState.putInt(STATE_RESUME_WINDOW, mResumeWindow)
             outState.putLong(STATE_RESUME_POSITION, mResumePosition);
-            outState.putBoolean(STATE_PLAYER_FULLSCREEN, mExoPlayerFullscreen);
         }
         super.onSaveInstanceState(outState, outPersistentState)
     }
 
-   /* private fun initFullscreenDialog() {
-        mFullScreenDialog = object : Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
-            override fun onBackPressed() {
-                if (mExoPlayerFullscreen)
-                    closeFullscreenDialog()
-                super.onBackPressed()
-            }
-        }
-    }
+    /* private fun initFullscreenDialog() {
+         mFullScreenDialog = object : Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
+             override fun onBackPressed() {
+                 if (mExoPlayerFullscreen)
+                     closeFullscreenDialog()
+                 super.onBackPressed()
+             }
+         }
+     }
 
 
-    private fun openFullscreenDialog() {
-        lay_playerview.removeView(playerView)
-        mFullScreenDialog.addContentView(
-            playerView,
-            ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        )
-        mFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(this@MyPlayer, R.drawable.ic_fullscreen_skrink));
-        mExoPlayerFullscreen = true;
-        mFullScreenDialog.show();
-    }
+     private fun openFullscreenDialog() {
+         lay_playerview.removeView(playerView)
+         mFullScreenDialog.addContentView(
+             playerView,
+             ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+         )
+         mFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(this@MyPlayer, R.drawable.ic_fullscreen_skrink));
+         mExoPlayerFullscreen = true;
+         mFullScreenDialog.show();
+     }
 
 
-    private fun closeFullscreenDialog() {
-        lay_playerview.removeView(playerView)
-        findViewById<FrameLayout>(R.id.lay_playerview).addView(playerView)
-        mExoPlayerFullscreen = false;
-        mFullScreenDialog.dismiss();
-        mFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(this@MyPlayer, R.drawable.ic_fullscreen_expand));
-    }*/
+     private fun closeFullscreenDialog() {
+         lay_playerview.removeView(playerView)
+         findViewById<FrameLayout>(R.id.lay_playerview).addView(playerView)
+         mExoPlayerFullscreen = false;
+         mFullScreenDialog.dismiss();
+         mFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(this@MyPlayer, R.drawable.ic_fullscreen_expand));
+     }*/
 
 
     private fun initFullscreenButton() {
         mFullScreenIcon = findViewById(R.id.exo_fullscreen_icon);
         mFullScreenButton = findViewById(R.id.exo_fullscreen_button);
         mFullScreenButton.setOnClickListener {
-           /* if (supportActionBar != null) {
-                supportActionBar!!.hide()
+            /* if (supportActionBar != null) {
+                 supportActionBar!!.hide()
 
-            }*/
+             }*/
             val orientation = this.resources.configuration.orientation
             if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-               /*// requestWindowFeature(Window.FEATURE_NO_TITLE); //will hide the title
-                getSupportActionBar()!!.hide(); // hide the title bar
-                this.getWindow().setFlags(
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
+                /*// requestWindowFeature(Window.FEATURE_NO_TITLE); //will hide the title
+                 getSupportActionBar()!!.hide(); // hide the title bar
+                 this.getWindow().setFlags(
+                     WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                     WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                mFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(this@MyPlayer, R.drawable.ic_fullscreen_skrink));
+                mFullScreenIcon.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        this@MyPlayer,
+                        R.drawable.ic_fullscreen_skrink
+                    )
+                );
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
+
+                /*  val mylay=findViewById<RelativeLayout>(R.id.layplayer)
+                  val mybottomlay=findViewById<LinearLayout>(R.id.lay_bar)
+                  val lp= RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT); // You might want to tweak these to WRAP_CONTENT
+                  mylay.removeView(mybottomlay);
+                  lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                  mylay.addView(mybottomlay, lp);*/
+
+
             } else {
-                mFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(this@MyPlayer, R.drawable.ic_fullscreen_expand));
+                mFullScreenIcon.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        this@MyPlayer,
+                        R.drawable.ic_fullscreen_expand
+                    )
+                );
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
             }
 
         }
     }
-
 
 
     /* Toast.makeText(this@MyPlayer, "Clicked on Full ........", Toast.LENGTH_SHORT).show()
@@ -457,14 +471,27 @@ class MyPlayer : AppCompatActivity() {
 
         val videoTrackSelectionFactory = AdaptiveTrackSelection.Factory(bandwidthMeter)
 
+
+        /*@DefaultRenderersFactory.ExtensionRendererMode int extensionRendererMode =
+                ((App) getApplication()).useExtensionRenderers()
+                        ? (true ? DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER
+                        : DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
+                        : DefaultRenderersFactory.EXTENSION_RENDERER_MODE_OFF;
+
+        DefaultRenderersFactory renderersFactory = new DefaultRenderersFactory(this, null,
+                DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER);*/
+
         trackSelector = DefaultTrackSelector(videoTrackSelectionFactory)
+
         lastSeenTrackGroupArray = null
 
         player = ExoPlayerFactory.newSimpleInstance(this, trackSelector)
+        player.addAnalyticsListener(EventLogger(trackSelector));
 
         playerView.player = player
+        playerView.useController = true
 
-        with(player!!) {
+        with(player) {
             addListener(PlayerEventListener())
             playWhenReady = shouldAutoPlay
         }
@@ -595,49 +622,54 @@ class MyPlayer : AppCompatActivity() {
     }
 
 
-    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration?) {
-        if (newConfig != null) {
-            playbackPosition = player!!.currentPosition
+    fun myTracker() {
+        val mappedTrackInfo = trackSelector!!.getCurrentMappedTrackInfo();
+        if (mappedTrackInfo != null) {
+            MappingTrackSelector.MappedTrackInfo.RENDERER_SUPPORT_NO_TRACKS
+            var dialogPair =
+                TrackSelectionView.getDialog(this, "Select Video Resolution", trackSelector, 0);
+            dialogPair.second.setShowDisableOption(false);
+            dialogPair.second.setAllowAdaptiveSelections(false);
+            dialogPair.first.show();
+        }
+    }
+
+    /* override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration?) {
+        *//* if (newConfig != null) {
+            playbackPosition = player.currentPosition
             isInPipMode = !isInPictureInPictureMode
+        }*//*
+
+        if(!isInPictureInPictureMode){
+            playerView.showController()
+            playerView.controllerAutoShow=true
+
         }
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
-    }
+    }*/
 
-    //Called when the user touches the Home or Recents button to leave the app.
-    override fun onUserLeaveHint() {
-        super.onUserLeaveHint()
-        enterPIPMode()
-    }
+    /* //Called when the user touches the Home or Recents button to leave the app.
+     override fun onUserLeaveHint() {
+         super.onUserLeaveHint()
+         enterPIPMode()
+     }*/
 
 
-    fun pipmode() {
-        if (android.os.Build.VERSION.SDK_INT >= 26) {
-            try {
-                val rational = Rational(playerView.width, playerView.height)
-                val mParams = PictureInPictureParams.Builder().setAspectRatio(rational)
-                    .build()
-                enterPictureInPictureMode(mParams);
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    @Suppress("DEPRECATION")
-    fun enterPIPMode() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
-            && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
-        ) {
-            playbackPosition = player.currentPosition
-            playerView.useController = false
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val rational = Rational(playerView.width, playerView.height)
-                val params = PictureInPictureParams.Builder().setAspectRatio(rational)
-                this.enterPictureInPictureMode(params.build())
-            } else {
-                this.enterPictureInPictureMode()
-            }
-            /* We need to check this because the system permission check is publically hidden for integers for non-manufacturer-built apps
+    /* @Suppress("DEPRECATION")
+     fun enterPIPMode() {
+         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+             && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
+         ) {
+             playbackPosition = player.currentPosition
+             playerView.useController = false
+             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                 val rational = Rational(playerView.width, playerView.height)
+                 val params = PictureInPictureParams.Builder().setAspectRatio(rational)
+                 this.enterPictureInPictureMode(params.build())
+             } else {
+                 this.enterPictureInPictureMode()
+             }
+             *//* We need to check this because the system permission check is publically hidden for integers for non-manufacturer-built apps
                https://github.com/aosp-mirror/platform_frameworks_base/blob/studio-3.1.2/core/java/android/app/AppOpsManager.java#L1640
 
                ********* If we didn't have that problem *********
@@ -645,7 +677,7 @@ class MyPlayer : AppCompatActivity() {
                 if(appOpsManager.checkOpNoThrow(AppOpManager.OP_PICTURE_IN_PICTURE, packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA).uid, packageName) == AppOpsManager.MODE_ALLOWED)
 
                 30MS window in even a restricted memory device (756mb+) is more than enough time to check, but also not have the system complain about holding an action hostage.
-             */
+             *//*
             Handler().postDelayed({ checkPIPPermission() }, 30)
         }
     }
@@ -656,17 +688,17 @@ class MyPlayer : AppCompatActivity() {
         if (!isInPictureInPictureMode) {
             onBackPressed()
         }
-    }
+    }*/
 
     override fun onBackPressed() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
-            && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
-            && isPIPModeeEnabled
-        ) {
-            enterPIPMode()
-        } else {
-            super.onBackPressed()
-        }
+        /*  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+              && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
+              && isPIPModeeEnabled
+          ) {
+              enterPIPMode()
+          } else {*/
+        super.onBackPressed()
+        /* }*/
     }
 
 

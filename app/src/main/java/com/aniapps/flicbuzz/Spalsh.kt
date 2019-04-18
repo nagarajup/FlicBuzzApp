@@ -13,13 +13,13 @@ class Spalsh : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
         Handler().postDelayed({
-            if(PrefManager.getIn().login) {
+            /*if(PrefManager.getIn().login) {*/
                 val i = Intent(this@Spalsh, LandingPage::class.java)
                 startActivity(i)
-            }else{
+           /* }else{
                 val i = Intent(this@Spalsh, IntroductionScreen::class.java)
                 startActivity(i)
-            }
+            }*/
 
             finish()
         }, 2000)

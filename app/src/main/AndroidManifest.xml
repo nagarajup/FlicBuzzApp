@@ -37,7 +37,7 @@
                 android:windowSoftInputMode="adjustPan|adjustResize"/>
         <activity
                 android:name=".MyPlayer"
-                android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+                android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
                 android:exported="false"
                 android:launchMode="singleTask"
                 android:screenOrientation="portrait"
@@ -45,6 +45,8 @@
                 android:supportsPictureInPicture="true"
                 android:theme="@style/AppTheme"
                 tools:targetApi="n"/>
+        <!--//android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"-->
+
         <activity
                 android:name=".Base"
                 android:screenOrientation="portrait"

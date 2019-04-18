@@ -15,6 +15,7 @@ import com.aniapps.flicbuzz.networkcall.APIResponse;
 import com.aniapps.flicbuzz.networkcall.RetrofitClient;
 import com.aniapps.flicbuzz.utils.PrefManager;
 import com.aniapps.flicbuzz.utils.Utility;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -106,7 +107,11 @@ public class LoginActivity extends AppCompatActivity {
                     int status = jsonObject.getInt("status");
                     if (status == 1) {
                         PrefManager.getIn().setLogin(true);
-                        PrefManager.getIn().saveUserId(jsonObject.getString("user_id"));
+                       PrefManager.getIn().saveUserId("T2VNK1N2MjBsa3dCK2pETzRSUElNZz09");
+                        JSONArray myData=jsonObject.getJSONArray("data");
+                      /*  for(int i=0;i<myData.length();i++){
+                            PrefManager.getIn().saveUserId(myData.getJSONObject(0).getString("id"));
+                        }*/
                         Intent intent = new Intent(LoginActivity.this, LandingPage.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

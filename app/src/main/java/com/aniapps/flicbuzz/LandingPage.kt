@@ -36,8 +36,7 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         myvideos = ArrayList()
-        // val jsonArray = intent.getStringExtra("jsonArray")
-        //myData(jsonArray)
+
 
         val toggle = ActionBarDrawerToggle(
             this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close

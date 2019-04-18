@@ -96,7 +96,10 @@ public class RetrofitClient extends AppCompatActivity {
         apiService = RetrofitClient.getClient(context).create(APIService.class);
         postParams.put("version_code", "" + BuildConfig.VERSION_CODE);
         postParams.put("device_id", PrefManager.getIn().getDeviceId());
-        postParams.put("user_id", PrefManager.getIn().getUserId());
+        if (!postParams.get("action").equals("login")) {
+           // postParams.put("user_id", PrefManager.getIn().getUserId());
+            postParams.put("user_id", "T2VNK1N2MjBsa3dCK2pETzRSUElNZz09");
+        }
         postParams.put("language", PrefManager.getIn().getLanguage());
         Log.e("#API#", "Post Params" + postParams);
         apiService.coreApiResult(context.getResources().getString(R.string.core_live) + "/" + postParams.get("action"), postParams).enqueue(new Callback<String>() {

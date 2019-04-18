@@ -8,18 +8,14 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-    <!--<!-<android.support.constraint.ConstraintLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">-->
 
     <FrameLayout
-            android:id="@+id/lay_playerview"
+            android:id="@+id/playerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#000000">
+
+
 
 
         <com.google.android.exoplayer2.ui.PlayerView
@@ -29,7 +25,6 @@
                 app:use_controller="true"
                 android:gravity="center"
                 app:auto_show="false"
-                android:keepScreenOn="true"
                 app:player_layout_id="@layout/exo_simple_player_view"
                 app:controller_layout_id="@layout/custom_playback_control"/>
 
@@ -50,7 +45,7 @@
     <com.aniapps.flicbuzz.utils.StickyNestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/lay_playerview"
+            android:layout_below="@+id/playerview"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:scrollbars="none">
         <LinearLayout android:layout_width="match_parent"
