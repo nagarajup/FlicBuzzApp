@@ -9,4 +9,6 @@
     <dimen name="dots_margin_bottom">20dp</dimen>
     <dimen name="text_size_normal">18.0sp</dimen>
     <dimen name="error_text_size">12.0sp</dimen>
+    <dimen name="nav_txt_size">18sp</dimen>
+    <dimen name="base_padding">16dp</dimen>
 </resources>
