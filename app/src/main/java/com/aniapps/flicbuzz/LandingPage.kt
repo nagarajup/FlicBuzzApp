@@ -58,7 +58,7 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
-        nav_view.setNavigationItemSelectedListener(this)
+//        nav_view.setNavigationItemSelectedListener(this)
 
         my_recycler_view = findViewById<View>(R.id.my_recyclerview) as RecyclerView
         pbr = findViewById(R.id.load_progress) as ProgressBar
@@ -98,6 +98,48 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
             }
         })
 
+    }
+    fun onNavClick(v: View) {
+        // TODO Auto-generated method stub
+        val tag = v.id
+        var intent: Intent? = null
+        when (tag) {
+            R.id.myfavourite -> {
+                intent = Intent(this, AboutUs::class.java)
+                startActivity(intent)
+            }
+            R.id.mypackages -> {
+                intent = Intent(this, AboutUs::class.java)
+                startActivity(intent)
+            }
+            R.id.sharetheapp -> {
+                drawer_layout.closeDrawer(GravityCompat.START)
+                val appPackageName = packageName
+                val sendIntent = Intent()
+                sendIntent.action = Intent.ACTION_SEND
+                sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Carneeds")
+                sendIntent.putExtra(
+                    Intent.EXTRA_TEXT,
+                    "Hi,I would like to share this FlicBuzz application, Please download from Google Play! \nhttps://play.google.com/store/apps/details?id=$appPackageName"
+                )
+                sendIntent.type = "text/plain"
+                startActivity(sendIntent)
+            }
+            R.id.aboutflicbuzz -> {
+                intent = Intent(this, AboutUs::class.java)
+                startActivity(intent)
+            }
+            R.id.mysettings -> {
+                intent = Intent(this, AboutUs::class.java)
+                startActivity(intent)
+            }
+
+        }
+        if (intent != null) {
+            drawer_layout.closeDrawer(GravityCompat.START)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(intent)
+        }
     }
 
     fun myData(myData: String) {
