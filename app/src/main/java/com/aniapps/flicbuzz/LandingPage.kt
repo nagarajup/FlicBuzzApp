@@ -122,6 +122,15 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
                             return true
                         }
                     }
+                    searchView!!.setOnCloseListener {
+                        menu!!.findItem(R.id.action_language).setVisible(true);
+
+                        if (PrefManager.getIn().language == "hindi") {
+                            menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.icon_language_e))
+                        }else{
+                            menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.icon_language_h))
+                        }
+                        return@setOnCloseListener true }
 
                 }
 
@@ -162,6 +171,8 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         }
         return true
     }
+
+
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.

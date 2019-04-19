@@ -7,7 +7,8 @@
             android:id="@+id/action_language"
             android:icon="@drawable/icon_language_e"
             android:title="Language"
-            app:showAsAction="ifRoom"/>
+            android:visible="true"
+            app:showAsAction="always"/>
     <item
             android:id="@+id/action_search"
             android:icon="@android:drawable/ic_menu_search"
