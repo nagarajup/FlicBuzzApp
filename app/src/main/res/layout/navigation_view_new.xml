@@ -16,13 +16,14 @@
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
                 android:orientation="vertical">
 
             <com.aniapps.flicbuzz.utils.CircleImageView
                     android:layout_gravity="center"
-                    android:layout_width="160dp"
+                    android:layout_width="120dp"
                     android:layout_centerVertical="true"
-                    android:layout_height="160dp"
+                    android:layout_height="120dp"
                     android:layout_centerInParent="true"
                     android:src="@mipmap/about_profile"
                     app:civ_border_width="2dp"
@@ -39,10 +40,11 @@
                     android:fontFamily="@font/cera_gr_bold"
                     android:text="Name: "
                     android:textColor="@color/txt_green"
-                    android:textSize="25dp"/>
+                    android:textSize="22dp"/>
 
             <TextView
                     android:id="@+id/plan"
+                    android:visibility="gone"
                     android:layout_gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -52,7 +54,7 @@
                     android:text="No Plan"
                     android:layout_marginBottom="10dp"
                     android:textColor="@color/txt_green"
-                    android:textSize="20dp"/>
+                    android:textSize="18dp"/>
         </LinearLayout>
 
 
@@ -63,13 +65,15 @@
             android:background="@color/menuline"/>
 
     <LinearLayout
-            android:id="@+id/casecreate_ll"
+            android:id="@+id/myfavourite"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onClick="onNavClick"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
         <Button
+                android:visibility="gone"
                 android:layout_width="5dp"
                 android:id="@+id/creaecase_btn"
                 android:layout_height="match_parent"
@@ -90,7 +94,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/cera_gr_regular"
-                android:onClick="onNavClick"
                 android:layout_marginLeft="10dp"
                 android:text="My Favourites"
                 android:textColor="@color/txt_green"
@@ -105,14 +108,16 @@
             android:background="@color/menuline"/>
 
     <LinearLayout
-            android:id="@+id/assignedcases_ll"
+            android:id="@+id/mypackages"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
+            android:onClick="onNavClick"
             android:orientation="horizontal"
-            android:visibility="gone">
+            android:visibility="visible">
 
         <Button
+                android:visibility="gone"
                 android:layout_width="5dp"
                 android:id="@+id/assignedcase_btn"
                 android:layout_height="match_parent"
@@ -126,14 +131,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:src="@mipmap/menu_favourite_icon"/>
+                android:src="@mipmap/menu_package_icon"/>
 
         <TextView
                 android:id="@+id/assignedCases"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/cera_gr_regular"
-                android:onClick="onNavClick"
                 android:text="My Packages"
                 android:layout_marginLeft="10dp"
                 android:textColor="@color/txt_green"
@@ -142,65 +146,25 @@
     </LinearLayout>
 
 
-    <View
-            android:id="@+id/assignedcases_view"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/menuline"/>
 
-    <LinearLayout
-            android:id="@+id/pendingCases_ll"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:visibility="visible">
-
-        <Button
-                android:layout_width="5dp"
-                android:id="@+id/pendingcase_btn"
-                android:layout_height="match_parent"
-                android:background="@color/menuline"
-                android:fontFamily="@font/cera_gr_regular"/>
-
-        <ImageView
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:src="@mipmap/menu_setting_icon"/>
-
-        <TextView
-                android:id="@+id/pendingCases"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/cera_gr_regular"
-                android:onClick="onNavClick"
-                android:layout_marginLeft="10dp"
-                android:text="My Settings"
-                android:textColor="@color/txt_green"
-                android:textSize="@dimen/nav_txt_size"/>
-
-    </LinearLayout>
 
     <View
-            android:id="@+id/pendingcases_view"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/menuline"
             android:visibility="visible"/>
 
     <LinearLayout
-            android:id="@+id/submittedCases_ll"
+            android:id="@+id/sharetheapp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
+            android:onClick="onNavClick"
             android:orientation="horizontal"
             android:visibility="visible">
 
         <Button
+                android:visibility="gone"
                 android:layout_width="5dp"
                 android:id="@+id/submittedcase_btn"
                 android:layout_height="match_parent"
@@ -221,7 +185,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/cera_gr_regular"
-                android:onClick="onNavClick"
                 android:layout_marginLeft="10dp"
                 android:text="Share the App"
                 android:textColor="@color/txt_green"
@@ -237,14 +200,16 @@
             android:visibility="visible"/>
 
     <LinearLayout
-            android:id="@+id/userDetails_ll"
+            android:id="@+id/aboutflicbuzz"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
+            android:onClick="onNavClick"
             android:orientation="horizontal"
             android:visibility="visible">
 
         <Button
+                android:visibility="gone"
                 android:id="@+id/userdetails_btn"
                 android:layout_width="5dp"
                 android:layout_height="match_parent"
@@ -265,14 +230,55 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/cera_gr_regular"
-                android:onClick="onNavClick"
                 android:text="About FlicBuzz"
                 android:layout_marginLeft="10dp"
                 android:textColor="@color/txt_green"
                 android:textSize="@dimen/nav_txt_size"/>
 
     </LinearLayout>
+    <View
+            android:id="@+id/assignedcases_view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/menuline"/>
 
+    <LinearLayout
+            android:id="@+id/mysettings"
+            android:onClick="onNavClick"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+        <Button
+                android:visibility="gone"
+                android:layout_width="5dp"
+                android:id="@+id/pendingcase_btn"
+                android:layout_height="match_parent"
+                android:background="@color/menuline"
+                android:fontFamily="@font/cera_gr_regular"/>
+
+        <ImageView
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:src="@mipmap/menu_setting_icon"/>
+
+        <TextView
+                android:id="@+id/pendingCases"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/cera_gr_regular"
+                android:layout_marginLeft="10dp"
+                android:text="My Settings"
+                android:textColor="@color/txt_green"
+                android:textSize="@dimen/nav_txt_size"/>
+
+    </LinearLayout>
 
     <View
             android:layout_width="match_parent"

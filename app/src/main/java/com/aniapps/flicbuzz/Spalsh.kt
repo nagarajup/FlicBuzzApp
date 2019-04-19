@@ -20,7 +20,7 @@ class Spalsh : AppCompatActivity() {
                     val i = Intent(this@Spalsh, LandingPage::class.java)
                     startActivity(i)
                 }else {
-                    val i = Intent(this@Spalsh, PaymentScreen::class.java)
+                    val i = Intent(this@Spalsh, LandingPage::class.java)
                     startActivity(i)
                 }
             }else{
