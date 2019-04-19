@@ -18,6 +18,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import com.aniapps.flicbuzz.adapters.SectionListDataAdapter
 import com.aniapps.flicbuzz.models.MyVideos
@@ -36,13 +37,21 @@ import android.widget.SearchView.OnQueryTextListener as OnQueryTextListener1
 class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     internal lateinit var rc_list: RecyclerView
     internal lateinit var myvideos: ArrayList<MyVideos>
+    internal var loading = false
+    internal var scrollFlag = false
+    internal var layoutManager: LinearLayoutManager? = null
+    internal var total_records = ""
+    private var pbr: ProgressBar? = null
 
+    internal var pageNo = 1
+    internal var my_recycler_view: RecyclerView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         myvideos = ArrayList()
-
+        // val jsonArray = intent.getStringExtra("jsonArray")
+        //myData(jsonArray)
 
         val toggle = ActionBarDrawerToggle(
             this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
@@ -51,13 +60,50 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
-        apiCall()
+
+        my_recycler_view = findViewById<View>(R.id.my_recyclerview) as RecyclerView
+        pbr = findViewById(R.id.load_progress) as ProgressBar
+        pbr!!.getIndeterminateDrawable().setColorFilter(
+            ContextCompat.getColor(this, R.color.colorAccent),
+            android.graphics.PorterDuff.Mode.MULTIPLY
+        )
+        myvideos.clear()
+        apiCall(pageNo, total_records)
+
+        my_recycler_view!!.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                Log.e("####", "scroll 1")
+                if (!loading && myvideos.size > 0 && !scrollFlag) {
+                    try {
+
+                        val visibleItemCount = layoutManager!!.getChildCount()
+                        val totalItemCount = layoutManager!!.getItemCount()
+                        val firstVisibleItem = layoutManager!!.findFirstVisibleItemPosition()
+                        Log.e("####", "scroll 2")
+                        if (visibleItemCount + firstVisibleItem >= totalItemCount) {
+                            /*if (totalItemCount < Integer.parseInt(total_records)) {*/
+                            pageNo++
+                            apiCall(pageNo, total_records)
+//                            }
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+        })
 
     }
 
     fun myData(myData: String) {
         try {
-            myvideos.clear()
+
             val array = JSONArray(myData)
             for (i in 0 until array.length()) {
                 var lead = Gson().fromJson(
@@ -122,15 +168,6 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
                             return true
                         }
                     }
-                    searchView!!.setOnCloseListener {
-                        menu!!.findItem(R.id.action_language).setVisible(true);
-
-                        if (PrefManager.getIn().language == "hindi") {
-                            menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.icon_language_e))
-                        }else{
-                            menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.icon_language_h))
-                        }
-                        return@setOnCloseListener true }
 
                 }
 
@@ -154,11 +191,11 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
                 if (PrefManager.getIn().language == "hindi") {
                     PrefManager.getIn().language = "english"
                     menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.icon_language_e))
-                    apiCall()
+                    apiCall(pageNo, total_records)
                 } else {
                     PrefManager.getIn().language = "hindi"
                     menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.icon_language_h))
-                    apiCall()
+                    apiCall(pageNo, total_records)
                 }
 
             else -> return super.onOptionsItemSelected(item)
@@ -171,8 +208,6 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         }
         return true
     }
-
-
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
@@ -239,7 +274,7 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         return true
     }
 
-    private fun getParams2(): Map<String, String> {
+ /*   private fun getParams2(): Map<String, String> {
         val params = HashMap<String, String>()
         params["action"] = "home2"
         params["plan"] = "free"
@@ -247,10 +282,23 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
 
         return params
     }
-
-    private fun apiCall() {
+*/
+    internal lateinit var adapter: SectionListDataAdapter
+    private fun apiCall(pageno: Int, records: String) {
+        loading = true
+        var from = "" as String
+        val params = HashMap<String, String>()
+        params["action"] = "home2"
+        params["plan"] = "free"
+        params["page_number"] = "" + pageno
+        if (pageno == 1) {
+            from = "";
+        } else {
+            from = "online"
+            pbr!!.visibility = View.VISIBLE
+        }
         RetrofitClient.getInstance()
-            .doBackProcess(this@LandingPage, getParams2(), "", object : APIResponse {
+            .doBackProcess(this@LandingPage, params, from, object : APIResponse {
                 override fun onSuccess(res: String?) {
                     try {
                         val jobj = JSONObject(res)
@@ -258,33 +306,52 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
                         val details = jobj.getString("details")
 
                         if (status == 1) {
+                            loading = false
                             Log.e("RES", res)
                             val jsonArray = jobj.getJSONArray("data")
                             Log.e("RES my Array", "" + jsonArray.length())
                             myData(jsonArray.toString())
+                            if (myvideos.size < 20) {
+                                scrollFlag = true
+                            }
+                            if (pageNo == 1) {
+                                adapter = SectionListDataAdapter(this@LandingPage, myvideos, "main")
 
-                            val my_recycler_view = findViewById<View>(R.id.my_recyclerview) as RecyclerView
+                                layoutManager = LinearLayoutManager(applicationContext)
+                                my_recycler_view!!.setLayoutManager(layoutManager)
 
-                            my_recycler_view.setHasFixedSize(true)
+//                                my_recycler_view!!.layoutManager =
+//                                        LinearLayoutManager(this@LandingPage, LinearLayoutManager.VERTICAL, false)
+                                adapter.notifyDataSetChanged()
+                                my_recycler_view!!.adapter = adapter
 
-                            val adapter = SectionListDataAdapter(this@LandingPage, myvideos, "main")
-                            my_recycler_view.layoutManager =
-                                LinearLayoutManager(this@LandingPage, LinearLayoutManager.VERTICAL, false)
-                            my_recycler_view.adapter = adapter
-                            /* val i = Intent(this@LandingPage, LandingPage::class.java)
+                                /* val i = Intent(this@LandingPage, LandingPage::class.java)
                              i.putExtra("jsonArray", jsonArray.toString());
                              startActivity(i)*/
+
+                            } else {
+                                adapter.notifyDataSetChanged()
+                            }
 
                         } else {
                             Toast.makeText(this@LandingPage, "status" + status, Toast.LENGTH_LONG).show()
                         }
+                        if (pbr!!.visibility == View.VISIBLE) {
+                            pbr!!.visibility = View.GONE
+                        }
                     } catch (e: Exception) {
                         e.printStackTrace()
+                        if (pbr!!.visibility == View.VISIBLE) {
+                            pbr!!.visibility = View.GONE
+                        }
                     }
                 }
 
                 override fun onFailure(res: String?) {
                     Toast.makeText(this@LandingPage, "status" + res, Toast.LENGTH_LONG).show()
+                    if (pbr!!.visibility == View.VISIBLE) {
+                        pbr!!.visibility = View.GONE
+                    }
                 }
             })
     }

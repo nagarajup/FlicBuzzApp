@@ -107,6 +107,7 @@ public class RetrofitClient extends AppCompatActivity {
             public void onResponse(Call<String> call, final Response<String> res) {
                 //Log.e("RES", "res" + res.body());
                 if (res.isSuccessful()) {
+                    dialog.dismiss();
                     if (from.length() == 0) {
                         try {
                             runOnUiThread(new Runnable() {
