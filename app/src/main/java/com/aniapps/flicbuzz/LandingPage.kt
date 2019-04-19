@@ -30,11 +30,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import org.json.JSONArray
 import org.json.JSONObject
-import java.lang.Exception
 import java.util.ArrayList
+import kotlin.collections.HashMap
+import kotlin.collections.set
 import android.widget.SearchView.OnQueryTextListener as OnQueryTextListener1
 
-class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class LandingPage : AppCompatActivity() {
     internal lateinit var rc_list: RecyclerView
     internal lateinit var myvideos: ArrayList<MyVideos>
     internal var loading = false
@@ -50,8 +51,7 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         myvideos = ArrayList()
-        // val jsonArray = intent.getStringExtra("jsonArray")
-        //myData(jsonArray)
+
 
         val toggle = ActionBarDrawerToggle(
             this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
@@ -98,7 +98,52 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
                 }
             }
         })
+        //nav_view.setNavigationItemSelectedListener(this)
+        apiCall()
 
+    }
+
+    fun onNavClick(v: View) {
+        // TODO Auto-generated method stub
+        val tag = v.id
+        var intent: Intent? = null
+            when (tag) {
+                R.id.myfavourite -> {
+                    intent = Intent(this, AboutUs::class.java)
+                    startActivity(intent)
+                }
+                R.id.mypackages -> {
+                    intent = Intent(this, AboutUs::class.java)
+                    startActivity(intent)
+                }
+                R.id.sharetheapp -> {
+                    drawer_layout.closeDrawer(GravityCompat.START)
+                    val appPackageName = packageName
+                    val sendIntent = Intent()
+                    sendIntent.action = Intent.ACTION_SEND
+                    sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Carneeds")
+                    sendIntent.putExtra(
+                        Intent.EXTRA_TEXT,
+                        "Hi,I would like to share this FlicBuzz application, Please download from Google Play! \nhttps://play.google.com/store/apps/details?id=$appPackageName"
+                    )
+                    sendIntent.type = "text/plain"
+                    startActivity(sendIntent)
+                }
+                R.id.aboutflicbuzz -> {
+                    intent = Intent(this, AboutUs::class.java)
+                    startActivity(intent)
+                }
+                R.id.mysettings -> {
+                    intent = Intent(this, AboutUs::class.java)
+                    startActivity(intent)
+                }
+
+            }
+        if (intent != null) {
+            drawer_layout.closeDrawer(GravityCompat.START)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(intent)
+        }
     }
 
     fun myData(myData: String) {
@@ -168,6 +213,16 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
                             return true
                         }
                     }
+                    searchView!!.setOnCloseListener {
+                        menu!!.findItem(R.id.action_language).setVisible(true);
+
+                        if (PrefManager.getIn().language == "hindi") {
+                            menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.icon_language_e))
+                        } else {
+                            menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.icon_language_h))
+                        }
+                        return@setOnCloseListener true
+                    }
 
                 }
 
@@ -210,6 +265,8 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+
+    private fun getParams2(): Map<String, String> {/*  override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         var fragment: Fragment? = null
         val fragmentClass: Class<*>
@@ -273,6 +330,7 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
+*/
 
  /*   private fun getParams2(): Map<String, String> {
         val params = HashMap<String, String>()

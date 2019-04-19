@@ -36,4 +36,10 @@
         <item>@color/dot_dark_screen2</item>
         <item>@color/dot_dark_screen3</item>
     </array>
+
+    <color name="txt_grey">#9c9c9c</color>
+    <color name="txt_green">#ff88ba00</color>
+    <color name="menuline">#ff88ba00</color>
+    <color name="dark">#FF222222</color>
+    <color name="light">#FFEEEEEE</color>
 </resources>
