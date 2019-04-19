@@ -3,22 +3,26 @@ package com.aniapps.flicbuzz
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
+import android.support.v4.view.MenuItemCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.ProgressBar
-import android.widget.Toast
+import android.view.inputmethod.InputMethodManager
+import android.widget.*
 import com.aniapps.flicbuzz.adapters.SectionListDataAdapter
 import com.aniapps.flicbuzz.models.MyVideos
 import com.aniapps.flicbuzz.networkcall.APIResponse
@@ -44,6 +48,7 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
 
     internal var pageNo = 1
     internal var my_recycler_view: RecyclerView? = null
+    internal var search_list: RecyclerView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -61,6 +66,9 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
 //        nav_view.setNavigationItemSelectedListener(this)
 
         my_recycler_view = findViewById<View>(R.id.my_recyclerview) as RecyclerView
+        search_list = findViewById<View>(R.id.search_list) as RecyclerView
+
+
         pbr = findViewById(R.id.load_progress) as ProgressBar
         pbr!!.getIndeterminateDrawable().setColorFilter(
             ContextCompat.getColor(this, R.color.colorAccent),
@@ -99,6 +107,9 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         })
 
     }
+
+    internal lateinit var search: android.widget.SearchView
+
     fun onNavClick(v: View) {
         // TODO Auto-generated method stub
         val tag = v.id
@@ -168,10 +179,120 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
     }
 
     private var menu: Menu? = null
+    internal lateinit var searchEditText: EditText
+    internal lateinit var menuView: FrameLayout
+    internal lateinit var clear: ImageView
+    internal lateinit var menuItem: MenuItem
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         this.menu = menu;
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
+
+        val menuItem = menu.findItem(R.id.action_search)
+
+        searchEditText = MenuItemCompat.getActionView(menuItem).findViewById(R.id.edittext) as EditText
+        menuView = MenuItemCompat.getActionView(menuItem).findViewById(R.id.menu_view) as FrameLayout
+        clear = MenuItemCompat.getActionView(menuItem).findViewById(R.id.clear) as ImageView
+        clear.setOnClickListener {
+            searchEditText.setText("")
+            search_list!!.visibility = View.GONE
+            MenuItemCompat.collapseActionView(menuItem)
+        }
+
+        searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.length != 0) {
+                    searchEditText.setCompoundDrawables(null, null, null, null)
+                    clear.visibility = View.VISIBLE
+
+                } else {
+                    searchEditText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_search_edit, 0, 0, 0)
+                    clear.visibility = View.GONE
+                }
+            }
+
+            override fun afterTextChanged(s: Editable) {
+
+            }
+        })
+
+
+        menuItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+            override fun onMenuItemActionExpand(menuItem: MenuItem): Boolean {
+                searchEditText.requestFocus()
+                if (searchEditText.requestFocus()) {
+                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+                }
+                menu.findItem(R.id.action_language).setVisible(false)
+                search_list!!.visibility = View.VISIBLE
+                return true
+            }
+
+            override fun onMenuItemActionCollapse(menuItem: MenuItem): Boolean {
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(currentFocus.windowToken, 0)
+                searchEditText.setText("")
+                search_list!!.visibility = View.GONE
+
+                menu.findItem(R.id.action_language).setVisible(true)
+
+                return true
+            }
+        })
+
+
+/*
+        val searchItem = menu.findItem(R.id.action_search)
+
+        if (searchItem != null) {
+            val searchView = searchItem.actionView as SearchView
+
+            val searchHint = "search here"
+            searchView.setQueryHint(searchHint)
+
+            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    Log.e("####", "submit ");
+
+                    return false
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    Log.e("####", "change ");
+                    if (newText!!.toString().isNotEmpty()) {
+
+                    } else {
+                    }
+                    return false
+                }
+            })
+        }
+
+        MenuItemCompat.setOnActionExpandListener(searchItem, object : MenuItemCompat.OnActionExpandListener{
+            override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {
+                Log.e("######", "expand");
+                menu.findItem(R.id.action_language).setVisible(false)
+
+                return true
+            }
+
+            override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean {
+                Log.e("######", "collapse");
+//                menu.findItem(R.id.action_language).setVisible(true)
+//                menu.findItem(R.id.action_search).setVisible(true)
+
+                return true
+            }
+        });
+
+*/
+
         return true
     }
 
@@ -183,48 +304,7 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         // as you specify a parent activity in AndroidManifest.xml.
         when (item.itemId) {
             R.id.action_search -> {
-                menu!!.findItem(R.id.action_language).setVisible(false)
-                val searchItem = menu!!.findItem(R.id.action_search) as MenuItem
-                val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-
-                val manager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-
-                if (searchItem != null) {
-                    searchView = searchItem.getActionView() as SearchView
-                }
-                if (searchView != null) {
-                    searchView!!.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
-                    queryTextListener = object : SearchView.OnQueryTextListener,
-                        android.widget.SearchView.OnQueryTextListener {
-                        override fun onQueryTextChange(newText: String): Boolean {
-                            Log.e("####onQueryTextChange", newText)
-                            menu!!.findItem(R.id.action_language).setVisible(false)
-                            return true
-                        }
-
-                        override fun onQueryTextSubmit(query: String): Boolean {
-                            Log.e("####onQueryTextSubmit", query)
-                            menu!!.findItem(R.id.action_language).setVisible(true)
-                            return true
-                        }
-                    }
-
-                }
-
-
-                /*search.setOnQueryTextListener(object : OnQueryTextListener1 {
-                    override fun onQueryTextSubmit(query: String?): Boolean {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-
-                        menu!!.findItem(R.id.action_language).setVisible(true)
-                    }
-
-                    override fun onQueryTextChange(newText: String?): Boolean {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                    }
-                })
-                return true*/
+                return true
             }
 
 
@@ -325,6 +405,7 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
        }
    */
     internal lateinit var adapter: SectionListDataAdapter
+
     private fun apiCall(pageno: Int, records: String) {
         loading = true
         var from = "" as String

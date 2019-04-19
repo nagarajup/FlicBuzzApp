@@ -17,6 +17,14 @@
             android:scrollbars="none"
             app:layout_constraintBottom_toTopOf="@+id/load_progress"/>
 
+   <android.support.v7.widget.RecyclerView
+            android:id="@+id/search_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toTopOf="@+id/load_progress"
+            android:visibility="gone"/>
+
     <!--  <FrameLayout
               android:layout_width="match_parent"
               android:layout_height="match_parent"
