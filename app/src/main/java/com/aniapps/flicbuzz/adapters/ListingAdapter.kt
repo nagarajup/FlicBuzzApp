@@ -28,7 +28,7 @@ class ListingAdapter(var mContext: Activity, var dataList: ArrayList<SectionData
 
         itemRowHolder.itemTitle.setText(sectionName)
 
-        val itemListDataAdapter = SectionListDataAdapter(mContext, singleSectionItems,"")
+        val itemListDataAdapter = MainAdapter(mContext, singleSectionItems,"")
 
         itemRowHolder.recycler_view_list.setHasFixedSize(true)
         itemRowHolder.recycler_view_list.setLayoutManager(

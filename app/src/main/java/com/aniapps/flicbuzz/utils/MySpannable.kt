@@ -1,4 +1,4 @@
-package com.aniapps.flicbuzz.adapters
+package com.aniapps.flicbuzz.utils
 
 import android.graphics.Color
 import android.text.style.ClickableSpan
