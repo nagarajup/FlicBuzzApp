@@ -3,14 +3,18 @@ package com.aniapps.flicbuzz.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import com.aniapps.flicbuzz.R;
+import com.aniapps.flicbuzz.networkcall.APIResponse;
+import com.aniapps.flicbuzz.networkcall.RetrofitClient;
 import com.aniapps.flicbuzz.player.LandingPage;
 import com.aniapps.flicbuzz.util.IabHelper;
 import com.aniapps.flicbuzz.util.IabResult;
@@ -18,23 +22,66 @@ import com.aniapps.flicbuzz.util.Inventory;
 import com.aniapps.flicbuzz.util.Purchase;
 import com.aniapps.flicbuzz.utils.PrefManager;
 import com.aniapps.flicbuzz.utils.Utility;
+import org.json.JSONObject;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 
 public class PaymentScreen_New extends Activity {
     ConstraintLayout threemonths, sixmonths, oneyear;
     public static IabHelper mHelper;
     private final int PURCHSE_REQUEST = 3;
     private final String TAG = "PaymentScreen_New";
+    private boolean threemonthsflag, sixmonthsflag, oneyearflag;
+    LinearLayout plan_details;
+    TextView plan_text, plan_expiry_date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Making notification bar transparent
-        if (Build.VERSION.SDK_INT >= 21) {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        }
+       /* getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
 
         setContentView(R.layout.activity_payment_new);
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setTitle(getString(R.string.app_name));
+        mToolbar.setNavigationIcon(R.drawable.arrow);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        plan_details = (LinearLayout) findViewById(R.id.plan_details);
+        plan_expiry_date = (TextView) findViewById(R.id.plan_expiry_text);
+        plan_text = (TextView) findViewById(R.id.plan_text);
+
+        if (!PrefManager.getIn().getPlan().equals("")) {
+            plan_details.setVisibility(View.VISIBLE);
+            if (PrefManager.getIn().getPlan().equals("3")) {
+                plan_text.setText("Three Months Subscription");
+            } else if (PrefManager.getIn().getPlan().equals("6")) {
+                plan_text.setText("Six Months Subscription");
+            } else if (PrefManager.getIn().getPlan().equals("12")) {
+                plan_text.setText("One Year Subscription");
+            }
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            try {
+                Date date = format.parse(PrefManager.getIn().getSubscription_end_date());
+                SimpleDateFormat simple = new SimpleDateFormat("dd MMM yyyy HH:mm a");
+                plan_expiry_date.setText(simple.format(date));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        }
+
         threemonths = (ConstraintLayout) findViewById(R.id.threemonths);
         sixmonths = (ConstraintLayout) findViewById(R.id.sixmonths);
         oneyear = (ConstraintLayout) findViewById(R.id.oneyear);
@@ -42,44 +89,58 @@ public class PaymentScreen_New extends Activity {
         threemonths.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mHelper.flagEndAsync();
-                mHelper.launchPurchaseFlow(PaymentScreen_New.this, Utility.threemonths, PURCHSE_REQUEST, mPurchaseFinishedListener, null);
-
+                if (!threemonthsflag) {
+                    if (oneyearflag) {
+                        alertDialog("Subscription", "You already subscribed for One Year Plan.");
+                    } else {
+                        if (sixmonthsflag) {
+                            alertDialog("Subscription", "You already subscribed for Six Months Plan.");
+                        } else {
+                            mHelper.flagEndAsync();
+                            mHelper.launchSubscriptionPurchaseFlow(PaymentScreen_New.this, Utility.threemonths, PURCHSE_REQUEST, mPurchaseFinishedListener, null);
+                        }
+                    }
+                } else {
+                    alertDialog("Subscription", "You already subscribed for Three Months Plan, No need to buy again.");
+                }
             }
         });
         sixmonths.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mHelper.flagEndAsync();
-                mHelper.launchPurchaseFlow(PaymentScreen_New.this, Utility.six_months, PURCHSE_REQUEST, mPurchaseFinishedListener, null);
-
+                if (!sixmonthsflag) {
+                    if (oneyearflag) {
+                        alertDialog("Subscription", "You already subscribed for One Year Plan.");
+                    } else {
+                        mHelper.flagEndAsync();
+                        mHelper.launchSubscriptionPurchaseFlow(PaymentScreen_New.this, Utility.six_months, PURCHSE_REQUEST, mPurchaseFinishedListener, null);
+                    }
+                } else {
+                    alertDialog("Subscription", "You already subscribed for Six Months Plan, No need to buy again.");
+                }
             }
         });
         oneyear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mHelper.flagEndAsync();
-                mHelper.launchPurchaseFlow(PaymentScreen_New.this, Utility.one_year, PURCHSE_REQUEST, mPurchaseFinishedListener, null);
-
+                if (!oneyearflag) {
+                    mHelper.flagEndAsync();
+                    mHelper.launchSubscriptionPurchaseFlow(PaymentScreen_New.this, Utility.one_year, PURCHSE_REQUEST, mPurchaseFinishedListener, null);
+                } else {
+                    alertDialog("Subscription", "You already subscribed for One year Plan, No need to check again.");
+                }
             }
         });
-        mHelper.startSetup(new
-                                   IabHelper.OnIabSetupFinishedListener() {
-                                       public void onIabSetupFinished(IabResult result) {
-                                           if (!result.isSuccess()) {
-                                               Log.e("limited", "In-app Billing is not set up OK");
-                                           } else {
-
-                                               Log.v("Limites", "YAY, in app billing set up! " + result);
-                                               mHelper.queryInventoryAsync(mGotInventoryListener); //Getting inventory of purchases and assigning listener
-
-                                           }
-
-                                       }
-
-
-                                   });
-
+        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+            public void onIabSetupFinished(IabResult result) {
+                if (!result.isSuccess()) {
+                    Log.e("limited", "In-app Billing is not set up OK");
+                } else {
+                    Log.v("Limites", "YAY, in app billing set up! " + result);
+                    mHelper.queryInventoryAsync(mGotInventoryListener); //Getting inventory of purchases and assigning listener
+                }
+            }
+        });
     }
 
     @Override
@@ -108,25 +169,22 @@ public class PaymentScreen_New extends Activity {
                 PrefManager.getIn().setPackage(false);
                 // does the user have the premium upgrade?
                 if (inventory.hasPurchase(Utility.threemonths)) {
-                    Toast.makeText(PaymentScreen_New.this, "3 Months Subscription is enabled", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(PaymentScreen_New.this, inventory.getPurchase(Utility.threemonths).toString(), Toast.LENGTH_SHORT).show();
-                    Log.e("inventory", inventory.getPurchase(Utility.threemonths).toString() + "inventory" + inventory.toString());
-                    PrefManager.getIn().setPackage(true);
-
+                    //  Toast.makeText(PaymentScreen_New.this, "3 Months Subscription is enabled", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(PaymentScreen_New.this, inventory.getPurchase(Utility.threemonths).toString(), Toast.LENGTH_SHORT).show();
+                    // Log.e("inventory", inventory.getPurchase(Utility.threemonths).toString() + "inventory" + inventory.toString());
+                    threemonthsflag = true;
                 }
                 if (inventory.hasPurchase(Utility.six_months)) {
-                    Toast.makeText(PaymentScreen_New.this, "6 Months Subscription is enabled", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(PaymentScreen_New.this, inventory.getPurchase(Utility.six_months).toString(), Toast.LENGTH_SHORT).show();
-                    Log.e("inventory", inventory.getPurchase(Utility.six_months).toString() + "inventory" + inventory.toString());
-                    PrefManager.getIn().setPackage(true);
-
+                    // Toast.makeText(PaymentScreen_New.this, "6 Months Subscription is enabled", Toast.LENGTH_SHORT).show();
+                    //  Toast.makeText(PaymentScreen_New.this, inventory.getPurchase(Utility.six_months).toString(), Toast.LENGTH_SHORT).show();
+                    //  Log.e("inventory", inventory.getPurchase(Utility.six_months).toString() + "inventory" + inventory.toString());
+                    sixmonthsflag = true;
                 }
                 if (inventory.hasPurchase(Utility.one_year)) {
-                    Toast.makeText(PaymentScreen_New.this, "1year Subscription is enabled", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(PaymentScreen_New.this, inventory.getPurchase(Utility.one_year).toString(), Toast.LENGTH_SHORT).show();
-                    Log.e("inventory", inventory.getPurchase(Utility.one_year).toString() + "inventory" + inventory.toString());
-                    PrefManager.getIn().setPackage(true);
-
+                    // Toast.makeText(PaymentScreen_New.this, "1 year Subscription is enabled", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(PaymentScreen_New.this, inventory.getPurchase(Utility.one_year).toString(), Toast.LENGTH_SHORT).show();
+                    // Log.e("inventory", inventory.getPurchase(Utility.one_year).toString() + "inventory" + inventory.toString());
+                    oneyearflag = true;
                 }
 
 
@@ -153,18 +211,6 @@ public class PaymentScreen_New extends Activity {
         }
     }
 
-    void complain(String message) {
-        Log.e(TAG, "**** Error: " + message);
-        alert("Error: " + message);
-    }
-
-    void alert(String message) {
-        AlertDialog.Builder bld = new AlertDialog.Builder(this);
-        bld.setMessage(message);
-        bld.setNeutralButton("OK", null);
-        Log.d(TAG, "Showing alert dialog: " + message);
-        bld.create().show();
-    }
 
     // Callback for when a purchase is finished
     IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
@@ -175,30 +221,112 @@ public class PaymentScreen_New extends Activity {
             if (mHelper == null) return;
 
             if (result.isFailure()) {
-                complain("Error purchasing: " + result);
                 return;
             }
             if (!verifyDeveloperPayload(purchase)) {
-                complain("Error purchasing. Authenticity verification failed.");
                 return;
             }
 
             Log.d(TAG, "Purchase successful.");
 
-            Toast.makeText(PaymentScreen_New.this, purchase.toString() + "::" + purchase.getPurchaseTime(), Toast.LENGTH_SHORT).show();
+            // Toast.makeText(PaymentScreen_New.this, purchase.toString() + "::" + purchase.getPurchaseTime(), Toast.LENGTH_SHORT).show();
             Log.e("", "" + purchase);
-            PrefManager.getIn().setPackage(true);
-            Intent intent = new Intent(PaymentScreen_New.this, LandingPage.class);
-            startActivity(intent);
+            //2019-04-20 21:54:06
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date = new Date(purchase.getPurchaseTime());
+            String startdate = sdf.format(date);
+            Calendar c = Calendar.getInstance();
+            try {
+                c.setTime(sdf.parse(startdate));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            if (purchase.getSku().equals(Utility.threemonths)) {
+                c.add(Calendar.MONTH, 3);
+            } else if (purchase.getSku().equals(Utility.six_months)) {
+                c.add(Calendar.MONTH, 6);
+            } else if (purchase.getSku().equals(Utility.one_year)) {
+                c.add(Calendar.MONTH, 12);
+            }
+            String endDate = sdf.format(c.getTime());
+            planUpdate(purchase.getSku(), startdate, endDate, purchase.toString());
+
         }
     };
 
-    /**
-     * Verifies the developer payload of a purchase.
-     */
+
     boolean verifyDeveloperPayload(Purchase p) {
         String payload = p.getDeveloperPayload();
         return true;
+    }
+
+    public void alertDialog(String title, String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(PaymentScreen_New.this);
+        builder.setMessage(msg);
+        builder.setTitle(title);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+
+            }
+        });
+        //builder.setNegativeButton("NO", null);
+        builder.show();
+    }
+
+    public void planUpdate(String package_data, String sub_start_date, String sub_end_date, String payment_data) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("subscription_start_date", sub_start_date);
+        params.put("subscription_end_date", sub_end_date);
+        params.put("payment_data", payment_data);
+        params.put("action", "update_package");
+        if (package_data.equals(Utility.threemonths)) {
+            params.put("package", "3");
+        } else if (package_data.equals(Utility.six_months)) {
+            params.put("package", "6");
+        } else if (package_data.equals(Utility.one_year)) {
+            params.put("package", "12");
+        }
+        ApiCall(params);
+    }
+
+    JSONObject jsonObject;
+
+    public void ApiCall(final HashMap<String, String> params) {
+
+        RetrofitClient.getInstance().doBackProcess(PaymentScreen_New.this, params, "", new APIResponse() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+
+                    jsonObject = new JSONObject(result);
+                    int status = jsonObject.getInt("status");
+                    if (status == 1) {
+                        PrefManager.getIn().setPayment_status("1");
+                        PrefManager.getIn().setPayment_data(params.get("payment_data"));
+                        PrefManager.getIn().setSubscription_start_date(params.get("subscription_start_date"));
+                        PrefManager.getIn().setSubscription_end_date(params.get("subscription_end_date"));
+                        PrefManager.getIn().setPlan(params.get("package"));
+                        Intent intent = new Intent(PaymentScreen_New.this, LandingPage.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                    } else {
+                        Utility.alertDialog(PaymentScreen_New.this, "Alert", jsonObject.getString("message"));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Utility.alertDialog(PaymentScreen_New.this, "Alert", e.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(String res) {
+                Utility.alertDialog(PaymentScreen_New.this, "Alert", res);
+            }
+        });
     }
 
 }

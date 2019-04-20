@@ -59,6 +59,9 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
     internal lateinit var nav_share: TextView
     internal lateinit var nav_settings: TextView
     internal lateinit var nav_logout: TextView
+    internal lateinit var tv_profile_name: TextView
+    internal lateinit var tv_profile_email: TextView
+    internal lateinit var tv_profile_plan: TextView
     internal lateinit var switchCompat: SwitchCompat
 
     internal var pageNo = 1
@@ -72,6 +75,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         // val jsonArray = intent.getStringExtra("jsonArray")
         //myData(jsonArray)
 
+       // Toast.makeText(this, PrefManager.getIn().getPayment_data().toString(), Toast.LENGTH_SHORT).show()
         val toggle = ActionBarDrawerToggle(
             this, drawer_layout, toolbar,
             R.string.navigation_drawer_open,
@@ -85,6 +89,9 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         my_recycler_view = findViewById<View>(R.id.my_recyclerview) as RecyclerView
         search_list = findViewById<View>(R.id.search_list) as RecyclerView
 
+        tv_profile_name = findViewById<TextView>(R.id.tv_profile_name);
+        tv_profile_email = findViewById<TextView>(R.id.tv_profile_email);
+        tv_profile_plan = findViewById<TextView>(R.id.tv_profile_plan);
         nav_about = findViewById<TextView>(R.id.nav_about);
         nav_profile = findViewById<TextView>(R.id.nav_profile);
         nav_privacy = findViewById<TextView>(R.id.nav_privacy);
@@ -104,7 +111,15 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         nav_settings.setOnClickListener(this@LandingPage)
         nav_logout.setOnClickListener(this@LandingPage)
         switchCompat = findViewById<SwitchCompat>(R.id.nav_language)
-
+        tv_profile_name.setText(PrefManager.getIn().getName())
+        tv_profile_email.setText(PrefManager.getIn().getEmail())
+        if(PrefManager.getIn().getPlan().equals("3")) {
+            tv_profile_plan.setText("Plan : Three Months")
+        }else   if(PrefManager.getIn().getPlan().equals("6")) {
+            tv_profile_plan.setText("Plan : Six Months")
+        }else   if(PrefManager.getIn().getPlan().equals("12")) {
+            tv_profile_plan.setText("Plan : One Year")
+        }
         if(PrefManager.getIn().language.equals("Hindi")){
             switchCompat.isChecked=false
         }else {

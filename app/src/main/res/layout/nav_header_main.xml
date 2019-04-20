@@ -24,15 +24,21 @@
             app:civ_border_color="@color/light"
             android:contentDescription="@string/nav_header_desc"
             android:id="@+id/imageView"/>
-
     <TextView
-            android:id="@+id/rv_profile_id"
+            android:paddingTop="@dimen/nav_header_vertical_spacing"
+            android:id="@+id/tv_profile_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/nav_header_vertical_spacing"
             android:fontFamily="@font/cera_gr_medium"
-            android:text="pilla.nagaraju@gmail.com"
+            android:text="Raju Karnam"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+
+    <TextView
+            android:id="@+id/tv_profile_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/cera_gr_regular"
+            android:text="pilla.nagaraju@gmail.com"/>
 
     <TextView
             android:layout_width="wrap_content"

@@ -18,10 +18,12 @@ package com.aniapps.flicbuzz.util;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 /**
  * Represents an in-app billing purchase.
  */
-public class Purchase {
+public class Purchase implements Serializable {
     String mItemType;  // ITEM_TYPE_INAPP or ITEM_TYPE_SUBS
     String mOrderId;
     String mPackageName;
@@ -59,5 +61,5 @@ public class Purchase {
     public String getSignature() { return mSignature; }
 
     @Override
-    public String toString() { return "PurchaseInfo(type:" + mItemType + "):" + mOriginalJson; }
+    public String toString() { return  mOriginalJson; }
 }

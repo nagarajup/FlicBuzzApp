@@ -108,6 +108,19 @@ public class LoginActivity extends AppCompatActivity {
                         PrefManager.getIn().setLogin(true);
 
                         PrefManager.getIn().saveUserId(jsonObject.getString("user_id"));
+                        PrefManager.getIn().setPayment_status(jsonObject.getString("payment_status"));
+                        PrefManager.getIn().setPayment_data(jsonObject.getString("payment_data"));
+                        PrefManager.getIn().setSubscription_start_date(jsonObject.getString("subscription_start_date"));
+                        PrefManager.getIn().setSubscription_end_date(jsonObject.getString("subscription_end_date"));
+                        PrefManager.getIn().setPlan(jsonObject.getString("plan"));
+                        JSONObject userObject = jsonObject.getJSONObject("data");
+                        PrefManager.getIn().setName(userObject.getString("name"));
+                        PrefManager.getIn().setEmail(userObject.getString("email"));
+                        PrefManager.getIn().setMobile(userObject.getString("mobile"));
+                        PrefManager.getIn().setGender(userObject.getString("gender"));
+                        PrefManager.getIn().setCity(userObject.getString("city"));
+                        PrefManager.getIn().setPincode(userObject.getString("pincode"));
+                        PrefManager.getIn().setDob(userObject.getString("dob"));
                         Intent intent = new Intent(LoginActivity.this, LandingPage.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
