@@ -73,7 +73,6 @@ public class RetrofitClient extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
                           FlickLoading.getInstance().show(context);
                     }
                 });
@@ -100,25 +99,25 @@ public class RetrofitClient extends AppCompatActivity {
             postParams.put("user_id", PrefManager.getIn().getUserId());
            // postParams.put("user_id", "T2VNK1N2MjBsa3dCK2pETzRSUElNZz09");
         }
-        postParams.put("language", PrefManager.getIn().getLanguage());
+        postParams.put("language", PrefManager.getIn().getLanguage().toLowerCase());
         Log.e("#API#", "Post Params" + postParams);
         apiService.coreApiResult(context.getResources().getString(R.string.core_live) + "/" + postParams.get("action"), postParams).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, final Response<String> res) {
                 //Log.e("RES", "res" + res.body());
-                if (res.isSuccessful()) {
-                    if (from.length() == 0) {
-                        try {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                      FlickLoading.getInstance().dismiss((Activity) context);
-                                }
-                            });
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                if (from.length() == 0) {
+                    try {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                FlickLoading.getInstance().dismiss((Activity) context);
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+                }
+                if (res.isSuccessful()) {
                     try {
                         if (null != res.body() && !res.body().equals("")) {
                             api_res.onSuccess(res.body().trim());

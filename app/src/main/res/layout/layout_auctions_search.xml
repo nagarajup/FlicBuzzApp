@@ -22,15 +22,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:cursorVisible="true"
-            android:drawableLeft="@drawable/icon_search_edit"
+            android:drawableLeft="@mipmap/icon_search_edit"
             android:drawablePadding="4dp"
             android:focusable="true"
-            android:hint="Search for listings by ID, title, reg. no."
+            android:hint="Search for videos.. "
             android:imeOptions="actionSearch"
             android:inputType="text"
+            android:layout_gravity="center_vertical"
             android:paddingRight="30dp"
-            android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:drawableTint="@color/white"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
 
 
         <ImageView
@@ -40,7 +42,8 @@
             android:layout_gravity="right|center_vertical"
             android:layout_margin="4dp"
             android:padding="5dp"
-            android:src="@drawable/icon_close_dashbaord"
+            android:tint="@color/white"
+            android:src="@mipmap/icon_close_dashbaord"
             android:visibility="gone"
             tools:ignore="RtlHardcoded" />
     </FrameLayout>

@@ -1,18 +1,13 @@
-package com.aniapps.flicbuzz
+package com.aniapps.flicbuzz.player
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.app.Dialog
-import android.app.PendingIntent.getActivity
-import android.app.PictureInPictureParams
-import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.os.PersistableBundle
 import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
@@ -24,13 +19,11 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.util.Log
-import android.util.Rational
 import android.view.*
-import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.*
+import com.aniapps.flicbuzz.R
 import com.aniapps.flicbuzz.adapters.MySpannable
-import com.aniapps.flicbuzz.adapters.PlayerAdapter
 import com.aniapps.flicbuzz.adapters.SectionListDataAdapter
 import com.aniapps.flicbuzz.models.MyVideos
 import com.aniapps.flicbuzz.networkcall.APIResponse
@@ -52,7 +45,6 @@ import com.google.android.exoplayer2.util.Util.SDK_INT
 import com.google.android.exoplayer2.util.Util.getUserAgent
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.myplayer.*
-import org.json.JSONArray
 import org.json.JSONObject
 import java.util.ArrayList
 
@@ -109,6 +101,7 @@ class MyPlayer : AppCompatActivity() {
     private val progressBar: ProgressBar by lazy { findViewById<ProgressBar>(R.id.progress_bar) }
     private val settings: ImageButton by lazy { findViewById<ImageButton>(R.id.icon_setting) }
     private val share: ImageButton by lazy { findViewById<ImageButton>(R.id.icon_share) }
+    /*https://stackoverflow.com/questions/16300959/android-share-image-from-url*/
     private val fullscreen: FrameLayout by lazy { findViewById<FrameLayout>(R.id.exo_fullscreen_button) }
 
     internal var loading = false
@@ -132,7 +125,7 @@ class MyPlayer : AppCompatActivity() {
         if (savedInstanceState != null) {
             mResumeWindow = savedInstanceState.getInt(STATE_RESUME_WINDOW);
             mResumePosition = savedInstanceState.getLong(STATE_RESUME_POSITION);
-            mExoPlayerFullscreen = savedInstanceState.getBoolean(STATE_PLAYER_FULLSCREEN);
+           // mExoPlayerFullscreen = savedInstanceState.getBoolean(STATE_PLAYER_FULLSCREEN);
         }
         Log.e("player title", play_title)
         Log.e("player desc", play_desc)
@@ -152,7 +145,7 @@ class MyPlayer : AppCompatActivity() {
 
         my_recycler_view.setNestedScrollingEnabled(false)
 
-        my_recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+       /* my_recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
             }
@@ -177,7 +170,7 @@ class MyPlayer : AppCompatActivity() {
                     }
                 }
             }
-        })
+        })*/
 
 
 
@@ -299,18 +292,8 @@ class MyPlayer : AppCompatActivity() {
         mFullScreenIcon = findViewById(R.id.exo_fullscreen_icon);
         mFullScreenButton = findViewById(R.id.exo_fullscreen_button);
         mFullScreenButton.setOnClickListener {
-            /* if (supportActionBar != null) {
-                 supportActionBar!!.hide()
-
-             }*/
             val orientation = this.resources.configuration.orientation
             if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                /*// requestWindowFeature(Window.FEATURE_NO_TITLE); //will hide the title
-                 getSupportActionBar()!!.hide(); // hide the title bar
-                 this.getWindow().setFlags(
-                     WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                     WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 mFullScreenIcon.setImageDrawable(
                     ContextCompat.getDrawable(
                         this@MyPlayer,
@@ -320,15 +303,8 @@ class MyPlayer : AppCompatActivity() {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
 
-                /*  val mylay=findViewById<RelativeLayout>(R.id.layplayer)
-                  val mybottomlay=findViewById<LinearLayout>(R.id.lay_bar)
-                  val lp= RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT); // You might want to tweak these to WRAP_CONTENT
-                  mylay.removeView(mybottomlay);
-                  lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                  mylay.addView(mybottomlay, lp);*/
-
-
             } else {
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 mFullScreenIcon.setImageDrawable(
                     ContextCompat.getDrawable(
                         this@MyPlayer,
@@ -343,6 +319,30 @@ class MyPlayer : AppCompatActivity() {
         }
     }
 
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        if (newConfig!!.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
+            mFullScreenIcon.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this@MyPlayer,
+                    R.drawable.ic_fullscreen_skrink
+                )
+            );
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            mFullScreenIcon.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this@MyPlayer,
+                    R.drawable.ic_fullscreen_expand
+                )
+            );
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+        }
+
+
+    }
 
     /* Toast.makeText(this@MyPlayer, "Clicked on Full ........", Toast.LENGTH_SHORT).show()
      initFullscreenDialog()
@@ -417,22 +417,12 @@ class MyPlayer : AppCompatActivity() {
 
     }
 
-/*
-    private fun getParams2(): Map<String, String> {
-        val params = HashMap<String, String>()
-        params["action"] = "get_similar_by_video_id"
-        params["video_id"] = play_id
-        params["page_number"] = "1"
-        params["device_name"] = "abcd"
-        return params
-    }
-*/
 
     internal lateinit var myvideos: ArrayList<MyVideos>
     internal lateinit var adapter: SectionListDataAdapter
 
     private fun LoginApi(pno: Int) {
-        loading = true
+       // loading = true
         var from = "" as String
 
         val params = HashMap<String, String>()
@@ -440,12 +430,12 @@ class MyPlayer : AppCompatActivity() {
         params["video_id"] = play_id
         params["page_number"] = "" + pno
         params["device_name"] = "abcd"
-        if (pno == 1) {
+        /*if (pno == 1) {
             from = "";
         } else {
             from = "online"
             pbr!!.visibility = View.VISIBLE
-        }
+        }*/
         RetrofitClient.getInstance()
             .doBackProcess(this@MyPlayer, params, from, object : APIResponse {
                 override fun onSuccess(res: String?) {
@@ -455,7 +445,7 @@ class MyPlayer : AppCompatActivity() {
                         val details = jobj.getString("details")
 
                         if (status == 1) {
-                            loading = false
+                           // loading = false
 
                             val jsonArray = jobj.getJSONArray("data")
 //                            Log.e("RES", res)
@@ -469,13 +459,12 @@ class MyPlayer : AppCompatActivity() {
                                 myvideos.add(lead)
                             }
 
-                            if (myvideos.size < 20) {
+                           /* if (myvideos.size < 20) {
                                 scrollFlag = true
-                            }
-                            if (pno == 1) {
+                            }*/
+                           /* if (pno == 1) {*/
                                 my_recycler_view.setHasFixedSize(true)
                                 adapter = SectionListDataAdapter(this@MyPlayer, myvideos, "player")
-
                                 layoutManager = LinearLayoutManager(applicationContext)
                                 my_recycler_view.setLayoutManager(layoutManager)
                                 my_recycler_view.setNestedScrollingEnabled(false)
@@ -485,25 +474,26 @@ class MyPlayer : AppCompatActivity() {
                             } else {
                                 adapter.notifyDataSetChanged()
                             }
-                        } else {
+                       /* } else {
                             Toast.makeText(this@MyPlayer, "status" + status, Toast.LENGTH_LONG).show()
-                        }
+                        }*/
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-                    if (pbr!!.visibility == View.VISIBLE) {
+                   /* if (pbr!!.visibility == View.VISIBLE) {
                         pbr!!.visibility = View.GONE
-                    }
+                    }*/
                 }
 
                 override fun onFailure(res: String?) {
                     Toast.makeText(this@MyPlayer, "status" + res, Toast.LENGTH_LONG).show()
-                    if (pbr!!.visibility == View.VISIBLE) {
+                   /* if (pbr!!.visibility == View.VISIBLE) {
                         pbr!!.visibility = View.GONE
-                    }
+                    }*/
                 }
             })
     }
+
 
     public override fun onStart() {
         super.onStart()
@@ -712,10 +702,7 @@ class MyPlayer : AppCompatActivity() {
         //https://gist.github.com/abhiint16/b473e9b1111bd8bda4833c288ae6a1b4
         //https://stackoverflow.com/questions/52112981/customizing-exoplayer-quality-dialog-in-my-app
         val mappedTrackInfo = trackSelector!!.getCurrentMappedTrackInfo();
-        Log.e("####", "" + MappingTrackSelector.MappedTrackInfo.RENDERER_SUPPORT_PLAYABLE_TRACKS)
-        Log.e("####", "11" + mappedTrackInfo!!.getRendererType(0))
-        Log.e("####", "22" + mappedTrackInfo!!.getTypeSupport(0))
-        Log.e("####", "33" + mappedTrackInfo!!.getTrackGroups(0))
+
 
         if (mappedTrackInfo != null) {
             MappingTrackSelector.MappedTrackInfo.RENDERER_SUPPORT_NO_TRACKS

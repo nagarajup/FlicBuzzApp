@@ -14,9 +14,8 @@ import android.view.*;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.aniapps.flicbuzz.Login;
+
 import com.aniapps.flicbuzz.R;
-import com.aniapps.flicbuzz.SignIn;
 import com.aniapps.flicbuzz.utils.PrefManager;
 
 public class IntroductionScreen extends Activity {

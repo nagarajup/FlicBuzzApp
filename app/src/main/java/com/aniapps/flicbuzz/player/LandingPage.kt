@@ -1,9 +1,7 @@
-package com.aniapps.flicbuzz
+package com.aniapps.flicbuzz.player
 
-import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
@@ -15,14 +13,17 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
+import android.support.v7.widget.SwitchCompat
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import com.aniapps.flicbuzz.activities.AboutUs
+import com.aniapps.flicbuzz.R
+import com.aniapps.flicbuzz.activities.SignIn
 import com.aniapps.flicbuzz.adapters.SectionListDataAdapter
 import com.aniapps.flicbuzz.models.MyVideos
 import com.aniapps.flicbuzz.networkcall.APIResponse
@@ -33,11 +34,14 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import org.json.JSONArray
 import org.json.JSONObject
+import org.w3c.dom.Text
 import java.lang.Exception
 import java.util.ArrayList
 import android.widget.SearchView.OnQueryTextListener as OnQueryTextListener1
 
-class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class LandingPage : AppCompatActivity(), View.OnClickListener {
+
+
     internal lateinit var rc_list: RecyclerView
     internal lateinit var myvideos: ArrayList<MyVideos>
     internal var loading = false
@@ -45,6 +49,16 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
     internal var layoutManager: LinearLayoutManager? = null
     internal var total_records = ""
     private var pbr: ProgressBar? = null
+    internal lateinit var nav_about: TextView
+    internal lateinit var nav_profile: TextView
+    internal lateinit var nav_privacy: TextView
+    internal lateinit var nav_fav: TextView
+    internal lateinit var nav_refund: TextView
+    internal lateinit var nav_package: TextView
+    internal lateinit var nav_share: TextView
+    internal lateinit var nav_settings: TextView
+    internal lateinit var nav_logout: TextView
+    internal lateinit var switchCompat: SwitchCompat
 
     internal var pageNo = 1
     internal var my_recycler_view: RecyclerView? = null
@@ -58,7 +72,9 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         //myData(jsonArray)
 
         val toggle = ActionBarDrawerToggle(
-            this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+            this, drawer_layout, toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
         )
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
@@ -68,6 +84,44 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
         my_recycler_view = findViewById<View>(R.id.my_recyclerview) as RecyclerView
         search_list = findViewById<View>(R.id.search_list) as RecyclerView
 
+        nav_about = findViewById<TextView>(R.id.nav_about);
+        nav_profile = findViewById<TextView>(R.id.nav_profile);
+        nav_privacy = findViewById<TextView>(R.id.nav_privacy);
+        nav_fav = findViewById<TextView>(R.id.nav_fav);
+        nav_refund = findViewById<TextView>(R.id.nav_refund);
+        nav_package = findViewById<TextView>(R.id.nav_package);
+        nav_share = findViewById<TextView>(R.id.nav_share);
+        nav_settings = findViewById<TextView>(R.id.nav_settings);
+        nav_logout = findViewById<TextView>(R.id.nav_logout);
+        nav_about.setOnClickListener(this@LandingPage)
+        nav_profile.setOnClickListener(this@LandingPage)
+        nav_privacy.setOnClickListener(this@LandingPage)
+        nav_fav.setOnClickListener(this@LandingPage)
+        nav_refund.setOnClickListener(this@LandingPage)
+        nav_package.setOnClickListener(this@LandingPage)
+        nav_share.setOnClickListener(this@LandingPage)
+        nav_settings.setOnClickListener(this@LandingPage)
+        nav_logout.setOnClickListener(this@LandingPage)
+        switchCompat = findViewById<SwitchCompat>(R.id.nav_language)
+
+        if(PrefManager.getIn().language.equals("Hindi")){
+            switchCompat.isChecked=false
+        }else {
+            switchCompat.isChecked=true
+        }
+        switchCompat.text = "Language: "+ PrefManager.getIn().language
+        switchCompat.setOnCheckedChangeListener({ _, isChecked ->
+          PrefManager.getIn().language = if (isChecked) "English" else "Hindi"
+            if(isChecked) {
+                menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this,R.mipmap.icon_language_e))
+            }else{
+                menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_h))
+            }
+            pageNo = 1
+            apiCall()
+            switchCompat.text = "Language: "+ PrefManager.getIn().language
+            drawer_layout.closeDrawer(GravityCompat.START)
+        })
 
         pbr = findViewById(R.id.load_progress) as ProgressBar
         pbr!!.getIndeterminateDrawable().setColorFilter(
@@ -75,7 +129,7 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
             android.graphics.PorterDuff.Mode.MULTIPLY
         )
         myvideos.clear()
-        apiCall(pageNo, total_records)
+        apiCall()
 
         my_recycler_view!!.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -84,20 +138,14 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-
-                Log.e("####", "scroll 1")
                 if (!loading && myvideos.size > 0 && !scrollFlag) {
                     try {
-
                         val visibleItemCount = layoutManager!!.getChildCount()
                         val totalItemCount = layoutManager!!.getItemCount()
                         val firstVisibleItem = layoutManager!!.findFirstVisibleItemPosition()
-                        Log.e("####", "scroll 2")
                         if (visibleItemCount + firstVisibleItem >= totalItemCount) {
-                            /*if (totalItemCount < Integer.parseInt(total_records)) {*/
                             pageNo++
-                            apiCall(pageNo, total_records)
-//                            }
+                            apiCall()
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -110,49 +158,10 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
 
     internal lateinit var search: android.widget.SearchView
 
-    fun onNavClick(v: View) {
-        // TODO Auto-generated method stub
-        val tag = v.id
-        var intent: Intent? = null
-        when (tag) {
-            R.id.myfavourite -> {
-                intent = Intent(this, AboutUs::class.java)
-                startActivity(intent)
-            }
-            R.id.mypackages -> {
-                intent = Intent(this, AboutUs::class.java)
-                startActivity(intent)
-            }
-            R.id.sharetheapp -> {
-                drawer_layout.closeDrawer(GravityCompat.START)
-                val appPackageName = packageName
-                val sendIntent = Intent()
-                sendIntent.action = Intent.ACTION_SEND
-                sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Carneeds")
-                sendIntent.putExtra(
-                    Intent.EXTRA_TEXT,
-                    "Hi,I would like to share this FlicBuzz application, Please download from Google Play! \nhttps://play.google.com/store/apps/details?id=$appPackageName"
-                )
-                sendIntent.type = "text/plain"
-                startActivity(sendIntent)
-            }
-            R.id.aboutflicbuzz -> {
-                intent = Intent(this, AboutUs::class.java)
-                startActivity(intent)
-            }
-            R.id.mysettings -> {
-                intent = Intent(this, AboutUs::class.java)
-                startActivity(intent)
-            }
+    override fun onResume() {
+        super.onResume()
 
-        }
-        if (intent != null) {
-            drawer_layout.closeDrawer(GravityCompat.START)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            startActivity(intent)
-        }
     }
-
     fun myData(myData: String) {
         try {
 
@@ -204,14 +213,13 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
 
             }
-
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.length != 0) {
                     searchEditText.setCompoundDrawables(null, null, null, null)
                     clear.visibility = View.VISIBLE
 
                 } else {
-                    searchEditText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_search_edit, 0, 0, 0)
+                    searchEditText.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.icon_search_edit, 0, 0, 0)
                     clear.visibility = View.GONE
                 }
             }
@@ -246,58 +254,10 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
             }
         })
 
-
-/*
-        val searchItem = menu.findItem(R.id.action_search)
-
-        if (searchItem != null) {
-            val searchView = searchItem.actionView as SearchView
-
-            val searchHint = "search here"
-            searchView.setQueryHint(searchHint)
-
-            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    Log.e("####", "submit ");
-
-                    return false
-                }
-
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    Log.e("####", "change ");
-                    if (newText!!.toString().isNotEmpty()) {
-
-                    } else {
-                    }
-                    return false
-                }
-            })
-        }
-
-        MenuItemCompat.setOnActionExpandListener(searchItem, object : MenuItemCompat.OnActionExpandListener{
-            override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {
-                Log.e("######", "expand");
-                menu.findItem(R.id.action_language).setVisible(false)
-
-                return true
-            }
-
-            override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean {
-                Log.e("######", "collapse");
-//                menu.findItem(R.id.action_language).setVisible(true)
-//                menu.findItem(R.id.action_search).setVisible(true)
-
-                return true
-            }
-        });
-
-*/
-
         return true
     }
 
-    private var searchView: SearchView? = null
-    private var queryTextListener: OnQueryTextListener1? = null
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -306,82 +266,88 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
             R.id.action_search -> {
                 return true
             }
-
-
             R.id.action_language ->
-                if (PrefManager.getIn().language == "hindi") {
-                    PrefManager.getIn().language = "english"
-                    menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.icon_language_e))
-                    apiCall(pageNo, total_records)
+                if (PrefManager.getIn().language == "Hindi") {
+                    PrefManager.getIn().language = "English"
+                    pageNo = 1
+                    menu!!.getItem(0).setIcon(
+                        ContextCompat.getDrawable(
+                            this,
+                            R.mipmap.icon_language_e
+                        )
+                    )
+                    apiCall()
                 } else {
-                    PrefManager.getIn().language = "hindi"
-                    menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.icon_language_h))
-                    apiCall(pageNo, total_records)
+                    PrefManager.getIn().language = "Hindi"
+                    pageNo = 1
+                    menu!!.getItem(0).setIcon(
+                        ContextCompat.getDrawable(
+                            this,
+                            R.mipmap.icon_language_h
+                        )
+                    )
+                    apiCall()
                 }
 
             else -> return super.onOptionsItemSelected(item)
         }
 
         if (PrefManager.getIn().language.equals("hindi")) {
-            menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.icon_language_h))
+            menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_h))
         } else {
-            menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.icon_language_e))
+            menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_e))
         }
         return true
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
-        var fragment: Fragment? = null
-        val fragmentClass: Class<*>
 
-        when (item.itemId) {
-            R.id.nav_camera -> {
-                val myintent = Intent(this@LandingPage, com.aniapps.flicbuzz.AboutUs::class.java)
-                myintent.putExtra("title", "About Us")
-                startActivity(myintent)
 
-                // Toast.makeText(this, "Clicked item about us", Toast.LENGTH_SHORT).show()
-            }
-            R.id.nav_gallery -> {
-                val myintent = Intent(this@LandingPage, com.aniapps.flicbuzz.AboutUs::class.java)
-                myintent.putExtra("title", "My Favourites")
-                startActivity(myintent)
-                //Toast.makeText(this, "Clicked item profile", Toast.LENGTH_SHORT).show()
-            }
-
-            R.id.nav_gallery1 -> {
-                val myintent = Intent(this@LandingPage, com.aniapps.flicbuzz.AboutUs::class.java)
+    override fun onClick(p0: View?) {
+        when(p0!!.id){
+            R.id.nav_profile -> {
+                val myintent = Intent(this@LandingPage, AboutUs::class.java)
                 myintent.putExtra("title", "My Profile")
+                myintent.putExtra("url", "")
                 startActivity(myintent)
-                //Toast.makeText(this, "Clicked item profile", Toast.LENGTH_SHORT).show()
             }
-            R.id.nav_slideshow -> {
-                val myintent = Intent(this@LandingPage, com.aniapps.flicbuzz.AboutUs::class.java)
+
+            R.id.nav_about -> {
+                val myintent = Intent(this@LandingPage, AboutUs::class.java)
+                myintent.putExtra("title", "About FlicBuzz")
+                myintent.putExtra("url", "")
+                startActivity(myintent)
+            }
+            R.id.nav_fav -> {
+                val myintent = Intent(this@LandingPage, AboutUs::class.java)
+                myintent.putExtra("title", "My Favourites")
+                myintent.putExtra("url", "")
+                startActivity(myintent)
+            }
+            R.id.nav_package-> {
+                val myintent = Intent(this@LandingPage, AboutUs::class.java)
                 myintent.putExtra("title", "Packages")
+                myintent.putExtra("url", "")
                 startActivity(myintent)
                 // Toast.makeText(this, "Clicked item fav", Toast.LENGTH_SHORT).show()
             }
-            R.id.nav_manage1 -> {
-                val myintent = Intent(this@LandingPage, com.aniapps.flicbuzz.AboutUs::class.java)
-                myintent.putExtra("title", "Privacy Policy")
-                startActivity(myintent)
-                // Toast.makeText(this, "Clicked item settings", Toast.LENGTH_SHORT).show()
-            }
-
-            R.id.nav_manage -> {
-                val myintent = Intent(this@LandingPage, com.aniapps.flicbuzz.AboutUs::class.java)
+            R.id.nav_refund -> {
+                val myintent = Intent(this@LandingPage, AboutUs::class.java)
+                myintent.putExtra("url", "https://www.flicbuzz.com/refund-cancellation_text.html")
                 myintent.putExtra("title", "Refund and Cancellation")
                 startActivity(myintent)
                 // Toast.makeText(this, "Clicked item settings", Toast.LENGTH_SHORT).show()
             }
 
-
-            R.id.nav_share -> {
-
-                Toast.makeText(this, "Clicked item share", Toast.LENGTH_SHORT).show()
+            R.id.nav_privacy -> {
+                val myintent = Intent(this@LandingPage, AboutUs::class.java)
+                myintent.putExtra("url", "https://www.flicbuzz.com/privacy-policy_text.html")
+                myintent.putExtra("title", "Privacy Policy")
+                startActivity(myintent)
             }
-            R.id.nav_send -> {
+
+            /*https://www.flicbuzz.com/termsofuse_text.html*/
+
+            R.id.nav_logout ->{
                 PrefManager.getIn().setLogin(false);
                 val intent = Intent(this@LandingPage, SignIn::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -389,31 +355,38 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
             }
+            R.id.nav_share ->{
+                val appPackageName = packageName
+                val sendIntent = Intent()
+                sendIntent.action = Intent.ACTION_SEND
+                sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Carneeds")
+                sendIntent.putExtra(
+                    Intent.EXTRA_TEXT,
+                    "Hi,I would like to share this FlicBuzz application, Please download from Google Play! \nhttps://play.google.com/store/apps/details?id=$appPackageName"
+                )
+                sendIntent.type = "text/plain"
+                startActivity(sendIntent)
+            }
 
         }
         drawer_layout.closeDrawer(GravityCompat.START)
-        return true
+        /*if (intent != null) {
+             drawer_layout.closeDrawer(GravityCompat.START)
+             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+             startActivity(intent)
+         }*/
     }
 
-    /*   private fun getParams2(): Map<String, String> {
-           val params = HashMap<String, String>()
-           params["action"] = "home2"
-           params["plan"] = "free"
-           params["page_number"] = "1"
-
-           return params
-       }
-   */
     internal lateinit var adapter: SectionListDataAdapter
 
-    private fun apiCall(pageno: Int, records: String) {
+    private fun apiCall() {
         loading = true
         var from = "" as String
         val params = HashMap<String, String>()
         params["action"] = "home2"
         params["plan"] = "free"
-        params["page_number"] = "" + pageno
-        if (pageno == 1) {
+        params["page_number"] = "" + pageNo
+        if (pageNo == 1) {
             from = "";
         } else {
             from = "online"
@@ -426,31 +399,22 @@ class LandingPage : AppCompatActivity(), NavigationView.OnNavigationItemSelected
                         val jobj = JSONObject(res)
                         val status = jobj.getInt("status")
                         val details = jobj.getString("details")
-
                         if (status == 1) {
                             loading = false
-                            Log.e("RES", res)
                             val jsonArray = jobj.getJSONArray("data")
-                            Log.e("RES my Array", "" + jsonArray.length())
+                            if (pageNo == 1) {
+                                myvideos.clear()
+                            }
                             myData(jsonArray.toString())
                             if (myvideos.size < 20) {
                                 scrollFlag = true
                             }
                             if (pageNo == 1) {
                                 adapter = SectionListDataAdapter(this@LandingPage, myvideos, "main")
-
                                 layoutManager = LinearLayoutManager(applicationContext)
                                 my_recycler_view!!.setLayoutManager(layoutManager)
-
-//                                my_recycler_view!!.layoutManager =
-//                                        LinearLayoutManager(this@LandingPage, LinearLayoutManager.VERTICAL, false)
                                 adapter.notifyDataSetChanged()
                                 my_recycler_view!!.adapter = adapter
-
-                                /* val i = Intent(this@LandingPage, LandingPage::class.java)
-                             i.putExtra("jsonArray", jsonArray.toString());
-                             startActivity(i)*/
-
                             } else {
                                 adapter.notifyDataSetChanged()
                             }

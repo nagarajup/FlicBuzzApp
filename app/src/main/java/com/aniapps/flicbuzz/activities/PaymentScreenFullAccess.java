@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
-import com.aniapps.flicbuzz.LandingPage;
+import com.aniapps.flicbuzz.player.LandingPage;
 import com.aniapps.flicbuzz.R;
 import com.aniapps.flicbuzz.util.IabHelper;
 import com.aniapps.flicbuzz.util.IabResult;

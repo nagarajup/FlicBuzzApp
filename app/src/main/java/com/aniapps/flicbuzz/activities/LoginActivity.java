@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import com.aniapps.flicbuzz.LandingPage;
+import com.aniapps.flicbuzz.player.LandingPage;
 import com.aniapps.flicbuzz.R;
 import com.aniapps.flicbuzz.networkcall.APIResponse;
 import com.aniapps.flicbuzz.networkcall.RetrofitClient;

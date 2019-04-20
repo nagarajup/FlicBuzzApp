@@ -7,10 +7,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Window;
 import android.widget.TextView;
-import com.aniapps.flicbuzz.Base;
+
 import com.aniapps.flicbuzz.R;
 
-public class FlickLoading extends Base {
+public class FlickLoading extends Activity {
     public static Dialog dialog;
     private static FlickLoading mInstance;
     FlickProgress cpb;

@@ -4,7 +4,7 @@
                                                  xmlns:tools="http://schemas.android.com/tools"
                                                  android:layout_width="match_parent"
                                                  android:layout_height="match_parent"
-                                                 tools:context=".Base">
+                                                 tools:context=".player.LandingPage">
 
     <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
@@ -24,31 +24,24 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                 xmlns:tools="http://schemas.android.com/tools"
-                 android:layout_width="match_parent"
-                 android:layout_height="match_parent"
-                 android:background="#C0C0C0"
-    >
 
-        <TextView
-                android:id="@+id/tv_frgament_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="First Fragment"
-                android:textSize="16sp"/>
-
-    </FrameLayout>
-
-    <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
+    <WebView
+            android:id="@+id/web_page"
+            android:layout_marginTop="58sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/fab_margin"
-            android:visibility="gone"
-            app:srcCompat="@android:drawable/ic_dialog_email" />
+            android:layout_gravity="center"
+            android:textSize="16sp"/>
+
+    <TextView android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="center"
+               android:text="Comming Soon.."
+              android:visibility="gone"
+              android:id="@+id/tv_note"
+               android:layout_marginTop="58sp"
+               android:textSize="28sp"/>
+
 
 </android.support.design.widget.CoordinatorLayout>
 

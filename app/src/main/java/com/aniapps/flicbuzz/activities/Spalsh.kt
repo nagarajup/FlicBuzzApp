@@ -1,12 +1,11 @@
-package com.aniapps.flicbuzz
+package com.aniapps.flicbuzz.activities
 
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
-import com.aniapps.flicbuzz.activities.IntroductionScreen
-import com.aniapps.flicbuzz.activities.PaymentScreen
-import com.aniapps.flicbuzz.activities.PaymentScreen_New
+import com.aniapps.flicbuzz.player.LandingPage
+import com.aniapps.flicbuzz.R
 import com.aniapps.flicbuzz.utils.PrefManager
 
 class Spalsh : AppCompatActivity() {
