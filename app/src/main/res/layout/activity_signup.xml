@@ -269,15 +269,22 @@
                                       android:layout_width="fill_parent"
                                       android:layout_weight="0.5"
                                       android:layout_height="wrap_content">
-                            <EditText android:textSize="14sp"
-                                      android:id="@+id/dob"
-                                      android:focusable="false"
-                                      android:clickable="true"
-                                      android:layout_width="fill_parent"
-                                      android:layout_height="wrap_content"
-                                      android:layout_marginTop="20dp"
-                                      android:hint="Date of Birth"
-                                      android:editable="false"/>
+                            <android.support.design.widget.TextInputLayout
+                                    android:focusable="true"
+                                    android:focusableInTouchMode="true"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp">
+                                <EditText android:textSize="14sp"
+                                          android:id="@+id/dob"
+                                          android:focusable="false"
+                                          android:clickable="true"
+                                          android:layout_width="fill_parent"
+                                          android:layout_height="wrap_content"
+                                          android:hint="Date of Birth"
+                                          android:editable="false"/>
+                            </android.support.design.widget.TextInputLayout>
+
                             <TextView
                                     android:id="@+id/dob_error"
                                     android:layout_width="match_parent"
