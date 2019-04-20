@@ -16,6 +16,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import com.aniapps.flicbuzz.activities.PaymentScreen_New
 import com.aniapps.flicbuzz.adapters.SectionListDataAdapter
 import com.aniapps.flicbuzz.models.MyVideos
 import com.aniapps.flicbuzz.networkcall.APIResponse
@@ -58,6 +59,10 @@ class LandingPage : AppCompatActivity() {
         val tag = v.id
         var intent: Intent? = null
             when (tag) {
+                R.id.mypackages -> {
+                    intent = Intent(this, PaymentScreen_New::class.java)
+                    startActivity(intent)
+                }
                 R.id.myfavourite -> {
                     intent = Intent(this, AboutUs::class.java)
                     startActivity(intent)

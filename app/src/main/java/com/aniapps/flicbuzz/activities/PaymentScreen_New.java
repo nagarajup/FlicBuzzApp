@@ -120,7 +120,7 @@ public class PaymentScreen_New extends Activity {
 
                 Log.v(TAG, "failure in checking if user has purchases");
             } else {
-
+                PrefManager.getIn().setPackage(false);
                 // does the user have the premium upgrade?
                 if (inventory.hasPurchase(Utility.threemonths)) {
                     Toast.makeText(PaymentScreen_New.this,"3 Months Subscription is enabled" ,Toast.LENGTH_SHORT).show();
@@ -140,18 +140,13 @@ public class PaymentScreen_New extends Activity {
                     Log.e("inventory", inventory.getPurchase(Utility.one_year).toString() + "inventory" + inventory.toString());
                     PrefManager.getIn().setPackage(true);
 
-                } else if (inventory.hasPurchase(Utility.tendaysubs)) {
-                    Toast.makeText(PaymentScreen_New.this,inventory.getPurchase(Utility.tendaysubs).toString() ,Toast.LENGTH_SHORT).show();
-                    Log.e("inventory", inventory.getPurchase(Utility.tendaysubs).toString() + "inventory" + inventory.toString());
-                    PrefManager.getIn().setPackage(true);
+                }
 
-                }else {
 
-                    PrefManager.getIn().setPackage(false);
 
                     Log.v(TAG, "Doesn't have purchase, saving in storage");
 
-                }
+
             }
         }
     };

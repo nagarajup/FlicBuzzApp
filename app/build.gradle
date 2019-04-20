@@ -10,7 +10,7 @@ android {
         applicationId "com.aniapps.flicbuzz"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 4
+        versionCode 5
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -37,5 +37,5 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation 'com.android.billingclient:billing:1.2.2'
-    compile 'com.mikhaellopez:circularimageview:2.0.1'
+    implementation 'com.mikhaellopez:circularimageview:2.0.1'
 }
