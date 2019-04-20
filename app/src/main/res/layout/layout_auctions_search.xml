@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:layout_gravity="center"
+    android:orientation="horizontal">
+
+    <FrameLayout
+        android:id="@+id/menu_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5sp"
+        android:layout_marginLeft="-4sp"
+        android:orientation="horizontal"
+        android:layout_marginEnd="5sp"
+        android:layout_marginStart="-4sp">
+
+        <EditText
+            android:id="@+id/edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:cursorVisible="true"
+            android:drawableLeft="@mipmap/icon_search_edit"
+            android:drawablePadding="4dp"
+            android:focusable="true"
+            android:hint="Search for videos.. "
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:layout_gravity="center_vertical"
+            android:paddingRight="30dp"
+            android:drawableTint="@color/white"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+
+        <ImageView
+            android:id="@+id/clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_margin="4dp"
+            android:padding="5dp"
+            android:tint="@color/white"
+            android:src="@mipmap/icon_close_dashbaord"
+            android:visibility="gone"
+            tools:ignore="RtlHardcoded" />
+    </FrameLayout>
+
+
+</RelativeLayout>

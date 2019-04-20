@@ -8,20 +8,43 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:showIn="@layout/app_bar_main"
-        tools:context=".Base">
+        tools:context=".player.LandingPage">
 
     <android.support.v7.widget.RecyclerView
             android:id="@+id/my_recyclerview"
             android:layout_width="match_parent"
-            android:layout_marginLeft="7sp"
-            android:layout_marginRight="7sp"
             android:layout_height="match_parent"
-            android:scrollbars="none"/>
+            android:scrollbars="none"
+            app:layout_constraintBottom_toTopOf="@+id/load_progress"/>
 
-  <!--  <FrameLayout
+   <android.support.v7.widget.RecyclerView
+            android:id="@+id/search_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/mainContent"
-    />-->
+            android:scrollbars="none"
+            app:layout_constraintBottom_toTopOf="@+id/load_progress"
+            android:visibility="gone"/>
 
+    <!--  <FrameLayout
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:id="@+id/mainContent"
+      />-->
+
+    <ProgressBar
+            android:id="@+id/load_progress"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginRight="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 </android.support.constraint.ConstraintLayout>

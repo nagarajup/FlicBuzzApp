@@ -1,4 +1,4 @@
-package com.aniapps.flicbuzz
+package com.aniapps.flicbuzz.player
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.View
+import com.aniapps.flicbuzz.R
 import com.aniapps.flicbuzz.adapters.ListingAdapter
 import com.aniapps.flicbuzz.models.MyVideos
 import com.aniapps.flicbuzz.models.SectionDataModel

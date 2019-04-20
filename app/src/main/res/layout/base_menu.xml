@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="280sp"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <include layout="@layout/nav_header_main"/>
+
+    <TextView
+            android:id="@+id/nav_profile"
+            android:drawableLeft="@mipmap/fav_icon_video"
+            android:drawablePadding="5sp"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:padding="10sp"
+            android:drawableTint="@color/darkgray"
+            android:textColor="@color/darkgray"
+            android:textSize="16sp"
+            android:fontFamily="@font/cera_gr_medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/nav_profile"/>
+
+    <TextView
+            android:id="@+id/nav_about"
+            android:drawableLeft="@mipmap/fav_icon_video"
+            android:drawablePadding="5sp"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:padding="10sp"
+            android:textSize="16sp"
+            android:drawableTint="@color/darkgray"
+            android:textColor="@color/darkgray"
+            android:fontFamily="@font/cera_gr_medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/nav_about_us"/>
+
+    <TextView
+            android:id="@+id/nav_fav"
+            android:drawableLeft="@mipmap/fav_icon_video"
+            android:drawablePadding="5sp"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:padding="10sp"
+
+            android:textSize="16sp"
+            android:drawableTint="@color/darkgray"
+            android:textColor="@color/darkgray"
+            android:fontFamily="@font/cera_gr_medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/nav_fav"/>
+
+    <TextView
+            android:id="@+id/nav_package"
+            android:drawableLeft="@mipmap/fav_icon_video"
+            android:drawablePadding="5sp"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:padding="10sp"
+            android:textSize="16sp"
+            android:drawableTint="@color/darkgray"
+            android:textColor="@color/darkgray"
+            android:fontFamily="@font/cera_gr_medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/nav_package"/>
+
+    <TextView
+            android:id="@+id/nav_refund"
+            android:drawableLeft="@mipmap/fav_icon_video"
+            android:drawablePadding="5sp"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:padding="10sp"
+            android:textSize="16sp"
+            android:drawableTint="@color/darkgray"
+            android:textColor="@color/darkgray"
+            android:fontFamily="@font/cera_gr_medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/nav_refund"/>
+
+
+    <TextView
+            android:id="@+id/nav_privacy"
+            android:drawableLeft="@mipmap/fav_icon_video"
+            android:drawablePadding="5sp"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:padding="10sp"
+            android:textSize="16sp"
+            android:fontFamily="@font/cera_gr_medium"
+            android:layout_width="match_parent"
+            android:drawableTint="@color/darkgray"
+            android:textColor="@color/darkgray"
+            android:layout_height="wrap_content"
+            android:text="@string/nav_privacy"/>
+
+    <View android:layout_width="match_parent"
+          android:layout_height="1sp"
+          android:background="@color/gray"/>
+
+
+
+    <android.support.v7.widget.SwitchCompat
+            android:id="@+id/nav_language"
+            android:layout_width="match_parent"
+            android:text="Language:  Hindi"
+            android:padding="10sp"
+            android:layout_marginLeft="30sp"
+            android:textColor="@color/darkgray"
+            android:textSize="16sp"
+            android:fontFamily="@font/cera_gr_medium"
+            android:layout_height="wrap_content"/>
+
+    <TextView
+            android:id="@+id/nav_share"
+            android:drawableLeft="@mipmap/icon_settings"
+            android:drawablePadding="5sp"
+            android:drawableTint="@color/darkgray"
+            android:textColor="@color/darkgray"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:padding="10sp"
+            android:textSize="16sp"
+            android:fontFamily="@font/cera_gr_medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/nav_share_app"/>
+
+    <TextView
+            android:id="@+id/nav_settings"
+            android:drawableLeft="@mipmap/icon_settings"
+            android:drawablePadding="5sp"
+            android:drawableTint="@color/darkgray"
+            android:textColor="@color/darkgray"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:padding="10sp"
+            android:textSize="16sp"
+            android:fontFamily="@font/cera_gr_medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/nav_settings"/>
+
+    <TextView
+            android:id="@+id/nav_logout"
+            android:drawableLeft="@mipmap/icon_settings"
+            android:drawablePadding="5sp"
+            android:drawableTint="@color/darkgray"
+            android:gravity="center_vertical"
+            android:textColor="@color/darkgray"
+            android:layout_gravity="center_vertical"
+            android:padding="10sp"
+            android:textSize="16sp"
+            android:fontFamily="@font/cera_gr_medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/nav_logout"/>
+
+</LinearLayout>

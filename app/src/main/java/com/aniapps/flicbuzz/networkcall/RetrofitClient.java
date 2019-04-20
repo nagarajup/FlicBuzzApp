@@ -1,5 +1,6 @@
 package com.aniapps.flicbuzz.networkcall;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 import com.aniapps.flicbuzz.BuildConfig;
 import com.aniapps.flicbuzz.R;
+import com.aniapps.flicbuzz.utils.FlickLoading;
 import com.aniapps.flicbuzz.utils.PrefManager;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -58,7 +60,6 @@ public class RetrofitClient extends AppCompatActivity {
         return retrofit;
     }
 
-    Dialog dialog;
 
     //RetrofitCallBack
     public void doBackProcess(final Context context, Map<String, String> postParams,
@@ -66,15 +67,13 @@ public class RetrofitClient extends AppCompatActivity {
         this.context = context;
         this.params = postParams;
         this.from = from;
-        dialog = ProgressDialog.Companion.progressDialog(context);
+
         if (from.length() == 0 && null != context) {
             try {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
-                        dialog.show();
-                        //  CTEProgress.getInstance().show(context);
+                          FlickLoading.getInstance().show(context);
                     }
                 });
             } catch (Exception e) {
@@ -97,29 +96,28 @@ public class RetrofitClient extends AppCompatActivity {
         postParams.put("version_code", "" + BuildConfig.VERSION_CODE);
         postParams.put("device_id", PrefManager.getIn().getDeviceId());
         if (!postParams.get("action").equals("login")) {
-           // postParams.put("user_id", PrefManager.getIn().getUserId());
-            postParams.put("user_id", "T2VNK1N2MjBsa3dCK2pETzRSUElNZz09");
+            postParams.put("user_id", PrefManager.getIn().getUserId());
+           // postParams.put("user_id", "T2VNK1N2MjBsa3dCK2pETzRSUElNZz09");
         }
-        postParams.put("language", PrefManager.getIn().getLanguage());
+        postParams.put("language", PrefManager.getIn().getLanguage().toLowerCase());
         Log.e("#API#", "Post Params" + postParams);
         apiService.coreApiResult(context.getResources().getString(R.string.core_live) + "/" + postParams.get("action"), postParams).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, final Response<String> res) {
                 //Log.e("RES", "res" + res.body());
-                if (res.isSuccessful()) {
-                    if (from.length() == 0) {
-                        try {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    dialog.dismiss();
-                                    //  CTEProgress.getInstance().dismiss((Activity) context);
-                                }
-                            });
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                if (from.length() == 0) {
+                    try {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                FlickLoading.getInstance().dismiss((Activity) context);
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+                }
+                if (res.isSuccessful()) {
                     try {
                         if (null != res.body() && !res.body().equals("")) {
                             api_res.onSuccess(res.body().trim());
@@ -142,7 +140,7 @@ public class RetrofitClient extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                dialog.dismiss();
+                                FlickLoading.getInstance().dismiss((Activity) context);
                             }
                         });
                     } catch (Exception e) {

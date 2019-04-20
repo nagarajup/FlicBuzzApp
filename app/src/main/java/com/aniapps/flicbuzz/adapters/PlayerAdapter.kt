@@ -11,11 +11,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import com.aniapps.flicbuzz.MyPlayer
+import com.aniapps.flicbuzz.player.MyPlayer
 import com.aniapps.flicbuzz.R
 import com.aniapps.flicbuzz.models.MyVideos
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.squareup.picasso.Picasso
 
 class PlayerAdapter (var context: Activity, var itemsList: ArrayList<MyVideos>, var from:String) :
     RecyclerView.Adapter<PlayerAdapter.PlayerRowHolder>() {
@@ -44,10 +43,9 @@ class PlayerAdapter (var context: Activity, var itemsList: ArrayList<MyVideos>, 
 
 
 
-        Glide.with(context)
+        Picasso.with(context)
             .load(singleItem.thumb)
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .centerCrop()
+            .centerInside()
             .error(R.mipmap.launcher_icon)
             .into(holder.itemImage);
 

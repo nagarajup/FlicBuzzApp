@@ -137,8 +137,20 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"/>
             </RelativeLayout>
+
         </LinearLayout>
     </com.aniapps.flicbuzz.utils.StickyNestedScrollView>
+    <ProgressBar
+            android:id="@+id/load_progress"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="invisible"
+            android:layout_marginRight="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_alignParentBottom="true"/>
 </RelativeLayout>
 
         <!--      </android.support.constraint.ConstraintLayout>-->

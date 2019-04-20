@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import com.aniapps.flicbuzz.LandingPage;
+import com.aniapps.flicbuzz.player.LandingPage;
 import com.aniapps.flicbuzz.R;
 import com.aniapps.flicbuzz.networkcall.APIResponse;
 import com.aniapps.flicbuzz.networkcall.RetrofitClient;
@@ -106,7 +106,9 @@ public class LoginActivity extends AppCompatActivity {
                     int status = jsonObject.getInt("status");
                     if (status == 1) {
                         PrefManager.getIn().setLogin(true);
-                        Intent intent = new Intent(LoginActivity.this, PaymentScreen_New.class);
+
+                        PrefManager.getIn().saveUserId(jsonObject.getString("user_id"));
+                        Intent intent = new Intent(LoginActivity.this, LandingPage.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);

@@ -2,22 +2,12 @@ package com.aniapps.flicbuzz.activities;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.text.Html;
 import android.view.*;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 import com.aniapps.flicbuzz.R;
-import com.aniapps.flicbuzz.SignIn;
-import com.aniapps.flicbuzz.utils.PrefManager;
 
 public class PaymentScreen extends Activity {
     Button full,limited;
