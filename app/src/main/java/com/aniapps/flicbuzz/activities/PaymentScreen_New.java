@@ -254,7 +254,6 @@ public class PaymentScreen_New extends Activity {
         }
     };
 
-
     boolean verifyDeveloperPayload(Purchase p) {
         String payload = p.getDeveloperPayload();
         return true;
