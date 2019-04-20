@@ -23,44 +23,7 @@ public class PaymentScreenFullAccess extends Activity {
     Button proceed;
     public static IabHelper mHelper;
     private final int PURCHSE_REQUEST = 3;
-    IabHelper.OnConsumeFinishedListener mConsumeFinishedListener =
-            new IabHelper.OnConsumeFinishedListener() {
-                public void onConsumeFinished(Purchase purchase,
-                                              IabResult result) {
 
-                    if (result.isSuccess()) {
-
-                        Intent intent = new Intent(PaymentScreenFullAccess.this, LandingPage.class);
-                        intent.putExtra("Url", "http://google.com");
-                        startActivity(intent);
-
-
-                    } else {
-                        // handle error
-
-                        Toast.makeText(PaymentScreenFullAccess.this, "", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            };
-    IabHelper.QueryInventoryFinishedListener mReceivedInventoryListener
-            = new IabHelper.QueryInventoryFinishedListener() {
-        public void onQueryInventoryFinished(IabResult result,
-                                             Inventory inventory) throws IabHelper.IabAsyncInProgressException {
-
-
-            if (result.isFailure()) {
-                // Handle failure
-            }
-            Purchase gasPurchase = inventory.getPurchase(Utility.threemonths);
-            if (gasPurchase != null && verifyDeveloperPayload(gasPurchase)) {
-                mHelper.consumeAsync(inventory.getPurchase(Utility.threemonths), mConsumeFinishedListener);
-                return;
-            } else {
-                mHelper.consumeAsync(inventory.getPurchase(Utility.threemonths),
-                        mConsumeFinishedListener);
-            }
-        }
-    };
     IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
         public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
             if (result.isFailure()) {
@@ -100,13 +63,9 @@ public class PaymentScreenFullAccess extends Activity {
         proceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
                     mHelper.flagEndAsync();
                     mHelper.launchPurchaseFlow(PaymentScreenFullAccess.this, Utility.threemonths, PURCHSE_REQUEST, mPurchaseFinishedListener, null);
-                } catch (IabHelper.IabAsyncInProgressException e) {
-                    e.printStackTrace();
-                    Toast.makeText(PaymentScreenFullAccess.this, "Please retry in a few seconds.", Toast.LENGTH_SHORT).show();
-                }
+
             }
         });
         mHelper = new IabHelper(PaymentScreenFullAccess.this, Utility.sharedKey);
@@ -128,40 +87,34 @@ public class PaymentScreenFullAccess extends Activity {
                                    });
 
     }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mHelper != null) try {
+
+        // very important:
+        Log.d("", "Destroying helper.");
+        if (mHelper != null) {
             mHelper.dispose();
-        } catch (IabHelper.IabAsyncInProgressException e) {
-            e.printStackTrace();
+            mHelper = null;
         }
-        mHelper = null;
     }
-
     @Override
-    public void onActivityResult(int requestCode, int resultCode,
-                                 Intent data) {
-        try {
-            if (!mHelper.handleActivityResult(requestCode,
-                    resultCode, data)) {
-                super.onActivityResult(requestCode, resultCode, data);
-            }
-        } catch (IabHelper.IabAsyncInProgressException e) {
-            e.printStackTrace();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("", "onActivityResult(" + requestCode + "," + resultCode + "," + data);
+        if (mHelper == null) return;
+
+        // Pass on the activity result to the helper for handling
+        if (!mHelper.handleActivityResult(requestCode, resultCode, data)) {
+            // not handled, so handle it ourselves (here's where you'd
+            // perform any handling of activity results not related to in-app
+            // billing...
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+        else {
+            Log.d("", "onActivityResult handled by IABUtil.");
         }
     }
 
-    public void consumeItem() throws IabHelper.IabAsyncInProgressException {
-        mHelper.queryInventoryAsync(mReceivedInventoryListener);
-    }
 
-    boolean verifyDeveloperPayload(Purchase p) {
-        String payload = p.getDeveloperPayload();
-
-
-        return true;
-    }
 
 }

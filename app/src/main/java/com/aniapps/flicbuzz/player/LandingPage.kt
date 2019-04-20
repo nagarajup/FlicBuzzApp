@@ -23,6 +23,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import com.aniapps.flicbuzz.activities.AboutUs
 import com.aniapps.flicbuzz.R
+import com.aniapps.flicbuzz.activities.PaymentScreen_New
 import com.aniapps.flicbuzz.activities.SignIn
 import com.aniapps.flicbuzz.adapters.SectionListDataAdapter
 import com.aniapps.flicbuzz.models.MyVideos
@@ -324,7 +325,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 startActivity(myintent)
             }
             R.id.nav_package-> {
-                val myintent = Intent(this@LandingPage, AboutUs::class.java)
+                val myintent = Intent(this@LandingPage, PaymentScreen_New::class.java)
                 myintent.putExtra("title", "Packages")
                 myintent.putExtra("url", "")
                 startActivity(myintent)

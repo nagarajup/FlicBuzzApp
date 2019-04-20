@@ -35,7 +35,7 @@ package com.aniapps.flicbuzz.util;
  * Base64 converter class. This code is not a complete MIME encoder;
  * it simply converts binary data to base64 data and back.
  *
- * <p>Note {@linkCharBase64} is a GWT-compatible implementation of this
+ * <p>Note {@link CharBase64} is a GWT-compatible implementation of this
  * class.
  */
 public class Base64 {
@@ -270,7 +270,7 @@ public class Base64 {
      * @since 1.4
      */
     public static String encode(byte[] source, int off, int len, byte[] alphabet,
-                                boolean doPadding) {
+            boolean doPadding) {
         byte[] outBuff = encode(source, off, len, alphabet, Integer.MAX_VALUE);
         int outLen = outBuff.length;
 

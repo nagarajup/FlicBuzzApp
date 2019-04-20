@@ -29,7 +29,7 @@ public class PaymentScreenLimitedAccess extends Activity {
     IabHelper.QueryInventoryFinishedListener mReceivedInventoryListener
             = new IabHelper.QueryInventoryFinishedListener() {
         public void onQueryInventoryFinished(IabResult result,
-                                             Inventory inventory) throws IabHelper.IabAsyncInProgressException {
+                                             Inventory inventory)  {
 
 
             if (result.isFailure()) {
@@ -88,13 +88,9 @@ public class PaymentScreenLimitedAccess extends Activity {
                 if (!termsofservice.isChecked()) {
                     Toast.makeText(PaymentScreenLimitedAccess.this, "Please check terms of service", Toast.LENGTH_SHORT).show();
                 }else{
-                    try {
                         mHelper.flagEndAsync();
                         mHelper.launchPurchaseFlow(PaymentScreenLimitedAccess.this, Utility.tendaysubs, PURCHSE_REQUEST, mPurchaseFinishedListener, null);
-                    } catch (IabHelper.IabAsyncInProgressException e) {
-                        e.printStackTrace();
-                        Toast.makeText(PaymentScreenLimitedAccess.this, "Please retry in a few seconds.", Toast.LENGTH_SHORT).show();
-                    }
+
                 }
 
             }
@@ -108,11 +104,8 @@ public class PaymentScreenLimitedAccess extends Activity {
                                            } else {
 
                                                Log.v("Limites", "YAY, in app billing set up! " + result);
-                                               try {
                                                    mHelper.queryInventoryAsync(mReceivedInventoryListener); //Getting inventory of purchases and assigning listener
-                                               } catch (IabHelper.IabAsyncInProgressException e) {
-                                                   e.printStackTrace();
-                                               }
+
                                            }
 
                                        }
@@ -122,30 +115,35 @@ public class PaymentScreenLimitedAccess extends Activity {
 
     }
 
-        @Override
-        public void onDestroy () {
-            super.onDestroy();
-            if (mHelper != null) try {
-                mHelper.dispose();
-            } catch (IabHelper.IabAsyncInProgressException e) {
-                e.printStackTrace();
-            }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        // very important:
+        Log.d("", "Destroying helper.");
+        if (mHelper != null) {
+            mHelper.dispose();
             mHelper = null;
         }
+    }
 
-        @Override
-        public void onActivityResult ( int requestCode, int resultCode,
-        Intent data){
-            try {
-                if (!mHelper.handleActivityResult(requestCode,
-                        resultCode, data)) {
-                    super.onActivityResult(requestCode, resultCode, data);
-                }
-            } catch (IabHelper.IabAsyncInProgressException e) {
-                e.printStackTrace();
-            }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("", "onActivityResult(" + requestCode + "," + resultCode + "," + data);
+        if (mHelper == null) return;
+
+        // Pass on the activity result to the helper for handling
+        if (!mHelper.handleActivityResult(requestCode, resultCode, data)) {
+            // not handled, so handle it ourselves (here's where you'd
+            // perform any handling of activity results not related to in-app
+            // billing...
+            super.onActivityResult(requestCode, resultCode, data);
         }
-    public void consumeItem() throws IabHelper.IabAsyncInProgressException {
+        else {
+            Log.d("", "onActivityResult handled by IABUtil.");
+        }
+    }
+    public void consumeItem() {
         mHelper.queryInventoryAsync(mReceivedInventoryListener);
     }
 

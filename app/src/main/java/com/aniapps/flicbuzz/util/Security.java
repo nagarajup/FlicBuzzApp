@@ -16,10 +16,18 @@
 package com.aniapps.flicbuzz.util;
 
 import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 
-import java.security.*;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+import java.security.InvalidKeyException;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.Signature;
+import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 
@@ -41,7 +49,7 @@ public class Security {
     /**
      * Verifies that the data was signed with the given signature, and returns
      * the verified purchase. The data is in JSON format and signed
-     * with a private key. The data also contains the {@linkPurchaseState}
+     * with a private key. The data also contains the {@link PurchaseState}
      * and product ID of the purchase.
      * @param base64PublicKey the base64-encoded public key to use for verifying.
      * @param signedData the signed JSON string (signed, not encrypted)
@@ -67,13 +75,16 @@ public class Security {
      */
     public static PublicKey generatePublicKey(String encodedPublicKey) {
         try {
-            byte[] decodedKey = Base64.decode(encodedPublicKey, Base64.DEFAULT);
+            byte[] decodedKey = Base64.decode(encodedPublicKey);
             KeyFactory keyFactory = KeyFactory.getInstance(KEY_FACTORY_ALGORITHM);
             return keyFactory.generatePublic(new X509EncodedKeySpec(decodedKey));
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         } catch (InvalidKeySpecException e) {
             Log.e(TAG, "Invalid key specification.");
+            throw new IllegalArgumentException(e);
+        } catch (Base64DecoderException e) {
+            Log.e(TAG, "Base64 decoding failed.");
             throw new IllegalArgumentException(e);
         }
     }
@@ -88,18 +99,12 @@ public class Security {
      * @return true if the data and signature match
      */
     public static boolean verify(PublicKey publicKey, String signedData, String signature) {
-        byte[] signatureBytes;
+        Signature sig;
         try {
-            signatureBytes = Base64.decode(signature, Base64.DEFAULT);
-        } catch (IllegalArgumentException e) {
-            Log.e(TAG, "Base64 decoding failed.");
-            return false;
-        }
-        try {
-            Signature sig = Signature.getInstance(SIGNATURE_ALGORITHM);
+            sig = Signature.getInstance(SIGNATURE_ALGORITHM);
             sig.initVerify(publicKey);
             sig.update(signedData.getBytes());
-            if (!sig.verify(signatureBytes)) {
+            if (!sig.verify(Base64.decode(signature))) {
                 Log.e(TAG, "Signature verification failed.");
                 return false;
             }
@@ -110,6 +115,8 @@ public class Security {
             Log.e(TAG, "Invalid key specification.");
         } catch (SignatureException e) {
             Log.e(TAG, "Signature exception.");
+        } catch (Base64DecoderException e) {
+            Log.e(TAG, "Base64 decoding failed.");
         }
         return false;
     }
