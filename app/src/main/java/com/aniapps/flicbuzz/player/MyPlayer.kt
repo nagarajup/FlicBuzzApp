@@ -23,8 +23,8 @@ import android.view.*
 import android.view.animation.AnimationUtils
 import android.widget.*
 import com.aniapps.flicbuzz.R
-import com.aniapps.flicbuzz.adapters.MySpannable
-import com.aniapps.flicbuzz.adapters.SectionListDataAdapter
+import com.aniapps.flicbuzz.utils.MySpannable
+import com.aniapps.flicbuzz.adapters.MainAdapter
 import com.aniapps.flicbuzz.models.MyVideos
 import com.aniapps.flicbuzz.networkcall.APIResponse
 import com.aniapps.flicbuzz.networkcall.RetrofitClient
@@ -419,7 +419,7 @@ class MyPlayer : AppCompatActivity() {
 
 
     internal lateinit var myvideos: ArrayList<MyVideos>
-    internal lateinit var adapter: SectionListDataAdapter
+    internal lateinit var adapter: MainAdapter
 
     private fun LoginApi(pno: Int) {
        // loading = true
@@ -464,7 +464,7 @@ class MyPlayer : AppCompatActivity() {
                             }*/
                            /* if (pno == 1) {*/
                                 my_recycler_view.setHasFixedSize(true)
-                                adapter = SectionListDataAdapter(this@MyPlayer, myvideos, "player")
+                                adapter = MainAdapter(this@MyPlayer, myvideos, "player")
                                 layoutManager = LinearLayoutManager(applicationContext)
                                 my_recycler_view.setLayoutManager(layoutManager)
                                 my_recycler_view.setNestedScrollingEnabled(false)

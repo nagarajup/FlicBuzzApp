@@ -11,15 +11,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import com.aniapps.flicbuzz.player.MyPlayer
 import com.aniapps.flicbuzz.R
 import com.aniapps.flicbuzz.models.MyVideos
 import com.squareup.picasso.Picasso
 
 
-class SectionListDataAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var from: String) :
-    RecyclerView.Adapter<SectionListDataAdapter.SingleItemRowHolder>() {
+class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var from: String) :
+    RecyclerView.Adapter<MainAdapter.SingleItemRowHolder>() {
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): SingleItemRowHolder {
         val v = LayoutInflater.from(viewGroup.context).inflate(R.layout.list_single_card, null)
         return SingleItemRowHolder(v)
@@ -71,33 +70,10 @@ class SectionListDataAdapter(var context: Activity, var itemsList: ArrayList<MyV
                 context.finish()
                 it.context.startActivity(player_in)
                 context.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-
-                // Toast.makeText(it.context,"Clicked on "+singleItem.headline,Toast.LENGTH_SHORT).show()
             }
         })
 
-       /* holder.tvTitle.setOnClickListener({
-            if (from.equals("main")) {
-                val player_in = Intent(it.context, MyPlayer::class.java)
-                player_in.putExtra("url", singleItem.video_filename)
-                player_in.putExtra("title", singleItem.headline)
-                player_in.putExtra("desc", singleItem.description)
-                player_in.putExtra("id", singleItem.id)
-                it.context.startActivity(player_in)
-                context.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-            } else {
-                val player_in = Intent(it.context, MyPlayer::class.java)
-                player_in.putExtra("url", singleItem.video_filename)
-                player_in.putExtra("title", singleItem.headline)
-                player_in.putExtra("desc", singleItem.description)
-                player_in.putExtra("id", singleItem.id)
-                context.finish()
-                it.context.startActivity(player_in)
-                context.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 
-                // Toast.makeText(it.context,"Clicked on "+singleItem.headline,Toast.LENGTH_SHORT).show()
-            }
-        })*/
     }
 
     override fun getItemCount(): Int {

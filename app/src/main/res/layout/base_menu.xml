@@ -99,6 +99,38 @@
             android:layout_height="wrap_content"
             android:text="@string/nav_privacy"/>
 
+
+    <TextView
+            android:id="@+id/nav_terms"
+            android:drawableLeft="@mipmap/fav_icon_video"
+            android:drawablePadding="5sp"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:padding="10sp"
+            android:textSize="16sp"
+            android:fontFamily="@font/cera_gr_medium"
+            android:layout_width="match_parent"
+            android:drawableTint="@color/darkgray"
+            android:textColor="@color/darkgray"
+            android:layout_height="wrap_content"
+            android:text="@string/nav_terms"/>
+
+
+    <TextView
+            android:id="@+id/nav_contact"
+            android:drawableLeft="@mipmap/fav_icon_video"
+            android:drawablePadding="5sp"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:padding="10sp"
+            android:textSize="16sp"
+            android:fontFamily="@font/cera_gr_medium"
+            android:layout_width="match_parent"
+            android:drawableTint="@color/darkgray"
+            android:textColor="@color/darkgray"
+            android:layout_height="wrap_content"
+            android:text="@string/nav_feedback"/>
+
     <View android:layout_width="match_parent"
           android:layout_height="1sp"
           android:background="@color/gray"/>
