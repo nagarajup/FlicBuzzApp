@@ -30,7 +30,7 @@
                         android:id="@+id/itemImage"
                         android:layout_width="match_parent"
                         android:layout_height="180sp"
-
+                        android:scaleType="fitXY"
                         android:src="@mipmap/launcher_icon"/>
 
                 <ImageView android:id="@+id/iv_playVideo"

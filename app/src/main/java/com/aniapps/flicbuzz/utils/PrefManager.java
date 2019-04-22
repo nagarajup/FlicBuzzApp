@@ -94,14 +94,7 @@ public class PrefManager {
 
     public String plan = "";
 
-    public String getPayment_status() {
-        return pref.getString("payment_status", "");
-    }
 
-    public void setPayment_status(String payment_status) {
-        editor.putString("payment_status", payment_status);
-        editor.commit();
-    }
 
     public String getPlan_type() {
         return pref.getString("plan_type", "");

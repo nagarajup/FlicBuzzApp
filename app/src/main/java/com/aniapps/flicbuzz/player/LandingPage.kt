@@ -5,9 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.os.Message
-import android.support.design.widget.NavigationView
-import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.MenuItemCompat
@@ -26,10 +23,11 @@ import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import com.aniapps.flicbuzz.activities.AboutUs
 import com.aniapps.flicbuzz.R
+import com.aniapps.flicbuzz.activities.AboutUs
 import com.aniapps.flicbuzz.activities.PaymentScreen_New
 import com.aniapps.flicbuzz.activities.SignIn
+import com.aniapps.flicbuzz.activities.UpdateProfileActivity
 import com.aniapps.flicbuzz.adapters.AutoSuggestAdapter
 import com.aniapps.flicbuzz.adapters.MainAdapter
 import com.aniapps.flicbuzz.adapters.SearchAdapter
@@ -43,9 +41,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import org.json.JSONArray
 import org.json.JSONObject
-import org.w3c.dom.Text
-import java.lang.Exception
 import java.util.ArrayList
+import kotlin.collections.HashMap
+import kotlin.collections.set
 import android.widget.SearchView.OnQueryTextListener as OnQueryTextListener1
 
 class LandingPage : AppCompatActivity(), View.OnClickListener {
@@ -58,6 +56,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
     internal var layoutManager: LinearLayoutManager? = null
     internal var total_records = ""
     private var pbr: ProgressBar? = null
+    internal lateinit var imageView: ImageView
     internal lateinit var nav_about: TextView
     internal lateinit var nav_profile: TextView
     internal lateinit var nav_privacy: TextView
@@ -85,7 +84,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         // val jsonArray = intent.getStringExtra("jsonArray")
         //myData(jsonArray)
 
-       // Toast.makeText(this, PrefManager.getIn().getPayment_data().toString(), Toast.LENGTH_SHORT).show()
+        // Toast.makeText(this, PrefManager.getIn().getPayment_data().toString(), Toast.LENGTH_SHORT).show()
         val toggle = ActionBarDrawerToggle(
             this, drawer_layout, toolbar,
             R.string.navigation_drawer_open,
@@ -99,12 +98,13 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         my_recycler_view = findViewById<View>(R.id.my_recyclerview) as RecyclerView
         search_list = findViewById<ListView>(R.id.search_list)
 
-       search_list.setOnItemClickListener { adapterView, view, i, l ->
-           search_list.visibility = View.GONE
-           searchEditText.setText(mySearchData.get(i).name)
-           Toast.makeText(this@LandingPage,"ID: "+mySearchData.get(i).search_id,Toast.LENGTH_SHORT).show()
-       }
+        search_list.setOnItemClickListener { adapterView, view, i, l ->
+            search_list.visibility = View.GONE
+            searchEditText.setText(mySearchData.get(i).name)
+            Toast.makeText(this@LandingPage, "ID: " + mySearchData.get(i).search_id, Toast.LENGTH_SHORT).show()
+        }
         tv_profile_name = findViewById<TextView>(R.id.tv_profile_name);
+        imageView = findViewById<ImageView>(R.id.imageView);
         tv_profile_email = findViewById<TextView>(R.id.tv_profile_email);
         tv_profile_plan = findViewById<TextView>(R.id.tv_profile_plan);
         nav_about = findViewById<TextView>(R.id.nav_about);
@@ -132,17 +132,17 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         switchCompat = findViewById<SwitchCompat>(R.id.nav_language)
         tv_profile_name.setText(PrefManager.getIn().getName())
         tv_profile_email.setText(PrefManager.getIn().getEmail())
-        if(PrefManager.getIn().getPlan().equals("3")) {
+        if (PrefManager.getIn().getPlan().equals("3")) {
             tv_profile_plan.setText("Plan : Three Months")
-        }else   if(PrefManager.getIn().getPlan().equals("6")) {
+        } else if (PrefManager.getIn().getPlan().equals("6")) {
             tv_profile_plan.setText("Plan : Six Months")
-        }else   if(PrefManager.getIn().getPlan().equals("12")) {
+        } else if (PrefManager.getIn().getPlan().equals("12")) {
             tv_profile_plan.setText("Plan : One Year")
         }
-        if(PrefManager.getIn().language.equals("Hindi")){
-            switchCompat.isChecked=false
-        }else {
-            switchCompat.isChecked=true
+        if (PrefManager.getIn().language.equals("Hindi")) {
+            switchCompat.isChecked = false
+        } else {
+            switchCompat.isChecked = true
         }
         switchCompat.text = "Language: " + PrefManager.getIn().language
         switchCompat.setOnCheckedChangeListener({ _, isChecked ->
@@ -165,7 +165,10 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         )
         myvideos.clear()
         apiCall()
-
+        imageView.setOnClickListener(View.OnClickListener {
+            val myintent = Intent(this@LandingPage, UpdateProfileActivity::class.java)
+            startActivity(myintent)
+        })
         my_recycler_view!!.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -238,76 +241,6 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
     lateinit var searchFilters: ArrayList<String>
     lateinit var mySearchData: ArrayList<SearchData>
     @SuppressLint("RestrictedApi")
-
-    /*override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        this.menu = menu;
-        menuInflater.inflate(R.menu.main, menu)
-        val item = menu!!.findItem(R.id.action_search)
-        val searchView = MenuItemCompat.getActionView(item) as SearchView
-        val mSearchAutoComplete =
-            searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text) as SearchView.SearchAutoComplete
-        autoSuggestAdapter = AutoSuggestAdapter(
-            this,
-            android.R.layout.simple_dropdown_item_1line
-        )
-
-        mSearchAutoComplete.setDropDownBackgroundResource(R.color.white);
-        // mSearchAutoComplete.setDropDownAnchor(R.id.action_search);
-        mSearchAutoComplete.setThreshold(0)
-        mSearchAutoComplete.setAdapter(autoSuggestAdapter)
-        mSearchAutoComplete.setOnItemClickListener(
-            AdapterView.OnItemClickListener { parent, view, position, id ->
-                Log.e(
-                    "@@@", "" +
-                            autoSuggestAdapter.getObject(
-                                position
-                            )
-                )
-                mSearchAutoComplete.setText(autoSuggestAdapter.getObject(position))
-            })
-
-        mSearchAutoComplete.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                handler.removeMessages(TRIGGER_AUTO_COMPLETE)
-                handler.sendEmptyMessageDelayed(
-                    TRIGGER_AUTO_COMPLETE,
-                    AUTO_COMPLETE_DELAY
-                )
-            }
-
-            override fun afterTextChanged(s: Editable) {
-
-            }
-        })
-        handler = Handler(Handler.Callback { msg ->
-            if (msg.what == TRIGGER_AUTO_COMPLETE) {
-                if (!TextUtils.isEmpty(mSearchAutoComplete.getText())) {
-                    makeApiCall(mSearchAutoComplete.getText().toString())
-                }
-            }
-            false
-        })
-
-
-        *//* val searchItems=ArrayList<String>()
-         searchItems.add("asdfsdf")
-         searchItems.add("werw")
-         searchItems.add("fsd")
-         searchItems.add("erer")
-         searchItems.add("asdf")
-         searchItems.add("thyr")
-        val adapter = ArrayAdapter<String>(this@LandingPage, android.R.layout.simple_list_item_1, searchItems);
-         mSearchAutoComplete.setAdapter(adapter);*//*
-
-        return true
-
-
-    }*/
-
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
 
@@ -527,7 +460,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 myintent.putExtra("url", "")
                 startActivity(myintent)
             }
-            R.id.nav_package-> {
+            R.id.nav_package -> {
                 val myintent = Intent(this@LandingPage, PaymentScreen_New::class.java)
                 myintent.putExtra("title", "Packages")
                 myintent.putExtra("url", "")

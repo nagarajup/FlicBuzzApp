@@ -48,7 +48,7 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
 
         Picasso.with(context)
             .load(singleItem.thumb)
-            .fit().centerCrop()
+            .fit().centerInside()
             .error(R.mipmap.launcher_icon)
             .into(holder.itemImage);
 

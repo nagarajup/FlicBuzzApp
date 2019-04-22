@@ -107,7 +107,6 @@ public class LoginActivity extends AppCompatActivity {
                     if (status == 1) {
                         PrefManager.getIn().setLogin(true);
                         PrefManager.getIn().saveUserId(jsonObject.getString("user_id"));
-                        PrefManager.getIn().setPayment_status(jsonObject.getString("payment_status"));
                         PrefManager.getIn().setPayment_data(jsonObject.getString("payment_data"));
                         PrefManager.getIn().setSubscription_start_date(jsonObject.getString("subscription_start_date"));
                         PrefManager.getIn().setSubscription_end_date(jsonObject.getString("subscription_end_date"));

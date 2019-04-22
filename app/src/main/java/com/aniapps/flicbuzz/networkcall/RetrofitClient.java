@@ -10,7 +10,9 @@ import com.aniapps.flicbuzz.BuildConfig;
 import com.aniapps.flicbuzz.R;
 import com.aniapps.flicbuzz.utils.FlickLoading;
 import com.aniapps.flicbuzz.utils.PrefManager;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
+import org.json.JSONObject;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -104,7 +106,7 @@ public class RetrofitClient extends AppCompatActivity {
         apiService.coreApiResult(context.getResources().getString(R.string.core_live) + "/" + postParams.get("action"), postParams).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, final Response<String> res) {
-                //Log.e("RES", "res" + res.body());
+                Log.e("RES", "res" + res.body());
                 if (from.length() == 0) {
                     try {
                         runOnUiThread(new Runnable() {
@@ -151,5 +153,48 @@ public class RetrofitClient extends AppCompatActivity {
                 api_res.onFailure(t.getMessage());
             }
         });
+    }
+    //Images
+    public void getNoCryptResImages(final Context context, final Map<String, String> postParams,
+                                    final MultipartBody.Part body, final APIResponse api_res) {
+        apiService = RetrofitClient.getClient(context).create(APIService.class);
+        postParams.put("version_code", "" + BuildConfig.VERSION_CODE);
+        postParams.put("device_id", PrefManager.getIn().getDeviceId());
+        postParams.put("user_id", PrefManager.getIn().getUserId());
+        Log.e(TAG, "post params" + postParams);
+        if (body != null) {
+            apiService.uploadImage(context.getResources().getString(R.string.core_live)+ "/" + postParams.get("action"), body, postParams).enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, final Response<String> res) {
+                    if (res.isSuccessful()) {
+                        try {
+                            if (null != res.body() && !res.body().equals("")) {
+                                JSONObject jObj = new JSONObject(res.body());
+                                int status = jObj.getInt("status");
+                                switch (status) {
+                                    case 25:
+                                        retrofit = null;
+                                        break;
+                                    default:
+                                        api_res.onSuccess(res.body());
+                                        break;
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            api_res.onFailure(e.getMessage());
+                        }
+                    } else {
+                        api_res.onFailure(res.message());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    retrofit = null;
+                    api_res.onFailure(t.getMessage());
+                }
+            });
+        }
     }
 }

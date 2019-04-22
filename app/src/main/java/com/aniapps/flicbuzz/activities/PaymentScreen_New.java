@@ -302,7 +302,6 @@ public class PaymentScreen_New extends Activity {
                     jsonObject = new JSONObject(result);
                     int status = jsonObject.getInt("status");
                     if (status == 1) {
-                        PrefManager.getIn().setPayment_status("1");
                         PrefManager.getIn().setPayment_data(params.get("payment_data"));
                         PrefManager.getIn().setSubscription_start_date(params.get("subscription_start_date"));
                         PrefManager.getIn().setSubscription_end_date(params.get("subscription_end_date"));
