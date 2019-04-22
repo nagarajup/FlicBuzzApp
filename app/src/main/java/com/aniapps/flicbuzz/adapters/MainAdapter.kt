@@ -2,6 +2,7 @@ package com.aniapps.flicbuzz.adapters
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
@@ -19,6 +20,9 @@ import com.squareup.picasso.Picasso
 
 class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var from: String) :
     RecyclerView.Adapter<MainAdapter.SingleItemRowHolder>() {
+
+    internal var imageheight = 0f
+   internal var imageItem_height_calculation=0
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): SingleItemRowHolder {
         val v = LayoutInflater.from(viewGroup.context).inflate(R.layout.list_single_card, null)
         return SingleItemRowHolder(v)
@@ -45,6 +49,19 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
         } else {
             holder.tvDesc.setTextColor(ContextCompat.getColor(context, R.color.lightgray))
         }
+       /* holder.itemImage.requestLayout()
+        holder.itemImage.layoutParams.height=200;*/
+
+       /* if (imageItem_height_calculation == 0) {
+            imageItem_height_calculation = 1
+            holder.itemImage.getLayoutParams().height = (((context
+                .resources.displayMetrics.widthPixels - dpToPx(10, context)) / 2)  / 1.33).toInt()
+            imageheight = (((context
+                .resources.displayMetrics.widthPixels - dpToPx(10, context)) / 2)  / 1.33).toInt().toFloat()
+        } else {
+            holder.itemImage.getLayoutParams().height = imageheight.toInt()
+        }*/
+
 
         Picasso.with(context)
             .load(singleItem.thumb)
@@ -74,6 +91,11 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
         })
 
 
+    }
+
+    fun dpToPx(dp: Int, context: Context): Int {
+        val scale = context.resources.displayMetrics.density
+        return (dp * scale + 0.5f).toInt()
     }
 
     override fun getItemCount(): Int {
