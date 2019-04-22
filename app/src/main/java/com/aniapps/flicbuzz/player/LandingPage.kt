@@ -71,6 +71,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
     internal lateinit var tv_profile_email: TextView
     internal lateinit var tv_profile_plan: TextView
     internal lateinit var switchCompat: SwitchCompat
+    internal var tag_id: String = "";
 
     internal var pageNo = 1
     internal var my_recycler_view: RecyclerView? = null
@@ -98,9 +99,19 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         search_list = findViewById<ListView>(R.id.search_list)
 
         search_list.setOnItemClickListener { adapterView, view, i, l ->
-            search_list.visibility = View.GONE
-            searchEditText.setText(mySearchData.get(i).name)
-            Toast.makeText(this@LandingPage, "ID: " + mySearchData.get(i).search_id, Toast.LENGTH_SHORT).show()
+            if(!searchFilters.get(0).toString().equals("No Search results found")) {
+                search_list.visibility = View.GONE
+                searchEditText.setText(mySearchData.get(i).display)
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(currentFocus.windowToken, 0)
+                if (mySearchData.get(i).type.equals("tag")) {
+                    tag_id = mySearchData.get(i).search_id
+                    pageNo = 1
+                    apiCall(tag_id);
+                } else {
+                    getVidoeById(mySearchData.get(i).search_id)
+                }
+            }
         }
         tv_profile_name = findViewById<TextView>(R.id.tv_profile_name);
         imageView = findViewById<ImageView>(R.id.imageView);
@@ -152,7 +163,8 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_h))
             }
             pageNo = 1
-            apiCall()
+
+            apiCall(tag_id);
             switchCompat.text = "Language: " + PrefManager.getIn().language
             drawer_layout.closeDrawer(GravityCompat.START)
         })
@@ -163,7 +175,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
             android.graphics.PorterDuff.Mode.MULTIPLY
         )
         myvideos.clear()
-        apiCall()
+        apiCall(tag_id)
         imageView.setOnClickListener(View.OnClickListener {
             val myintent = Intent(this@LandingPage, UpdateProfileActivity::class.java)
             startActivity(myintent)
@@ -182,7 +194,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                         val firstVisibleItem = layoutManager!!.findFirstVisibleItemPosition()
                         if (visibleItemCount + firstVisibleItem >= totalItemCount) {
                             pageNo++
-                            apiCall()
+                            apiCall(tag_id)
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -196,7 +208,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
     internal lateinit var search: android.widget.SearchView
 
     override fun onResume() {
-        if(!PrefManager.getIn().getProfile_pic().equals("")){
+        if (!PrefManager.getIn().getProfile_pic().equals("")) {
             Picasso.with(this@LandingPage)
                 .load(PrefManager.getIn().getProfile_pic())
                 .fit().centerInside()
@@ -268,14 +280,14 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
             searchFilters
         )
 
-        search_list!!.adapter = mHighlightArrayAdapter;
+        search_list.adapter = mHighlightArrayAdapter;
         //  search_list!!.adapter=autoSuggestAdapter
         searchEditText = MenuItemCompat.getActionView(menuItem).findViewById(R.id.edittext) as EditText
         menuView = MenuItemCompat.getActionView(menuItem).findViewById(R.id.menu_view) as FrameLayout
         clear = MenuItemCompat.getActionView(menuItem).findViewById(R.id.clear) as ImageView
         clear.setOnClickListener {
             searchEditText.setText("")
-            search_list!!.visibility = View.GONE
+            search_list.visibility = View.GONE
             mHighlightArrayAdapter.notifyDataSetChanged()
             MenuItemCompat.collapseActionView(menuItem)
         }
@@ -323,7 +335,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
                 }
                 menu.findItem(R.id.action_language).setVisible(false)
-                search_list!!.visibility = View.VISIBLE
+                search_list.visibility = View.VISIBLE
                 return true
             }
 
@@ -331,8 +343,9 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(currentFocus.windowToken, 0)
                 searchEditText.setText("")
-                search_list!!.visibility = View.GONE
-
+                search_list.visibility = View.GONE
+                tag_id = "";
+                apiCall(tag_id)
                 menu.findItem(R.id.action_language).setVisible(true)
 
                 return true
@@ -362,15 +375,20 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                             mySearchData = ArrayList<SearchData>()
                             val jsonArray = jobj.getJSONArray("data")
 
-                            for (i in 0 until jsonArray.length()) {
-                                val row = jsonArray.getJSONObject(i)
-                                var mysdata = Gson().fromJson(
-                                    jsonArray.get(i).toString(),
-                                    SearchData::class.java
-                                )
-                                mySearchData.add(mysdata)
-                                searchFilters.add(row.getString("display"))
+                            if (jsonArray.length() > 0) {
+                                for (i in 0 until jsonArray.length()) {
+                                    val row = jsonArray.getJSONObject(i)
+                                    var mysdata = Gson().fromJson(
+                                        jsonArray.get(i).toString(),
+                                        SearchData::class.java
+                                    )
+                                    mySearchData.add(mysdata)
+                                    searchFilters.add(row.getString("display"))
+                                }
+                            } else {
+                                searchFilters.add("No Search results found")
                             }
+
 
                             mHighlightArrayAdapter = SearchAdapter(
                                 this@LandingPage,
@@ -379,7 +397,8 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                                 searchFilters
                             )
 
-                            search_list!!.adapter = mHighlightArrayAdapter
+
+                            search_list.adapter = mHighlightArrayAdapter
                             mHighlightArrayAdapter.notifyDataSetChanged()
                             //  autoSuggestAdapter.setData(searchFilters)
                             // autoSuggestAdapter.notifyDataSetChanged()
@@ -420,7 +439,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                             R.mipmap.icon_language_e
                         )
                     )
-                    apiCall()
+                    apiCall(tag_id)
                 } else {
                     PrefManager.getIn().language = "Hindi"
                     pageNo = 1
@@ -430,7 +449,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                             R.mipmap.icon_language_h
                         )
                     )
-                    apiCall()
+                    apiCall(tag_id)
                 }
 
             else -> return super.onOptionsItemSelected(item)
@@ -557,9 +576,10 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         lay_feedback_focus.isFocusableInTouchMode = true
         lay_feedback_focus.requestFocus()
 
-        val et_dealer_feedback = Feedback_Dialog.findViewById(R.id.et_dealer_feedback) as EditText
+        val et_sub = Feedback_Dialog.findViewById(R.id.et_subject) as EditText
+        val et_msg = Feedback_Dialog.findViewById(R.id.et_message) as EditText
 
-        et_dealer_feedback.setLines(4)
+        et_msg.setLines(4)
 
 
         val tv_toll_free_number = Feedback_Dialog.findViewById(R.id.tv_toll_free_number) as TextView
@@ -575,24 +595,25 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         val bt_submit_feedback = Feedback_Dialog.findViewById(R.id.btn_feedback_send) as TextView
         val bt_cancel_feedback = Feedback_Dialog.findViewById(R.id.btn_feedback_cancel) as TextView
         bt_submit_feedback.setOnClickListener {
-            if (validateET(et_dealer_feedback)) {
-                et_dealer_feedback.setHint("")
-                et_dealer_feedback.setError("Please enter your message")
+            if (validateET(et_msg)) {
+                et_msg.setHint("")
+                et_msg.setError("Please enter your message")
             } else {
-                if (et_dealer_feedback.getText().toString().length > 5) {
+                if (et_msg.getText().toString().length > 5) {
                     Feedback_Dialog.dismiss()
                     val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(et_dealer_feedback.getWindowToken(), 0)
+                    imm.hideSoftInputFromWindow(et_msg.getWindowToken(), 0)
+                    feedbackApi(et_sub.text.toString(), et_msg.text.toString())
                     // Dealer_Feedback(et_dealer_feedback.getText().toString(), cb_query_option)
                 } else {
-                    et_dealer_feedback.setError("Message length should be greater than 5 characters")
+                    et_msg.setError("Message length should be greater than 5 characters")
                 }
             }
         }
 
         bt_cancel_feedback.setOnClickListener {
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(et_dealer_feedback.getWindowToken(), 0)
+            imm.hideSoftInputFromWindow(et_msg.getWindowToken(), 0)
             Feedback_Dialog.dismiss()
         }
         Feedback_Dialog.show()
@@ -608,12 +629,17 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
 
     internal lateinit var adapter: MainAdapter
 
-    private fun apiCall() {
+    private fun apiCall(tag_id: String) {
         loading = true
         var from = "" as String
         val params = HashMap<String, String>()
-        params["action"] = "home2"
-        params["plan"] = "free"
+        if (tag_id.equals("")) {
+            params["action"] = "home2"
+            params["plan"] = "free"
+        } else {
+            params["action"] = "getvideos_by_tags"
+            params["tag_id"] = tag_id
+        }
         params["page_number"] = "" + pageNo
         if (pageNo == 1) {
             from = "";
@@ -670,5 +696,91 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 }
             })
     }
+
+    private fun feedbackApi(subject: String, msg: String) {
+
+        val params = HashMap<String, String>()
+
+        params["action"] = "contact_us"
+        params["name"] = PrefManager.getIn().getName()
+        params["email"] = PrefManager.getIn().getEmail()
+        params["subject"] = subject
+        params["message"] = msg
+
+
+        RetrofitClient.getInstance()
+            .doBackProcess(this@LandingPage, params, "", object : APIResponse {
+                override fun onSuccess(res: String?) {
+                    try {
+                        val jobj = JSONObject(res)
+                        val status = jobj.getInt("status")
+                        val details = jobj.getString("details")
+                        if (status == 1) {
+                            Toast.makeText(this@LandingPage, "" + jobj.getString("message"), Toast.LENGTH_LONG).show()
+
+                        } else {
+                            Toast.makeText(this@LandingPage, "status" + details, Toast.LENGTH_LONG).show()
+                        }
+
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+
+                    }
+                }
+
+                override fun onFailure(res: String?) {
+                    Toast.makeText(this@LandingPage, "status" + res, Toast.LENGTH_LONG).show()
+
+                }
+            })
+    }
+
+
+    private fun getVidoeById(id: String) {
+
+        val params = HashMap<String, String>()
+
+        params["action"] = "get_video_by_id"
+        params["video_id"] = id
+
+        RetrofitClient.getInstance()
+            .doBackProcess(this@LandingPage, params, "", object : APIResponse {
+                override fun onSuccess(res: String?) {
+                    try {
+                        val jobj = JSONObject(res)
+                        val status = jobj.getInt("status")
+                        val details = jobj.getString("details")
+                        if (status == 1) {
+                            val data = jobj.getJSONObject("data")
+                            val videodata = data.getJSONObject("video")
+                            val player_in = Intent(this@LandingPage, MyPlayer::class.java)
+                            player_in.putExtra(
+                                "url",
+                                videodata.getString("https://www.flicbuzz.com/vendor_videos/converted/vendor_3/video_57_20190402_1321.mp4.m3u8")
+                            )
+                            player_in.putExtra("title", videodata.getString("headline"))
+                            player_in.putExtra("desc", videodata.getString("description"))
+                            player_in.putExtra("id", videodata.getString("id"))
+                            startActivity(player_in)
+                            overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+                            Toast.makeText(this@LandingPage, "" + jobj.getString("message"), Toast.LENGTH_LONG).show()
+
+                        } else {
+                            Toast.makeText(this@LandingPage, "status" + details, Toast.LENGTH_LONG).show()
+                        }
+
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+
+                    }
+                }
+
+                override fun onFailure(res: String?) {
+                    Toast.makeText(this@LandingPage, "status" + res, Toast.LENGTH_LONG).show()
+
+                }
+            })
+    }
+
 
 }

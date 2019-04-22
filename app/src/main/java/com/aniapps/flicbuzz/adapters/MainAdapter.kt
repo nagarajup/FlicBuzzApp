@@ -12,10 +12,15 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import com.aniapps.flicbuzz.player.MyPlayer
 import com.aniapps.flicbuzz.R
 import com.aniapps.flicbuzz.models.MyVideos
+import com.aniapps.flicbuzz.networkcall.APIResponse
+import com.aniapps.flicbuzz.networkcall.RetrofitClient
+import com.aniapps.flicbuzz.utils.PrefManager
 import com.squareup.picasso.Picasso
+import org.json.JSONObject
 
 
 class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var from: String) :
@@ -70,29 +75,58 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
             .into(holder.itemImage);
 
         holder.lay_card.setOnClickListener({
-            if (from.equals("main")) {
-                val player_in = Intent(it.context, MyPlayer::class.java)
-                player_in.putExtra("url", singleItem.video_filename)
-                player_in.putExtra("title", singleItem.headline)
-                player_in.putExtra("desc", singleItem.description)
-                player_in.putExtra("id", singleItem.id)
-                it.context.startActivity(player_in)
-                context.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-            } else {
-                val player_in = Intent(it.context, MyPlayer::class.java)
-                player_in.putExtra("url", singleItem.video_filename)
-                player_in.putExtra("title", singleItem.headline)
-                player_in.putExtra("desc", singleItem.description)
-                player_in.putExtra("id", singleItem.id)
-                context.finish()
-                it.context.startActivity(player_in)
-                context.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-            }
+            impressionTracker(from,singleItem)
         })
 
 
     }
 
+    private fun impressionTracker(from:String,myVideo:MyVideos) {
+        val params = HashMap<String, String>()
+        params["action"] = "video_impression_tracker"
+        params["video_id"] = myVideo.id
+        RetrofitClient.getInstance()
+            .doBackProcess(context, params, "", object : APIResponse {
+                override fun onSuccess(res: String?) {
+                    try {
+                        val jobj = JSONObject(res)
+                        val status = jobj.getInt("status")
+                        val details = jobj.getString("details")
+                        if (status == 1) {
+                            if (from.equals("main")) {
+                                val player_in = Intent(context, MyPlayer::class.java)
+                                player_in.putExtra("url", myVideo.video_filename)
+                                player_in.putExtra("title", myVideo.headline)
+                                player_in.putExtra("desc", myVideo.description)
+                                player_in.putExtra("id", myVideo.id)
+                                context.startActivity(player_in)
+                                context.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+                            } else {
+                                val player_in = Intent(context, MyPlayer::class.java)
+                                player_in.putExtra("url", myVideo.video_filename)
+                                player_in.putExtra("title", myVideo.headline)
+                                player_in.putExtra("desc", myVideo.description)
+                                player_in.putExtra("id", myVideo.id)
+                                context.finish()
+                                context.startActivity(player_in)
+                                context.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+                            }
+                        } else {
+                            Toast.makeText(context, "status" + details, Toast.LENGTH_LONG).show()
+                        }
+
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+
+                    }
+                }
+
+                override fun onFailure(res: String?) {
+                    Toast.makeText(context, "status" + res, Toast.LENGTH_LONG).show()
+
+                }
+            })
+    }
     fun dpToPx(dp: Int, context: Context): Int {
         val scale = context.resources.displayMetrics.density
         return (dp * scale + 0.5f).toInt()

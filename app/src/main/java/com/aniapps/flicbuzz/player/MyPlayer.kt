@@ -8,6 +8,7 @@ import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.os.PersistableBundle
 import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
@@ -28,6 +29,7 @@ import com.aniapps.flicbuzz.adapters.MainAdapter
 import com.aniapps.flicbuzz.models.MyVideos
 import com.aniapps.flicbuzz.networkcall.APIResponse
 import com.aniapps.flicbuzz.networkcall.RetrofitClient
+import com.aniapps.flicbuzz.utils.PrefManager
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.MediaSource
@@ -125,7 +127,7 @@ class MyPlayer : AppCompatActivity() {
         if (savedInstanceState != null) {
             mResumeWindow = savedInstanceState.getInt(STATE_RESUME_WINDOW);
             mResumePosition = savedInstanceState.getLong(STATE_RESUME_POSITION);
-           // mExoPlayerFullscreen = savedInstanceState.getBoolean(STATE_PLAYER_FULLSCREEN);
+            // mExoPlayerFullscreen = savedInstanceState.getBoolean(STATE_PLAYER_FULLSCREEN);
         }
         Log.e("player title", play_title)
         Log.e("player desc", play_desc)
@@ -145,32 +147,32 @@ class MyPlayer : AppCompatActivity() {
 
         my_recycler_view.setNestedScrollingEnabled(false)
 
-       /* my_recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-            }
+        /* my_recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                 super.onScrollStateChanged(recyclerView, newState)
+             }
 
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
+             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                 super.onScrolled(recyclerView, dx, dy)
 
-                Log.e("####", "scroll 1")
-                if (!loading && myvideos.size > 0 && !scrollFlag) {
-                    try {
+                 Log.e("####", "scroll 1")
+                 if (!loading && myvideos.size > 0 && !scrollFlag) {
+                     try {
 
-                        val visibleItemCount = layoutManager!!.getChildCount()
-                        val totalItemCount = layoutManager!!.getItemCount()
-                        val firstVisibleItem = layoutManager!!.findFirstVisibleItemPosition()
-                        Log.e("####", "scroll 2")
-                        if (visibleItemCount + firstVisibleItem >= totalItemCount) {
-                            pageNo++
-                            LoginApi(pageNo)
-                        }
-                    } catch (e: java.lang.Exception) {
-                        e.printStackTrace()
-                    }
-                }
-            }
-        })*/
+                         val visibleItemCount = layoutManager!!.getChildCount()
+                         val totalItemCount = layoutManager!!.getItemCount()
+                         val firstVisibleItem = layoutManager!!.findFirstVisibleItemPosition()
+                         Log.e("####", "scroll 2")
+                         if (visibleItemCount + firstVisibleItem >= totalItemCount) {
+                             pageNo++
+                             LoginApi(pageNo)
+                         }
+                     } catch (e: java.lang.Exception) {
+                         e.printStackTrace()
+                     }
+                 }
+             }
+         })*/
 
 
 
@@ -207,20 +209,25 @@ class MyPlayer : AppCompatActivity() {
 
         lay_fav.setOnClickListener {
             if (img_fav.getVisibility() == View.VISIBLE) {
-                img_fav.setVisibility(View.GONE);
-                img_fav_done.setVisibility(View.VISIBLE);
-                val animFadeIn = AnimationUtils.loadAnimation(
-                    this@MyPlayer,
-                    R.anim.fav_done
-                );
-                img_fav.startAnimation(animFadeIn);
-                Toast.makeText(this@MyPlayer, "Added into favorites list", Toast.LENGTH_SHORT).show();
+                favAddApi()
+                   /* Handler().postDelayed(Runnable {
+                        img_fav.setVisibility(View.GONE);
+                        img_fav_done.setVisibility(View.VISIBLE);
+                        val animFadeIn = AnimationUtils.loadAnimation(
+                            this@MyPlayer,
+                            R.anim.fav_done
+                        );
+                        img_fav.startAnimation(animFadeIn);
+                    }, 1000)*/
+
             } else {
-                img_fav_done.setVisibility(View.GONE);
-                img_fav.setVisibility(View.VISIBLE);
-                Toast.makeText(this@MyPlayer, "Removed from the favorites list", Toast.LENGTH_SHORT).show();
+                favRemoveApi()
+
+
             }
         }
+
+
 
 
 
@@ -246,6 +253,87 @@ class MyPlayer : AppCompatActivity() {
         dataFactory = DefaultDataSourceFactory(this@MyPlayer, "ua")
 
 
+    }
+
+
+    fun favAddApi() {
+        val params = HashMap<String, String>()
+        params["action"] = "add_favorite"
+        params["video_id"] = play_id
+       // var flag = false
+        RetrofitClient.getInstance()
+            .doBackProcess(this@MyPlayer, params, "online", object : APIResponse {
+                override fun onSuccess(res: String?) {
+                    try {
+                        val jobj = JSONObject(res)
+                        val status = jobj.getInt("status")
+                        val details = jobj.getString("details")
+                        if (status == 1) {
+                            Handler().postDelayed(Runnable {
+                                img_fav.setVisibility(View.GONE);
+                                img_fav_done.setVisibility(View.VISIBLE);
+                                val animFadeIn = AnimationUtils.loadAnimation(
+                                    this@MyPlayer,
+                                    R.anim.fav_done
+                                );
+                                img_fav.startAnimation(animFadeIn);
+                            }, 500)
+                           // flag = true
+                            Toast.makeText(this@MyPlayer, jobj.getString("message"), Toast.LENGTH_SHORT).show();
+                        } else {
+                         //   flag = false
+                            Toast.makeText(this@MyPlayer, "status" + details, Toast.LENGTH_LONG).show()
+                        }
+
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+
+                    }
+                }
+
+                override fun onFailure(res: String?) {
+                   // flag = false
+                    Toast.makeText(this@MyPlayer, "status" + res, Toast.LENGTH_LONG).show()
+
+                }
+            })
+
+        //return flag
+    }
+
+    fun favRemoveApi() {
+        val params = HashMap<String, String>()
+        params["action"] = "remove_favorite"
+        params["video_id"] = play_id
+        RetrofitClient.getInstance()
+            .doBackProcess(this@MyPlayer, params, "online", object : APIResponse {
+                override fun onSuccess(res: String?) {
+                    try {
+                        val jobj = JSONObject(res)
+                        val status = jobj.getInt("status")
+                        val details = jobj.getString("details")
+                        if (status == 1) {
+                            Handler().postDelayed(Runnable {
+                                img_fav_done.setVisibility(View.GONE);
+                                img_fav.setVisibility(View.VISIBLE);
+                            }, 500)
+
+                            Toast.makeText(this@MyPlayer, jobj.getString("message"), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this@MyPlayer, "status" + details, Toast.LENGTH_LONG).show()
+                        }
+
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+
+                    }
+                }
+
+                override fun onFailure(res: String?) {
+                    Toast.makeText(this@MyPlayer, "status" + res, Toast.LENGTH_LONG).show()
+
+                }
+            })
     }
 
     override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
@@ -331,7 +419,7 @@ class MyPlayer : AppCompatActivity() {
                     R.drawable.ic_fullscreen_skrink
                 )
             );
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             mFullScreenIcon.setImageDrawable(
                 ContextCompat.getDrawable(
                     this@MyPlayer,
@@ -422,7 +510,7 @@ class MyPlayer : AppCompatActivity() {
     internal lateinit var adapter: MainAdapter
 
     private fun LoginApi(pno: Int) {
-       // loading = true
+        // loading = true
         var from = "" as String
 
         val params = HashMap<String, String>()
@@ -445,7 +533,7 @@ class MyPlayer : AppCompatActivity() {
                         val details = jobj.getString("details")
 
                         if (status == 1) {
-                           // loading = false
+                            // loading = false
 
                             val jsonArray = jobj.getJSONArray("data")
 //                            Log.e("RES", res)
@@ -459,37 +547,37 @@ class MyPlayer : AppCompatActivity() {
                                 myvideos.add(lead)
                             }
 
-                           /* if (myvideos.size < 20) {
-                                scrollFlag = true
-                            }*/
-                           /* if (pno == 1) {*/
-                                my_recycler_view.setHasFixedSize(true)
-                                adapter = MainAdapter(this@MyPlayer, myvideos, "player")
-                                layoutManager = LinearLayoutManager(applicationContext)
-                                my_recycler_view.setLayoutManager(layoutManager)
-                                my_recycler_view.setNestedScrollingEnabled(false)
-                                my_recycler_view.adapter = adapter
+                            /* if (myvideos.size < 20) {
+                                 scrollFlag = true
+                             }*/
+                            /* if (pno == 1) {*/
+                            my_recycler_view.setHasFixedSize(true)
+                            adapter = MainAdapter(this@MyPlayer, myvideos, "player")
+                            layoutManager = LinearLayoutManager(applicationContext)
+                            my_recycler_view.setLayoutManager(layoutManager)
+                            my_recycler_view.setNestedScrollingEnabled(false)
+                            my_recycler_view.adapter = adapter
 
-                                adapter.notifyDataSetChanged()
-                            } else {
-                                adapter.notifyDataSetChanged()
-                            }
-                       /* } else {
-                            Toast.makeText(this@MyPlayer, "status" + status, Toast.LENGTH_LONG).show()
-                        }*/
+                            adapter.notifyDataSetChanged()
+                        } else {
+                            adapter.notifyDataSetChanged()
+                        }
+                        /* } else {
+                             Toast.makeText(this@MyPlayer, "status" + status, Toast.LENGTH_LONG).show()
+                         }*/
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-                   /* if (pbr!!.visibility == View.VISIBLE) {
-                        pbr!!.visibility = View.GONE
-                    }*/
+                    /* if (pbr!!.visibility == View.VISIBLE) {
+                         pbr!!.visibility = View.GONE
+                     }*/
                 }
 
                 override fun onFailure(res: String?) {
                     Toast.makeText(this@MyPlayer, "status" + res, Toast.LENGTH_LONG).show()
-                   /* if (pbr!!.visibility == View.VISIBLE) {
-                        pbr!!.visibility = View.GONE
-                    }*/
+                    /* if (pbr!!.visibility == View.VISIBLE) {
+                         pbr!!.visibility = View.GONE
+                     }*/
                 }
             })
     }

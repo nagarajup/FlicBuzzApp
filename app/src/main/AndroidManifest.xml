@@ -96,17 +96,6 @@
                   android:label="@string/app_name"
                   android:screenOrientation="portrait"/>
 
-        <service
-                android:name="com.aniapps.flicbuzz.activities.CallDetector"
-                android:enabled="true"
-                android:exported="true">
-
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </service>
-
     </application>
 
 </manifest>

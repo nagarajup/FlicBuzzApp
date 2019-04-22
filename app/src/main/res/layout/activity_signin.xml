@@ -37,13 +37,13 @@
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
                           android:layout_marginTop="10dp"
-                          android:visibility="visible"
+                          android:visibility="gone"
                           android:text="Create an account using"
                           android:lineSpacingExtra="7sp"
                           android:fontFamily="@font/cera_gr_regular"/>
                 <LinearLayout android:orientation="horizontal"
                               android:layout_width="fill_parent"
-                              android:visibility="visible"
+                              android:visibility="gone"
                               android:layout_height="wrap_content"
                               android:layout_marginTop="20dp">
                     <ImageButton android:background="@drawable/rounded_corners"
@@ -63,7 +63,7 @@
                               android:layout_width="fill_parent"
                               android:layout_height="wrap_content"
                               android:layout_marginTop="15dp"
-                              android:visibility="visible"
+                              android:visibility="gone"
                               android:layout_marginRight="20dp">
                     <LinearLayout android:background="#ff707070"
                                   android:layout_width="46dp"

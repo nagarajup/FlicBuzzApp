@@ -84,6 +84,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center|right"
                             android:adjustViewBounds="true"
+                            android:padding="3sp"
                             android:scaleType="fitCenter"
                             android:src="@mipmap/fav_icon_video"/>
 
@@ -95,6 +96,7 @@
                             android:adjustViewBounds="true"
                             android:scaleType="fitCenter"
                             android:visibility="gone"
+                            android:padding="3sp"
                             android:src="@mipmap/fav_selected"/>
                 </FrameLayout>
                 <ImageView

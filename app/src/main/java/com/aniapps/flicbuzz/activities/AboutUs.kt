@@ -29,9 +29,15 @@ class AboutUs : AppCompatActivity() {
         webview = findViewById<WebView>(R.id.web_page)
         tv_note = findViewById<TextView>(R.id.tv_note)
 
-        if (intent.getStringExtra("url").equals("")) {
+        if (intent.getStringExtra("url").equals(""))
+        {
             tv_note.visibility = View.VISIBLE
             webview.visibility = View.GONE
+            if(title.equals("About FlicBuzz")){
+                tv_note.setText("     The Flicbuzz app for android, source content for celebrity gossip, fitness tips,yoga and lifestyle, food recipes and other interesting content that we may keep adding. Flicbuzz is owned and operated by Tencom Ventures Pvt Ltd.\n" +
+                        "\n" +
+                        "    Our team works round the clock to bring readers the latest stories, photos and nes from the popular celebrities in India and also if possible international celebrities. We publishes Filmy news, gossip, rumors and speculation.")
+            }
         } else {
             tv_note.visibility = View.GONE
             webview.visibility = View.VISIBLE

@@ -9,8 +9,8 @@
 
     <TextView
             android:id="@+id/nav_profile"
-            android:drawableLeft="@mipmap/fav_icon_video"
-            android:drawablePadding="5sp"
+            android:drawableLeft="@mipmap/menu_profilne"
+            android:drawablePadding="7sp"
             android:gravity="center_vertical"
             android:layout_gravity="center_vertical"
             android:padding="10sp"
@@ -24,8 +24,8 @@
 
     <TextView
             android:id="@+id/nav_about"
-            android:drawableLeft="@mipmap/fav_icon_video"
-            android:drawablePadding="5sp"
+            android:drawableLeft="@mipmap/menu_aboutus"
+            android:drawablePadding="7sp"
             android:gravity="center_vertical"
             android:layout_gravity="center_vertical"
             android:padding="10sp"
@@ -39,8 +39,8 @@
 
     <TextView
             android:id="@+id/nav_fav"
-            android:drawableLeft="@mipmap/fav_icon_video"
-            android:drawablePadding="5sp"
+            android:drawableLeft="@mipmap/menu_fav"
+            android:drawablePadding="7sp"
             android:gravity="center_vertical"
             android:layout_gravity="center_vertical"
             android:padding="10sp"
@@ -55,8 +55,8 @@
 
     <TextView
             android:id="@+id/nav_package"
-            android:drawableLeft="@mipmap/fav_icon_video"
-            android:drawablePadding="5sp"
+            android:drawableLeft="@mipmap/menu_package"
+            android:drawablePadding="7sp"
             android:gravity="center_vertical"
             android:layout_gravity="center_vertical"
             android:padding="10sp"
@@ -70,8 +70,8 @@
 
     <TextView
             android:id="@+id/nav_refund"
-            android:drawableLeft="@mipmap/fav_icon_video"
-            android:drawablePadding="5sp"
+            android:drawableLeft="@mipmap/menu_refund"
+            android:drawablePadding="7sp"
             android:gravity="center_vertical"
             android:layout_gravity="center_vertical"
             android:padding="10sp"
@@ -86,8 +86,8 @@
 
     <TextView
             android:id="@+id/nav_privacy"
-            android:drawableLeft="@mipmap/fav_icon_video"
-            android:drawablePadding="5sp"
+            android:drawableLeft="@mipmap/menu_privacy_policy"
+            android:drawablePadding="7sp"
             android:gravity="center_vertical"
             android:layout_gravity="center_vertical"
             android:padding="10sp"
@@ -102,8 +102,8 @@
 
     <TextView
             android:id="@+id/nav_terms"
-            android:drawableLeft="@mipmap/fav_icon_video"
-            android:drawablePadding="5sp"
+            android:drawableLeft="@mipmap/menu_termsofuse"
+            android:drawablePadding="7sp"
             android:gravity="center_vertical"
             android:layout_gravity="center_vertical"
             android:padding="10sp"
@@ -118,8 +118,8 @@
 
     <TextView
             android:id="@+id/nav_contact"
-            android:drawableLeft="@mipmap/fav_icon_video"
-            android:drawablePadding="5sp"
+            android:drawableLeft="@mipmap/menu_contactus"
+            android:drawablePadding="7sp"
             android:gravity="center_vertical"
             android:layout_gravity="center_vertical"
             android:padding="10sp"
@@ -150,8 +150,8 @@
 
     <TextView
             android:id="@+id/nav_share"
-            android:drawableLeft="@mipmap/icon_settings"
-            android:drawablePadding="5sp"
+            android:drawableLeft="@mipmap/menu_sharetheapp"
+            android:drawablePadding="7sp"
             android:drawableTint="@color/darkgray"
             android:textColor="@color/darkgray"
             android:gravity="center_vertical"
@@ -165,8 +165,8 @@
 
     <TextView
             android:id="@+id/nav_settings"
-            android:drawableLeft="@mipmap/icon_settings"
-            android:drawablePadding="5sp"
+            android:drawableLeft="@mipmap/mnu_settings"
+            android:drawablePadding="7sp"
             android:drawableTint="@color/darkgray"
             android:textColor="@color/darkgray"
             android:gravity="center_vertical"
@@ -180,8 +180,8 @@
 
     <TextView
             android:id="@+id/nav_logout"
-            android:drawableLeft="@mipmap/icon_settings"
-            android:drawablePadding="5sp"
+            android:drawableLeft="@mipmap/menu_logout"
+            android:drawablePadding="7sp"
             android:drawableTint="@color/darkgray"
             android:gravity="center_vertical"
             android:textColor="@color/darkgray"

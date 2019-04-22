@@ -31,16 +31,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:visibility="gone"
             android:textSize="16sp"/>
 
-    <TextView android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_gravity="center"
-               android:text="Comming Soon.."
-              android:visibility="gone"
+    <TextView android:layout_width="match_parent"
+              android:layout_height="390dp"
+              android:layout_marginTop="75sp"
+              android:layout_gravity="center_vertical"
+              android:text="Comming Soon.."
+              android:visibility="visible"
+              android:layout_margin="20sp"
+              android:fontFamily="@font/cera_gr_regular"
+              android:gravity="top"
               android:id="@+id/tv_note"
-               android:layout_marginTop="58sp"
-               android:textSize="28sp"/>
+              android:textSize="18sp"/>
 
 
 </android.support.design.widget.CoordinatorLayout>
