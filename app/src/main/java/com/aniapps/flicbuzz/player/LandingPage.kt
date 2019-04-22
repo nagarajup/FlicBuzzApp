@@ -23,10 +23,7 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import com.aniapps.flicbuzz.R
-import com.aniapps.flicbuzz.activities.AboutUs
-import com.aniapps.flicbuzz.activities.PaymentScreen_New
-import com.aniapps.flicbuzz.activities.SignIn
-import com.aniapps.flicbuzz.activities.UpdateProfileActivity
+import com.aniapps.flicbuzz.activities.*
 import com.aniapps.flicbuzz.adapters.AutoSuggestAdapter
 import com.aniapps.flicbuzz.adapters.MainAdapter
 import com.aniapps.flicbuzz.adapters.SearchAdapter
@@ -512,6 +509,12 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
             }
             R.id.nav_contact -> {
                 MessageDialog_Feedback();
+            }
+
+            R.id.nav_settings -> {
+                val intent = Intent(this@LandingPage, SettingsActivity::class.java)
+                startActivity(intent)
+                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
             }
 
             R.id.nav_logout -> {

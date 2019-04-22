@@ -54,7 +54,16 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
                 finish();
+            }
+        });
+        forgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
             }
         });
         signIn.setOnClickListener(new View.OnClickListener() {
@@ -126,12 +135,14 @@ public class LoginActivity extends AppCompatActivity {
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
+                            overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
                         }else{
                             Intent intent = new Intent(LoginActivity.this, PaymentScreen_New.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
+                            overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
                         }
                     } else {
                         Utility.alertDialog(LoginActivity.this, "Alert", jsonObject.getString("message"));
