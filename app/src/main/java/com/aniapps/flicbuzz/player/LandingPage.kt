@@ -1,6 +1,7 @@
 package com.aniapps.flicbuzz.player
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -21,9 +22,7 @@ import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import com.aniapps.flicbuzz.activities.AboutUs
@@ -85,7 +84,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         // val jsonArray = intent.getStringExtra("jsonArray")
         //myData(jsonArray)
 
-       // Toast.makeText(this, PrefManager.getIn().getPayment_data().toString(), Toast.LENGTH_SHORT).show()
+        // Toast.makeText(this, PrefManager.getIn().getPayment_data().toString(), Toast.LENGTH_SHORT).show()
         val toggle = ActionBarDrawerToggle(
             this, drawer_layout, toolbar,
             R.string.navigation_drawer_open,
@@ -99,11 +98,11 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         my_recycler_view = findViewById<View>(R.id.my_recyclerview) as RecyclerView
         search_list = findViewById<ListView>(R.id.search_list)
 
-       search_list.setOnItemClickListener { adapterView, view, i, l ->
-           search_list.visibility = View.GONE
-           searchEditText.setText(mySearchData.get(i).name)
-           Toast.makeText(this@LandingPage,"ID: "+mySearchData.get(i).search_id,Toast.LENGTH_SHORT).show()
-       }
+        search_list.setOnItemClickListener { adapterView, view, i, l ->
+            search_list.visibility = View.GONE
+            searchEditText.setText(mySearchData.get(i).name)
+            Toast.makeText(this@LandingPage, "ID: " + mySearchData.get(i).search_id, Toast.LENGTH_SHORT).show()
+        }
         tv_profile_name = findViewById<TextView>(R.id.tv_profile_name);
         tv_profile_email = findViewById<TextView>(R.id.tv_profile_email);
         tv_profile_plan = findViewById<TextView>(R.id.tv_profile_plan);
@@ -132,17 +131,17 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         switchCompat = findViewById<SwitchCompat>(R.id.nav_language)
         tv_profile_name.setText(PrefManager.getIn().getName())
         tv_profile_email.setText(PrefManager.getIn().getEmail())
-        if(PrefManager.getIn().getPlan().equals("3")) {
+        if (PrefManager.getIn().getPlan().equals("3")) {
             tv_profile_plan.setText("Plan : Three Months")
-        }else   if(PrefManager.getIn().getPlan().equals("6")) {
+        } else if (PrefManager.getIn().getPlan().equals("6")) {
             tv_profile_plan.setText("Plan : Six Months")
-        }else   if(PrefManager.getIn().getPlan().equals("12")) {
+        } else if (PrefManager.getIn().getPlan().equals("12")) {
             tv_profile_plan.setText("Plan : One Year")
         }
-        if(PrefManager.getIn().language.equals("Hindi")){
-            switchCompat.isChecked=false
-        }else {
-            switchCompat.isChecked=true
+        if (PrefManager.getIn().language.equals("Hindi")) {
+            switchCompat.isChecked = false
+        } else {
+            switchCompat.isChecked = true
         }
         switchCompat.text = "Language: " + PrefManager.getIn().language
         switchCompat.setOnCheckedChangeListener({ _, isChecked ->
@@ -513,6 +512,8 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 myintent.putExtra("title", "My Profile")
                 myintent.putExtra("url", "")
                 startActivity(myintent)
+                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+
             }
 
             R.id.nav_about -> {
@@ -520,18 +521,24 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 myintent.putExtra("title", "About FlicBuzz")
                 myintent.putExtra("url", "")
                 startActivity(myintent)
+                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+
             }
             R.id.nav_fav -> {
                 val myintent = Intent(this@LandingPage, AboutUs::class.java)
                 myintent.putExtra("title", "My Favourites")
                 myintent.putExtra("url", "")
                 startActivity(myintent)
+                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+
             }
-            R.id.nav_package-> {
+            R.id.nav_package -> {
                 val myintent = Intent(this@LandingPage, PaymentScreen_New::class.java)
                 myintent.putExtra("title", "Packages")
                 myintent.putExtra("url", "")
                 startActivity(myintent)
+                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+
                 // Toast.makeText(this, "Clicked item fav", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_refund -> {
@@ -539,6 +546,8 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 myintent.putExtra("url", "https://www.flicbuzz.com/refund-cancellation_text.html")
                 myintent.putExtra("title", "Refund and Cancellation")
                 startActivity(myintent)
+                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+
                 // Toast.makeText(this, "Clicked item settings", Toast.LENGTH_SHORT).show()
             }
 
@@ -547,20 +556,20 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 myintent.putExtra("url", "https://www.flicbuzz.com/privacy-policy_text.html")
                 myintent.putExtra("title", "Privacy Policy")
                 startActivity(myintent)
+                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+
             }
             R.id.nav_terms -> {
                 val myintent = Intent(this@LandingPage, AboutUs::class.java)
                 myintent.putExtra("url", "https://www.flicbuzz.com/termsofuse_text.html")
                 myintent.putExtra("title", "Terms of Use")
                 startActivity(myintent)
+                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+
             }
             R.id.nav_contact -> {
-                val myintent = Intent(this@LandingPage, AboutUs::class.java)
-                myintent.putExtra("url", "")
-                myintent.putExtra("title", "Privacy Policy")
-                startActivity(myintent)
+                MessageDialog_Feedback();
             }
-            /*https://www.flicbuzz.com/termsofuse_text.html*/
 
             R.id.nav_logout -> {
                 PrefManager.getIn().setLogin(false);
@@ -591,6 +600,66 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
              startActivity(intent)
          }*/
     }
+
+
+    fun MessageDialog_Feedback() {
+        val Feedback_Dialog = Dialog(this, R.style.ThemeDialogCustom)
+        Feedback_Dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        Feedback_Dialog.setContentView(R.layout.dialog_dealer_helpline)
+        Feedback_Dialog.setCancelable(true)
+        val lay_feedback_focus = Feedback_Dialog.findViewById(R.id.lay_feedback) as LinearLayout
+        lay_feedback_focus.isFocusableInTouchMode = true
+        lay_feedback_focus.requestFocus()
+
+        val et_dealer_feedback = Feedback_Dialog.findViewById(R.id.et_dealer_feedback) as EditText
+
+        et_dealer_feedback.setLines(4)
+
+
+        val tv_toll_free_number = Feedback_Dialog.findViewById(R.id.tv_toll_free_number) as TextView
+        //final String toll_free = "1800 270 1249";
+
+        //tollFreeNumber("Toll Free Number:", Pref.getIn().getToll_free_no(), tv_toll_free_number)
+
+        val window = Feedback_Dialog.window
+        val wlp = window!!.attributes
+        wlp.gravity = Gravity.TOP
+        wlp.y = 80
+        window.attributes = wlp
+        val bt_submit_feedback = Feedback_Dialog.findViewById(R.id.btn_feedback_send) as Button
+        val bt_cancel_feedback = Feedback_Dialog
+            .findViewById(R.id.btn_feedback_cancel) as Button
+        bt_submit_feedback.setOnClickListener {
+            if (validateET(et_dealer_feedback)) {
+                et_dealer_feedback.setHint("")
+                et_dealer_feedback.setError("Please enter your message")
+            } else {
+                if (et_dealer_feedback.getText().toString().length > 5) {
+                    Feedback_Dialog.dismiss()
+                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(et_dealer_feedback.getWindowToken(), 0)
+                    // Dealer_Feedback(et_dealer_feedback.getText().toString(), cb_query_option)
+                } else {
+                    et_dealer_feedback.setError("Message length should be greater than 5 characters")
+                }
+            }
+        }
+
+        bt_cancel_feedback.setOnClickListener {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(et_dealer_feedback.getWindowToken(), 0)
+            Feedback_Dialog.dismiss()
+        }
+        Feedback_Dialog.show()
+    }
+
+
+    fun validateET(et: EditText): Boolean {
+        var flag = false
+        flag = et.text.toString().trim { it <= ' ' }.length == 0
+        return flag
+    }
+
 
     internal lateinit var adapter: MainAdapter
 
