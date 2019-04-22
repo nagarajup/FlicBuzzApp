@@ -119,6 +119,7 @@ public class LoginActivity extends AppCompatActivity {
                         PrefManager.getIn().setCity(userObject.getString("city"));
                         PrefManager.getIn().setPincode(userObject.getString("pincode"));
                         PrefManager.getIn().setDob(userObject.getString("dob"));
+                        PrefManager.getIn().setProfile_pic(userObject.getString("profile_pic"));
                         if(PrefManager.getIn().getPlan().equals("3")||PrefManager.getIn().getPlan().equals("6")||PrefManager.getIn().getPlan().equals("12")) {
                             Intent intent = new Intent(LoginActivity.this, LandingPage.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

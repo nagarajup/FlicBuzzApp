@@ -103,7 +103,7 @@ public class RetrofitClient extends AppCompatActivity {
         }
         postParams.put("language", PrefManager.getIn().getLanguage().toLowerCase());
         Log.e("#API#", "Post Params" + postParams);
-        apiService.coreApiResult(context.getResources().getString(R.string.core_live) + "/" + postParams.get("action"), postParams).enqueue(new Callback<String>() {
+        apiService.coreApiResult(context.getResources().getString(R.string.core_live) + postParams.get("action"), postParams).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, final Response<String> res) {
                 Log.e("RES", "res" + res.body());
@@ -163,9 +163,10 @@ public class RetrofitClient extends AppCompatActivity {
         postParams.put("user_id", PrefManager.getIn().getUserId());
         Log.e(TAG, "post params" + postParams);
         if (body != null) {
-            apiService.uploadImage(context.getResources().getString(R.string.core_live)+ "/" + postParams.get("action"), body, postParams).enqueue(new Callback<String>() {
+            apiService.uploadImage(context.getResources().getString(R.string.core_live)+ postParams.get("action"), body, postParams).enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, final Response<String> res) {
+                    Log.e("RES", "res" + res.body());
                     if (res.isSuccessful()) {
                         try {
                             if (null != res.body() && !res.body().equals("")) {
@@ -191,6 +192,7 @@ public class RetrofitClient extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
+                    Log.e("RES", "failure" + t.getMessage());
                     retrofit = null;
                     api_res.onFailure(t.getMessage());
                 }

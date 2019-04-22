@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -28,6 +29,7 @@ import com.aniapps.flicbuzz.utils.CircleImageView;
 import com.aniapps.flicbuzz.utils.PrefManager;
 import com.aniapps.flicbuzz.utils.ProgressRequestBody;
 import com.aniapps.flicbuzz.utils.Utility;
+import com.squareup.picasso.Picasso;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -96,7 +98,13 @@ public class UpdateProfileActivity extends AppCompatActivity {
         cityEditText.setText(PrefManager.getIn().getCity());
         pincodeEditText.setText(PrefManager.getIn().getPincode());
         dobEditText.setText(PrefManager.getIn().getDob());
-
+        if(!PrefManager.getIn().getProfile_pic().equals("")){
+            Picasso.with(UpdateProfileActivity.this)
+                .load(PrefManager.getIn().getProfile_pic())
+                    .fit().centerInside()
+                    .error(R.mipmap.launcher_icon)
+                    .into(profileImg);
+        }
         if (PrefManager.getIn().getGender().equalsIgnoreCase("male")) {
             male.setChecked(true);
         } else {
@@ -201,7 +209,8 @@ public class UpdateProfileActivity extends AppCompatActivity {
                 progressBar.setProgress(100);
             }
         });
-        RetrofitClient.getInstance().getNoCryptResImages(UpdateProfileActivity.this, params, getMultiPart(path), new APIResponse() {
+        MultipartBody.Part filepart = MultipartBody.Part.createFormData("profile_pic", new File(path).getName(), fileBody);
+        RetrofitClient.getInstance().getNoCryptResImages(UpdateProfileActivity.this, params, filepart, new APIResponse() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onSuccess(String result) {
@@ -210,8 +219,9 @@ public class UpdateProfileActivity extends AppCompatActivity {
                     jsonObject = new JSONObject(result);
                     int status = jsonObject.getInt("status");
                     if (status == 1) {
+                        PrefManager.getIn().setProfile_pic(jsonObject.getString("pic_url"));
                         Toast.makeText(UpdateProfileActivity.this, "Successfully profile pic updated.", Toast.LENGTH_SHORT).show();
-                        finish();
+                       // finish();
                     } else {
                         Utility.alertDialog(UpdateProfileActivity.this, "Alert", jsonObject.getString("message"));
 
@@ -229,14 +239,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
         });
     }
 
-    private MultipartBody.Part getMultiPart(String imagePath) {
-        Log.e("", "imagepath::" + imagePath);
-        File file = new File(imagePath);
-        Log.e("file exist", "file exist::" + file.exists());
-        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        return MultipartBody.Part.createFormData("profile_pic", file.getName(), requestFile);
-        // return body;
-    }
+
 
     public void ApiCall(Map<String, String> params) {
 
@@ -376,11 +379,20 @@ public class UpdateProfileActivity extends AppCompatActivity {
             case 2:
                 if (resultCode == RESULT_OK) {
                     Uri selectedImage = imageReturnedIntent.getData();
+                    String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+                    Cursor cursor = getContentResolver().query(selectedImage,
+                            filePathColumn, null, null, null);
+                    cursor.moveToFirst();
+
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    String picturePath = cursor.getString(columnIndex);
+                    cursor.close();
                     profileImg.setImageURI(selectedImage);
                     HashMap<String, String> params = new HashMap<>();
                     params.put("from_source", "android");
                     params.put("action", "upload_profile_pic");
-                    updateProfilePic(params,selectedImage.getPath());
+                    updateProfilePic(params,picturePath);
                 }
                 break;
         }

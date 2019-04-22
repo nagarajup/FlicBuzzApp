@@ -37,8 +37,11 @@ import com.aniapps.flicbuzz.networkcall.APIResponse
 import com.aniapps.flicbuzz.networkcall.RetrofitClient
 import com.aniapps.flicbuzz.utils.PrefManager
 import com.google.gson.Gson
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_update_profile.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.app_bar_main.toolbar
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.ArrayList
@@ -197,6 +200,13 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
     internal lateinit var search: android.widget.SearchView
 
     override fun onResume() {
+        if(!PrefManager.getIn().getProfile_pic().equals("")){
+            Picasso.with(this@LandingPage)
+                .load(PrefManager.getIn().getProfile_pic())
+                .fit().centerInside()
+                .error(R.mipmap.launcher_icon)
+                .into(imageView);
+        }
         super.onResume()
 
     }
@@ -442,7 +452,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
     override fun onClick(p0: View?) {
         when (p0!!.id) {
             R.id.nav_profile -> {
-                val myintent = Intent(this@LandingPage, AboutUs::class.java)
+                val myintent = Intent(this@LandingPage, UpdateProfileActivity::class.java)
                 myintent.putExtra("title", "My Profile")
                 myintent.putExtra("url", "")
                 startActivity(myintent)

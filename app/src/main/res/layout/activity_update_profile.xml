@@ -1,4 +1,4 @@
-<?xml version="1" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="fill_parent"
@@ -15,7 +15,6 @@
     <ScrollView android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
         <LinearLayout android:orientation="vertical"
-                      android:padding="10dp"
                       android:layout_width="fill_parent"
                       android:layout_height="wrap_content">
             <RelativeLayout
@@ -48,22 +47,15 @@
                         android:layout_centerInParent="true"
                         android:id="@+id/progress_one"
                         style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="140dp"
-                        android:layout_height="140dp"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
                         android:background="@drawable/sell_circle_shape"
                         android:indeterminate="false"
                         android:max="100"
                         android:progress="0"
                         android:progressDrawable="@drawable/sell_circular_progress_bar"/>
 
-                <CheckBox
-                        android:id="@+id/sell_img_one_del"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignRight="@+id/imagell"
-                        android:layout_marginTop="10dp"
-                        android:button="@mipmap/icon_close_dashbaord"
-                        android:visibility="gone"/>
+
 
             </RelativeLayout>
 

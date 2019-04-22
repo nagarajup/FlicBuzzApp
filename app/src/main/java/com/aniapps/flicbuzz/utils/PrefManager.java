@@ -205,5 +205,16 @@ public class PrefManager {
     public String pincode = "";
     public String dob = "";
 
+    public String getProfile_pic() {
+        return pref.getString("profile_pic", "");
+    }
+
+    public void setProfile_pic(String profile_pic) {
+        editor.putString("profile_pic", profile_pic);
+        editor.commit();
+    }
+
+    public String profile_pic = "";
+
 
 }
