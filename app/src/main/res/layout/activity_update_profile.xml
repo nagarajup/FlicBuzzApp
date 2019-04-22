@@ -1,0 +1,280 @@
+<?xml version="1" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="fill_parent"
+              android:orientation="vertical"
+              android:background="@android:color/white"
+              android:layout_height="fill_parent">
+    <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:minHeight="?attr/actionBarSize"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark"/>
+    <ScrollView android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+        <LinearLayout android:orientation="vertical"
+                      android:padding="10dp"
+                      android:layout_width="fill_parent"
+                      android:layout_height="wrap_content">
+            <RelativeLayout
+                    android:id="@+id/profile_img_ll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                <LinearLayout android:layout_width="wrap_content" android:orientation="vertical"
+
+                              android:layout_centerInParent="true"
+                              android:layout_height="wrap_content">
+
+                    <com.aniapps.flicbuzz.utils.CircleImageView
+                            android:layout_width="120dp"
+                            android:layout_gravity="left|center_vertical"
+                            android:layout_height="120dp"
+                            android:src="@mipmap/ic_launcher"
+                            app:civ_border_width="1dp"
+                            android:tint="@color/white"
+                            app:civ_border_color="@color/light"
+                            android:id="@+id/profile_img"/>
+                    <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                               android:layout_alignParentBottom="true"
+                               android:layout_gravity="center"
+                               android:layout_marginTop="-30dp"
+                               android:src="@android:drawable/ic_menu_camera"/>
+                </LinearLayout>
+
+                <ProgressBar
+                        android:layout_centerInParent="true"
+                        android:id="@+id/progress_one"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="140dp"
+                        android:layout_height="140dp"
+                        android:background="@drawable/sell_circle_shape"
+                        android:indeterminate="false"
+                        android:max="100"
+                        android:progress="0"
+                        android:progressDrawable="@drawable/sell_circular_progress_bar"/>
+
+                <CheckBox
+                        android:id="@+id/sell_img_one_del"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignRight="@+id/imagell"
+                        android:layout_marginTop="10dp"
+                        android:button="@mipmap/icon_close_dashbaord"
+                        android:visibility="gone"/>
+
+            </RelativeLayout>
+
+            <android.support.design.widget.TextInputLayout
+                    android:orientation="vertical"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+                <EditText android:textSize="14sp"
+                          android:id="@+id/full_name"
+                          android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          android:hint="Full Name"/>
+            </android.support.design.widget.TextInputLayout>
+            <TextView
+                    android:id="@+id/name_error"
+                    android:layout_width="match_parent"
+                    android:text="Please enter valid name"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible"
+                    android:textColor="@color/red"
+                    android:textSize="@dimen/error_text_size"/>
+            <android.support.design.widget.TextInputLayout
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp">
+                <EditText android:textSize="14sp"
+                          android:id="@+id/email"
+                          android:enabled="false"
+                          android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          android:hint="Email ID"
+                          android:inputType="textEmailAddress"/>
+            </android.support.design.widget.TextInputLayout>
+            <TextView
+                    android:id="@+id/email_error"
+                    android:layout_width="match_parent"
+                    android:text="Please enter valid EmailID"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible"
+                    android:textColor="@color/red"
+                    android:textSize="@dimen/error_text_size"/>
+            <LinearLayout android:orientation="horizontal"
+                          android:layout_width="fill_parent"
+                          android:layout_height="wrap_content">
+                <TextView android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_marginTop="30dp"
+                          android:text="+91"
+                          android:layout_weight="0.9"/>
+                <android.support.design.widget.TextInputLayout
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:layout_weight="0.1">
+                    <EditText android:textSize="14sp"
+                              android:id="@+id/mobile"
+                              android:layout_width="fill_parent"
+                              android:layout_height="wrap_content"
+                              android:hint="Mobile Number"
+                              android:enabled="false"
+                              android:maxLength="10"
+                              android:inputType="number"/>
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+            <TextView
+                    android:id="@+id/mobile_error"
+                    android:layout_width="match_parent"
+                    android:text="Please enter valid mobile"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible"
+                    android:textColor="@color/red"
+                    android:textSize="@dimen/error_text_size"/>
+            <android.support.design.widget.TextInputLayout
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp">
+                <EditText android:textSize="14sp"
+                          android:id="@+id/city"
+                          android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          android:hint="City"/>
+            </android.support.design.widget.TextInputLayout>
+            <TextView
+                    android:id="@+id/city_error"
+                    android:layout_width="match_parent"
+                    android:text="Please enter city"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible"
+                    android:textColor="@color/red"
+                    android:textSize="@dimen/error_text_size"/>
+            <LinearLayout android:orientation="horizontal"
+                          android:layout_width="fill_parent"
+                          android:layout_height="wrap_content">
+                <LinearLayout android:orientation="vertical"
+                              android:layout_width="fill_parent"
+                              android:layout_weight="0.5"
+                              android:layout_height="wrap_content">
+                    <android.support.design.widget.TextInputLayout
+                            android:focusable="true"
+                            android:focusableInTouchMode="true"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp">
+                        <EditText android:textSize="14sp"
+                                  android:id="@+id/pin"
+                                  android:layout_width="fill_parent"
+                                  android:layout_height="wrap_content"
+                                  android:hint="Pin Code"
+                                  android:inputType="number"/>
+                    </android.support.design.widget.TextInputLayout>
+                    <TextView
+                            android:id="@+id/pincode_error"
+                            android:layout_width="match_parent"
+                            android:text="Please enter pincode"
+                            android:layout_height="wrap_content"
+                            android:visibility="invisible"
+                            android:textColor="@color/red"
+                            android:textSize="@dimen/error_text_size"/>
+                </LinearLayout>
+                <LinearLayout android:orientation="vertical"
+                              android:layout_width="fill_parent"
+                              android:layout_weight="0.5"
+                              android:layout_height="wrap_content">
+                    <android.support.design.widget.TextInputLayout
+                            android:focusable="true"
+                            android:focusableInTouchMode="true"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp">
+                        <EditText android:textSize="14sp"
+                                  android:id="@+id/dob"
+                                  android:focusable="false"
+                                  android:clickable="true"
+                                  android:layout_width="fill_parent"
+                                  android:layout_height="wrap_content"
+                                  android:hint="Date of Birth"
+                                  android:editable="false"/>
+                    </android.support.design.widget.TextInputLayout>
+
+                    <TextView
+                            android:id="@+id/dob_error"
+                            android:layout_width="match_parent"
+                            android:text="Please enter dob"
+                            android:layout_height="wrap_content"
+                            android:visibility="invisible"
+                            android:textColor="@color/red"
+                            android:textSize="@dimen/error_text_size"/>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout android:orientation="vertical"
+                          android:layout_width="fill_parent"
+                          android:layout_height="wrap_content">
+                <TextView android:textSize="14sp"
+                          android:textColor="#ff575757"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:layout_marginTop="15dp"
+                          android:text="Gender"
+                          android:fontFamily="@font/cera_gr_medium"/>
+                <RadioGroup android:orientation="horizontal"
+                            android:id="@+id/gender_radio"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="10dp">
+                    <RadioButton android:textSize="14sp"
+                                 android:textColor="#ff575757"
+                                 android:id="@+id/male_radio"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:text="Male"
+                                 android:checked="true"
+                                 android:fontFamily="@font/cera_gr_medium"/>
+                    <RadioButton android:textSize="14sp"
+                                 android:textColor="#ff575757"
+                                 android:id="@+id/female_radio"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:layout_marginLeft="10dp"
+                                 android:text="Female"
+                                 android:fontFamily="@font/cera_gr_medium"/>
+                </RadioGroup>
+                <TextView
+                        android:id="@+id/gender_error"
+                        android:layout_width="match_parent"
+                        android:text="Please select gender"
+                        android:layout_height="wrap_content"
+                        android:visibility="invisible"
+                        android:textColor="@color/red"
+                        android:textSize="@dimen/error_text_size"/>
+            </LinearLayout>
+
+
+            <Button android:textSize="14sp"
+                    android:textColor="#ffffffff"
+                    android:id="@+id/signup_btn"
+                    android:background="@drawable/rounded_corners_signup"
+                    android:layout_width="320dp"
+                    android:layout_gravity="center"
+                    android:layout_height="48dp"
+                    android:text="UPDATE PROFILE"
+                    android:fontFamily="@font/cera_gr_medium"/>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
