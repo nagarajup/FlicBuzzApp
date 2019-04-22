@@ -569,9 +569,8 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         wlp.gravity = Gravity.TOP
         wlp.y = 80
         window.attributes = wlp
-        val bt_submit_feedback = Feedback_Dialog.findViewById(R.id.btn_feedback_send) as Button
-        val bt_cancel_feedback = Feedback_Dialog
-            .findViewById(R.id.btn_feedback_cancel) as Button
+        val bt_submit_feedback = Feedback_Dialog.findViewById(R.id.btn_feedback_send) as TextView
+        val bt_cancel_feedback = Feedback_Dialog.findViewById(R.id.btn_feedback_cancel) as TextView
         bt_submit_feedback.setOnClickListener {
             if (validateET(et_dealer_feedback)) {
                 et_dealer_feedback.setHint("")
