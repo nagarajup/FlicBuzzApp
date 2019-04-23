@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.aniapps.flicbuzz.R;
 import com.aniapps.flicbuzz.networkcall.APIResponse;
 import com.aniapps.flicbuzz.networkcall.RetrofitClient;
+import com.aniapps.flicbuzz.utils.PrefManager;
 import com.aniapps.flicbuzz.utils.Utility;
 import org.json.JSONObject;
 
@@ -52,7 +53,17 @@ public class SettingsActivity extends AppCompatActivity {
         changePswd = (TextView) findViewById(R.id.change_psd);
         cancelSubscription = (TextView) findViewById(R.id.cancel_subscripiton);
         logout = (TextView) findViewById(R.id.logout);
-
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PrefManager.getIn().setLogin(false);
+                Intent intent =new Intent(SettingsActivity.this,SignIn.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        });
         cancelSubscription.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

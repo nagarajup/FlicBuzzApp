@@ -72,7 +72,7 @@ public class DownloadTask {
                     videoshare.putExtra(Intent.EXTRA_SUBJECT, "FlickBuzz App");
                     videoshare.putExtra(
                             Intent.EXTRA_TEXT,
-                            "Hi,I would like to share this FlicBuzz application, for more vidoespPlease download app from Google Play! \nhttps://play.google.com/store/apps/details?id=$appPackageName"
+                            "Hi,I would like to share this FlicBuzz application, for more vidoes Please download app from Google Play! \nhttps://play.google.com/store/apps/details?id=$appPackageName"
                     );
                     videoshare.setType("*/*");
                     videoshare.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
