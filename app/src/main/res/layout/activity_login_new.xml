@@ -95,7 +95,7 @@
                 <TextView
                         android:id="@+id/req_customer_email_error"
                         android:layout_width="match_parent"
-                        android:text="Please enter valid EmailID"
+                        android:text="Please enter valid EmailID/Mobile"
                         android:layout_height="wrap_content"
                         android:visibility="invisible"
                         android:textColor="@color/red"

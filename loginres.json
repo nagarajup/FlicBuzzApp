@@ -1,0 +1,41 @@
+{
+  "status": 1,
+  "details": "Ok",
+  "message": "Success",
+  "user_id": "SjVLZmRmUTNpQnByWCt5OTh3eGY1dz09",
+  "data": {
+    "id": "SjVLZmRmUTNpQnByWCt5OTh3eGY1dz09",
+    "name": "Satya Karnam",
+    "email": "rajukaranam321@gmail.com",
+    "mobile": "7032656494",
+    "gender": "male",
+    "city": "kakinada",
+    "pincode": "533450",
+    "dob": "2019-04-23",
+    "failed_logins": "0",
+    "last_login_status": [
+      {
+        "datetime": "2019-04-23 22:27:14",
+        "ip": "175.101.148.133"
+      }
+    ],
+    "last_login_date": "2019-04-23 22:27:14",
+    "last_failed_login_date": "0000-00-00 00:00:00",
+    "active": "1",
+    "views": "0",
+    "register_device_id": "79015d8688441ab0",
+    "current_device_id": "79015d8688441ab0",
+    "current_device_ids_id": "49",
+    "profile_pic": "https:\/\/www.flicbuzz.com\/profile_pics\/19.png"
+  },
+  "profile_pic": "https:\/\/www.flicbuzz.com\/profile_pics\/19.png",
+  "payment_data": [
+
+  ],
+  "payment_mode": "3",
+  "plan": "expired",
+  "subscription_start_date": "0000-00-00 00:00:00",
+  "subscription_end_date": "0000-00-00 00:00:00",
+  "show_splash_message": "yes",
+  "splash_message": "Your subscription expired 737569 days ago."
+}

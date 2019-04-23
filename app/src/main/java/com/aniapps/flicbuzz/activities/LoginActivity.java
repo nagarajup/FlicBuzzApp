@@ -73,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
     public void checkValidation() {
         emailError.setVisibility(View.INVISIBLE);
         passwordError.setVisibility(View.INVISIBLE);
-        if (Utility.validateEmail(emailEditText)) {
+        if (Utility.validateEmail(emailEditText) && Utility.hasMobileNumber(emailEditText)) {
             emailEditText.requestFocus();
             emailError.setVisibility(View.VISIBLE);
         } else if (passwordEditText.getText().toString().length() == 0) {

@@ -97,7 +97,7 @@ public class RetrofitClient extends AppCompatActivity {
         apiService = RetrofitClient.getClient(context).create(APIService.class);
         postParams.put("version_code", "" + BuildConfig.VERSION_CODE);
         postParams.put("device_id", PrefManager.getIn().getDeviceId());
-        if (!postParams.get("action").equals("login")) {
+        if (!postParams.get("action").equals("login") && !postParams.get("action").equals("verify_otp")) {
             postParams.put("user_id", PrefManager.getIn().getUserId());
            // postParams.put("user_id", "T2VNK1N2MjBsa3dCK2pETzRSUElNZz09");
         }
@@ -106,7 +106,7 @@ public class RetrofitClient extends AppCompatActivity {
         apiService.coreApiResult(context.getResources().getString(R.string.core_live) + postParams.get("action"), postParams).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, final Response<String> res) {
-                Log.e("RES", "res" + res.body());
+                //Log.e("RES", "res" + res.body());
                 if (from.length() == 0) {
                     try {
                         runOnUiThread(new Runnable() {

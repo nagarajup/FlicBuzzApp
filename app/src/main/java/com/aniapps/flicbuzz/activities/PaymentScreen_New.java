@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.aniapps.flicbuzz.R;
@@ -40,15 +41,16 @@ public class PaymentScreen_New extends AppCompatActivity {
     private boolean threemonthsflag, sixmonthsflag, oneyearflag;
     LinearLayout plan_details;
     TextView plan_text, plan_expiry_date;
+    String subDate = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Making notification bar transparent
-       /* getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
 
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_payment_new);
         Toolbar mToolbar = (Toolbar) findViewById(R.id.mytoolbar);
         setSupportActionBar(mToolbar);
@@ -59,7 +61,7 @@ public class PaymentScreen_New extends AppCompatActivity {
         plan_expiry_date = (TextView) findViewById(R.id.plan_expiry_text);
         plan_text = (TextView) findViewById(R.id.plan_text);
 
-        if (!PrefManager.getIn().getPlan().equals("")) {
+        if (!PrefManager.getIn().getPlan().equals("") && !PrefManager.getIn().getPlan().equalsIgnoreCase("expired") && !PrefManager.getIn().getPlan().equalsIgnoreCase("trail")) {
             plan_details.setVisibility(View.VISIBLE);
             if (PrefManager.getIn().getPlan().equals("3")) {
                 plan_text.setText("Three Months Subscription");
@@ -76,13 +78,19 @@ public class PaymentScreen_New extends AppCompatActivity {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-
         }
 
         threemonths = (ConstraintLayout) findViewById(R.id.threemonths);
         sixmonths = (ConstraintLayout) findViewById(R.id.sixmonths);
         oneyear = (ConstraintLayout) findViewById(R.id.oneyear);
         mHelper = new IabHelper(PaymentScreen_New.this, Utility.sharedKey);
+        if(PrefManager.getIn().getPlan().equals("3")){
+            threemonthsflag=true;
+        }else if(PrefManager.getIn().getPlan().equals("6")){
+            sixmonthsflag=true;
+        }else if(PrefManager.getIn().getPlan().equals("12")){
+            oneyearflag=true;
+        }
         threemonths.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,8 +117,12 @@ public class PaymentScreen_New extends AppCompatActivity {
                     if (oneyearflag) {
                         alertDialog("Subscription", "You already subscribed for One Year Plan.");
                     } else {
-                        mHelper.flagEndAsync();
-                        mHelper.launchSubscriptionPurchaseFlow(PaymentScreen_New.this, Utility.six_months, PURCHSE_REQUEST, mPurchaseFinishedListener, null);
+                        if (threemonthsflag) {
+                            alertDialog("Subscription", "You already subscribed for Three Months Plan.");
+                        } else {
+                            mHelper.flagEndAsync();
+                            mHelper.launchSubscriptionPurchaseFlow(PaymentScreen_New.this, Utility.six_months, PURCHSE_REQUEST, mPurchaseFinishedListener, null);
+                        }
                     }
                 } else {
                     alertDialog("Subscription", "You already subscribed for Six Months Plan, No need to buy again.");
@@ -121,10 +133,18 @@ public class PaymentScreen_New extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (!oneyearflag) {
-                    mHelper.flagEndAsync();
-                    mHelper.launchSubscriptionPurchaseFlow(PaymentScreen_New.this, Utility.one_year, PURCHSE_REQUEST, mPurchaseFinishedListener, null);
+                    if (sixmonthsflag) {
+                        alertDialog("Subscription", "You already subscribed for Six Months Plan.");
+                    } else {
+                        if (threemonthsflag) {
+                            alertDialog("Subscription", "You already subscribed for Three Months Plan.");
+                        } else {
+                            mHelper.flagEndAsync();
+                            mHelper.launchSubscriptionPurchaseFlow(PaymentScreen_New.this, Utility.one_year, PURCHSE_REQUEST, mPurchaseFinishedListener, null);
+                        }
+                    }
                 } else {
-                    alertDialog("Subscription", "You already subscribed for One year Plan, No need to check again.");
+                    alertDialog("Subscription", "You already subscribed for One year Plan, No need to buy again.");
                 }
             }
         });
@@ -172,20 +192,65 @@ public class PaymentScreen_New extends AppCompatActivity {
                 if (inventory.hasPurchase(Utility.threemonths)) {
                     //  Toast.makeText(PaymentScreen_New.this, "3 Months Subscription is enabled", Toast.LENGTH_SHORT).show();
                     //Toast.makeText(PaymentScreen_New.this, inventory.getPurchase(Utility.threemonths).toString(), Toast.LENGTH_SHORT).show();
-                    // Log.e("inventory", inventory.getPurchase(Utility.threemonths).toString() + "inventory" + inventory.toString());
+                    // Log.e("inventory", inventory.getPurchase(Utility.threemonths).toString() + "inventory" + inventory.getPurchase(Utility.threemonths).getPurchaseTime());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    Date date = new Date(inventory.getPurchase(Utility.threemonths).getPurchaseTime());
+                    subDate = sdf.format(date);
                     threemonthsflag = true;
+                    Calendar c = Calendar.getInstance();
+                    try {
+                        c.setTime(sdf.parse(subDate));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    c.add(Calendar.MONTH, 3);
+                    String endDate = sdf.format(c.getTime());
+                    Log.e("inventory", subDate + ":::" + PrefManager.getIn().getSubscription_start_date() + ":::" + endDate);
+                    if (!PrefManager.getIn().getSubscription_start_date().equals(subDate)) {
+                        planUpdate(inventory.getPurchase(Utility.threemonths).getSku(), subDate, endDate, inventory.getPurchase(Utility.threemonths).toString(), 1);
+                    }
                 }
                 if (inventory.hasPurchase(Utility.six_months)) {
                     // Toast.makeText(PaymentScreen_New.this, "6 Months Subscription is enabled", Toast.LENGTH_SHORT).show();
                     //  Toast.makeText(PaymentScreen_New.this, inventory.getPurchase(Utility.six_months).toString(), Toast.LENGTH_SHORT).show();
-                    //  Log.e("inventory", inventory.getPurchase(Utility.six_months).toString() + "inventory" + inventory.toString());
+                    Log.e("inventory", inventory.getPurchase(Utility.six_months).toString() + "inventory" + inventory.toString());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    Date date = new Date(inventory.getPurchase(Utility.six_months).getPurchaseTime());
+                    subDate = sdf.format(date);
                     sixmonthsflag = true;
+                    Calendar c = Calendar.getInstance();
+                    try {
+                        c.setTime(sdf.parse(subDate));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    c.add(Calendar.MONTH, 6);
+                    String endDate = sdf.format(c.getTime());
+                    Log.e("inventory", subDate + ":::" + PrefManager.getIn().getSubscription_start_date() + ":::" + endDate);
+                    if (!PrefManager.getIn().getSubscription_start_date().equals(subDate)) {
+                        planUpdate(inventory.getPurchase(Utility.six_months).getSku(), subDate, endDate, inventory.getPurchase(Utility.six_months).toString(), 1);
+                    }
                 }
                 if (inventory.hasPurchase(Utility.one_year)) {
                     // Toast.makeText(PaymentScreen_New.this, "1 year Subscription is enabled", Toast.LENGTH_SHORT).show();
                     // Toast.makeText(PaymentScreen_New.this, inventory.getPurchase(Utility.one_year).toString(), Toast.LENGTH_SHORT).show();
-                    // Log.e("inventory", inventory.getPurchase(Utility.one_year).toString() + "inventory" + inventory.toString());
+                    Log.e("inventory", inventory.getPurchase(Utility.one_year).toString() + "inventory" + inventory.toString());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    Date date = new Date(inventory.getPurchase(Utility.one_year).getPurchaseTime());
+                    subDate = sdf.format(date);
                     oneyearflag = true;
+                    Calendar c = Calendar.getInstance();
+                    try {
+                        c.setTime(sdf.parse(subDate));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    c.add(Calendar.MONTH, 12);
+                    String endDate = sdf.format(c.getTime());
+                    Log.e("inventory", subDate + ":::" + PrefManager.getIn().getSubscription_start_date() + ":::" + endDate);
+                    if (!PrefManager.getIn().getSubscription_start_date().equals(subDate)) {
+                        planUpdate(inventory.getPurchase(Utility.one_year).getSku(), subDate, endDate, inventory.getPurchase(Utility.one_year).toString(), 1);
+                    }
                 }
 
 
@@ -250,7 +315,7 @@ public class PaymentScreen_New extends AppCompatActivity {
                 c.add(Calendar.MONTH, 12);
             }
             String endDate = sdf.format(c.getTime());
-            planUpdate(purchase.getSku(), startdate, endDate, purchase.toString());
+            planUpdate(purchase.getSku(), startdate, endDate, purchase.toString(), 0);
 
         }
     };
@@ -275,7 +340,7 @@ public class PaymentScreen_New extends AppCompatActivity {
         builder.show();
     }
 
-    public void planUpdate(String package_data, String sub_start_date, String sub_end_date, String payment_data) {
+    public void planUpdate(String package_data, String sub_start_date, String sub_end_date, String payment_data, int renewal) {
         HashMap<String, String> params = new HashMap<>();
         params.put("subscription_start_date", sub_start_date);
         params.put("subscription_end_date", sub_end_date);
@@ -288,14 +353,14 @@ public class PaymentScreen_New extends AppCompatActivity {
         } else if (package_data.equals(Utility.one_year)) {
             params.put("package", "12");
         }
-        ApiCall(params);
+        ApiCall(params, renewal);
     }
 
     JSONObject jsonObject;
 
-    public void ApiCall(final HashMap<String, String> params) {
+    public void ApiCall(final HashMap<String, String> params, final int renewal) {
 
-        RetrofitClient.getInstance().doBackProcess(PaymentScreen_New.this, params, "", new APIResponse() {
+        RetrofitClient.getInstance().doBackProcess(PaymentScreen_New.this, params, renewal == 0 ? "" : "online", new APIResponse() {
             @Override
             public void onSuccess(String result) {
                 try {
@@ -307,11 +372,13 @@ public class PaymentScreen_New extends AppCompatActivity {
                         PrefManager.getIn().setSubscription_start_date(params.get("subscription_start_date"));
                         PrefManager.getIn().setSubscription_end_date(params.get("subscription_end_date"));
                         PrefManager.getIn().setPlan(params.get("package"));
-                        Intent intent = new Intent(PaymentScreen_New.this, LandingPage.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
+                        if (renewal == 0) {
+                            Intent intent = new Intent(PaymentScreen_New.this, LandingPage.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                        }
                     } else {
                         Utility.alertDialog(PaymentScreen_New.this, "Alert", jsonObject.getString("message"));
                     }
