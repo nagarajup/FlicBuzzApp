@@ -13,6 +13,7 @@ import com.aniapps.flicbuzz.R;
 public class FlickLoading extends Activity {
     public static Dialog dialog;
     private static FlickLoading mInstance;
+    public static TextView tv_progress;
     FlickProgress cpb;
 
     public static synchronized FlickLoading getInstance() {
@@ -32,6 +33,7 @@ public class FlickLoading extends Activity {
                 new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setCancelable(false);
         cpb = (FlickProgress) dialog.findViewById(R.id.progress);
+        tv_progress = (TextView) dialog.findViewById(R.id.tv_progress_text);
         cpb.startAnimation();
         try {
             dialog.show();

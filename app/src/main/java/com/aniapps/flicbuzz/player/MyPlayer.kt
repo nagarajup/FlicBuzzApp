@@ -1,7 +1,9 @@
 package com.aniapps.flicbuzz.player
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -11,6 +13,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.PersistableBundle
 import android.support.annotation.RequiresApi
+import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -78,6 +81,8 @@ class MyPlayer : AppCompatActivity() {
     private var mUrl: String = "";
     private var play_title: String = "";
     private var play_desc: String = "";
+    private var play_fav: String = "";
+    private var play_share_url: String = "";
     private var play_id: String = "";
 
     private var STATE_RESUME_WINDOW = "resumeWindow";
@@ -89,6 +94,7 @@ class MyPlayer : AppCompatActivity() {
     private lateinit var lay_fav: FrameLayout;
     private lateinit var img_fav: ImageView;
     private lateinit var img_fav_done: ImageView;
+    private lateinit var img_share: ImageView;
     private lateinit var mVideoSource: MediaSource;
     private var mExoPlayerFullscreen: Boolean = false;
     private lateinit var mFullScreenButton: FrameLayout;
@@ -114,6 +120,10 @@ class MyPlayer : AppCompatActivity() {
 
     internal var pageNo = 1
     internal lateinit var my_recycler_view: RecyclerView
+    var permissions = arrayOf<String>(
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,16 +133,14 @@ class MyPlayer : AppCompatActivity() {
         play_desc = intent.getStringExtra("desc")
         play_title = intent.getStringExtra("title")
         play_id = intent.getStringExtra("id")
+        play_fav = intent.getStringExtra("fav")
+        play_share_url = intent.getStringExtra("play_share_url")
 
         if (savedInstanceState != null) {
             mResumeWindow = savedInstanceState.getInt(STATE_RESUME_WINDOW);
             mResumePosition = savedInstanceState.getLong(STATE_RESUME_POSITION);
             // mExoPlayerFullscreen = savedInstanceState.getBoolean(STATE_PLAYER_FULLSCREEN);
         }
-        Log.e("player title", play_title)
-        Log.e("player desc", play_desc)
-
-//        LoginApi()
 
         my_recycler_view = findViewById<View>(R.id.rc_list) as RecyclerView
         myvideos = ArrayList()
@@ -147,92 +155,57 @@ class MyPlayer : AppCompatActivity() {
 
         my_recycler_view.setNestedScrollingEnabled(false)
 
-        /* my_recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                 super.onScrollStateChanged(recyclerView, newState)
-             }
-
-             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                 super.onScrolled(recyclerView, dx, dy)
-
-                 Log.e("####", "scroll 1")
-                 if (!loading && myvideos.size > 0 && !scrollFlag) {
-                     try {
-
-                         val visibleItemCount = layoutManager!!.getChildCount()
-                         val totalItemCount = layoutManager!!.getItemCount()
-                         val firstVisibleItem = layoutManager!!.findFirstVisibleItemPosition()
-                         Log.e("####", "scroll 2")
-                         if (visibleItemCount + firstVisibleItem >= totalItemCount) {
-                             pageNo++
-                             LoginApi(pageNo)
-                         }
-                     } catch (e: java.lang.Exception) {
-                         e.printStackTrace()
-                     }
-                 }
-             }
-         })*/
-
-
-
-
         tv_play_title.setText(play_title)
         tv_play_description.setText(play_desc)
         lay_playerview = findViewById<FrameLayout>(R.id.playerview)
 
         settings.setOnClickListener {
             myTracker()
-            // Toast.makeText(this@MyPlayer, "Clicked on Settings", Toast.LENGTH_SHORT).show()
         }
         share.setOnClickListener {
-            Toast.makeText(this@MyPlayer, "Clicked on Share", Toast.LENGTH_SHORT).show()
+            if (setupPermissions()) {
+                DownloadTask(this@MyPlayer, play_share_url)
+            } else {
+                Toast.makeText(this@MyPlayer, "Please allow storage permission to share video", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
         }
 
-        /*  fullscreen.setOnClickListener{
-              Toast.makeText(this@MyPlayer, "Clicked on Full Screen", Toast.LENGTH_SHORT).show()
-              if(actionBar!=null){
-                  actionBar!!.hide()
-              }
-              if (getResources().getConfiguration().orientation ==Configuration.ORIENTATION_LANDSCAPE) {
-                  var  params: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT);
-                  playerView.getLayoutParams();
-                  playerView.setLayoutParams(params);
-              }
-          }*/
 
         makeTextViewResizable(tv_play_description, 2, "View More", true)
 
         lay_fav = findViewById(R.id.lay_fav)
         img_fav = findViewById(R.id.img_fav)
         img_fav_done = findViewById(R.id.img_fav_done)
+        img_share = findViewById(R.id.img_share)
 
+        if (play_fav.equals("y")) {
+            img_fav_done.visibility = View.VISIBLE
+            img_fav.visibility = View.GONE
+        } else {
+            img_fav.visibility = View.VISIBLE
+            img_fav_done.visibility = View.GONE
+        }
+
+        img_share.setOnClickListener {
+            if (setupPermissions()) {
+                DownloadTask(this@MyPlayer, play_share_url)
+            } else {
+                Toast.makeText(this@MyPlayer, "Please allow storage permission to share video", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
         lay_fav.setOnClickListener {
             if (img_fav.getVisibility() == View.VISIBLE) {
                 favAddApi()
-                   /* Handler().postDelayed(Runnable {
-                        img_fav.setVisibility(View.GONE);
-                        img_fav_done.setVisibility(View.VISIBLE);
-                        val animFadeIn = AnimationUtils.loadAnimation(
-                            this@MyPlayer,
-                            R.anim.fav_done
-                        );
-                        img_fav.startAnimation(animFadeIn);
-                    }, 1000)*/
-
             } else {
                 favRemoveApi()
-
-
             }
         }
 
 
-
-
-
         if (savedInstanceState != null) {
-
             with(savedInstanceState) {
                 playWhenReady = getBoolean(KEY_PLAY_WHEN_READY)
                 currentWindow = getInt(KEY_WINDOW)
@@ -260,7 +233,7 @@ class MyPlayer : AppCompatActivity() {
         val params = HashMap<String, String>()
         params["action"] = "add_favorite"
         params["video_id"] = play_id
-       // var flag = false
+        // var flag = false
         RetrofitClient.getInstance()
             .doBackProcess(this@MyPlayer, params, "online", object : APIResponse {
                 override fun onSuccess(res: String?) {
@@ -278,10 +251,10 @@ class MyPlayer : AppCompatActivity() {
                                 );
                                 img_fav.startAnimation(animFadeIn);
                             }, 500)
-                           // flag = true
+                            // flag = true
                             Toast.makeText(this@MyPlayer, jobj.getString("message"), Toast.LENGTH_SHORT).show();
                         } else {
-                         //   flag = false
+                            //   flag = false
                             Toast.makeText(this@MyPlayer, "status" + details, Toast.LENGTH_LONG).show()
                         }
 
@@ -292,7 +265,7 @@ class MyPlayer : AppCompatActivity() {
                 }
 
                 override fun onFailure(res: String?) {
-                   // flag = false
+                    // flag = false
                     Toast.makeText(this@MyPlayer, "status" + res, Toast.LENGTH_LONG).show()
 
                 }
@@ -343,38 +316,6 @@ class MyPlayer : AppCompatActivity() {
         }
         super.onSaveInstanceState(outState, outPersistentState)
     }
-
-    /* private fun initFullscreenDialog() {
-         mFullScreenDialog = object : Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
-             override fun onBackPressed() {
-                 if (mExoPlayerFullscreen)
-                     closeFullscreenDialog()
-                 super.onBackPressed()
-             }
-         }
-     }
-
-
-     private fun openFullscreenDialog() {
-         lay_playerview.removeView(playerView)
-         mFullScreenDialog.addContentView(
-             playerView,
-             ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-         )
-         mFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(this@MyPlayer, R.drawable.ic_fullscreen_skrink));
-         mExoPlayerFullscreen = true;
-         mFullScreenDialog.show();
-     }
-
-
-     private fun closeFullscreenDialog() {
-         lay_playerview.removeView(playerView)
-         findViewById<FrameLayout>(R.id.lay_playerview).addView(playerView)
-         mExoPlayerFullscreen = false;
-         mFullScreenDialog.dismiss();
-         mFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(this@MyPlayer, R.drawable.ic_fullscreen_expand));
-     }*/
-
 
     private fun initFullscreenButton() {
         mFullScreenIcon = findViewById(R.id.exo_fullscreen_icon);
@@ -432,17 +373,9 @@ class MyPlayer : AppCompatActivity() {
 
     }
 
-    /* Toast.makeText(this@MyPlayer, "Clicked on Full ........", Toast.LENGTH_SHORT).show()
-     initFullscreenDialog()
-     if(!mExoPlayerFullscreen){
-         openFullscreenDialog()
-     }else{
-         closeFullscreenDialog()
-     }*/
-
 
     fun makeTextViewResizable(tv: TextView, maxLine: Int, expandText: String, viewMore: Boolean) {
-/*https://stackoverflow.com/questions/31668697/android-expandable-text-view-with-view-more-button-displaying-at-center-after*/
+        /*https://stackoverflow.com/questions/31668697/android-expandable-text-view-with-view-more-button-displaying-at-center-after*/
         if (tv.tag == null) {
             tv.tag = tv.text
         }
@@ -510,22 +443,15 @@ class MyPlayer : AppCompatActivity() {
     internal lateinit var adapter: MainAdapter
 
     private fun LoginApi(pno: Int) {
-        // loading = true
-        var from = "" as String
-
         val params = HashMap<String, String>()
         params["action"] = "get_similar_by_video_id"
         params["video_id"] = play_id
         params["page_number"] = "" + pno
         params["device_name"] = "abcd"
-        /*if (pno == 1) {
-            from = "";
-        } else {
-            from = "online"
-            pbr!!.visibility = View.VISIBLE
-        }*/
+
+
         RetrofitClient.getInstance()
-            .doBackProcess(this@MyPlayer, params, from, object : APIResponse {
+            .doBackProcess(this@MyPlayer, params, "", object : APIResponse {
                 override fun onSuccess(res: String?) {
                     try {
                         val jobj = JSONObject(res)
@@ -533,12 +459,7 @@ class MyPlayer : AppCompatActivity() {
                         val details = jobj.getString("details")
 
                         if (status == 1) {
-                            // loading = false
-
                             val jsonArray = jobj.getJSONArray("data")
-//                            Log.e("RES", res)
-//                            Log.e("RES my Array", "" + jsonArray.length())
-
                             for (i in 0 until jsonArray.length()) {
                                 var lead = Gson().fromJson(
                                     jsonArray.get(i).toString(),
@@ -546,38 +467,22 @@ class MyPlayer : AppCompatActivity() {
                                 )
                                 myvideos.add(lead)
                             }
-
-                            /* if (myvideos.size < 20) {
-                                 scrollFlag = true
-                             }*/
-                            /* if (pno == 1) {*/
                             my_recycler_view.setHasFixedSize(true)
                             adapter = MainAdapter(this@MyPlayer, myvideos, "player")
                             layoutManager = LinearLayoutManager(applicationContext)
                             my_recycler_view.setLayoutManager(layoutManager)
                             my_recycler_view.setNestedScrollingEnabled(false)
                             my_recycler_view.adapter = adapter
-
-                            adapter.notifyDataSetChanged()
-                        } else {
-                            adapter.notifyDataSetChanged()
                         }
-                        /* } else {
-                             Toast.makeText(this@MyPlayer, "status" + status, Toast.LENGTH_LONG).show()
-                         }*/
+
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-                    /* if (pbr!!.visibility == View.VISIBLE) {
-                         pbr!!.visibility = View.GONE
-                     }*/
+
                 }
 
                 override fun onFailure(res: String?) {
                     Toast.makeText(this@MyPlayer, "status" + res, Toast.LENGTH_LONG).show()
-                    /* if (pbr!!.visibility == View.VISIBLE) {
-                         pbr!!.visibility = View.GONE
-                     }*/
                 }
             })
     }
@@ -634,9 +539,6 @@ class MyPlayer : AppCompatActivity() {
         playerView.requestFocus()
 
         val videoTrackSelectionFactory = AdaptiveTrackSelection.Factory(bandwidthMeter)
-
-
-
 
         trackSelector = DefaultTrackSelector(videoTrackSelectionFactory)
 
@@ -802,78 +704,12 @@ class MyPlayer : AppCompatActivity() {
 
             dialogPair.first.show();
 
-            /*trackSelector.setParameters(
-    trackSelector
-        .buildUponParameters()
-        .setMaxVideoSizeSd()
-        .setPreferredAudioLanguage("deu"));*/
+
         }
     }
 
-    /* override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration?) {
-        *//* if (newConfig != null) {
-            playbackPosition = player.currentPosition
-            isInPipMode = !isInPictureInPictureMode
-        }*//*
-
-        if(!isInPictureInPictureMode){
-            playerView.showController()
-            playerView.controllerAutoShow=true
-
-        }
-        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
-    }*/
-
-    /* //Called when the user touches the Home or Recents button to leave the app.
-     override fun onUserLeaveHint() {
-         super.onUserLeaveHint()
-         enterPIPMode()
-     }*/
-
-
-    /* @Suppress("DEPRECATION")
-     fun enterPIPMode() {
-         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
-             && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
-         ) {
-             playbackPosition = player.currentPosition
-             playerView.useController = false
-             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                 val rational = Rational(playerView.width, playerView.height)
-                 val params = PictureInPictureParams.Builder().setAspectRatio(rational)
-                 this.enterPictureInPictureMode(params.build())
-             } else {
-                 this.enterPictureInPictureMode()
-             }
-             *//* We need to check this because the system permission check is publically hidden for integers for non-manufacturer-built apps
-               https://github.com/aosp-mirror/platform_frameworks_base/blob/studio-3.1.2/core/java/android/app/AppOpsManager.java#L1640
-
-               ********* If we didn't have that problem *********
-                val appOpsManager = getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
-                if(appOpsManager.checkOpNoThrow(AppOpManager.OP_PICTURE_IN_PICTURE, packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA).uid, packageName) == AppOpsManager.MODE_ALLOWED)
-
-                30MS window in even a restricted memory device (756mb+) is more than enough time to check, but also not have the system complain about holding an action hostage.
-             *//*
-            Handler().postDelayed({ checkPIPPermission() }, 30)
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    fun checkPIPPermission() {
-        isPIPModeeEnabled = isInPictureInPictureMode
-        if (!isInPictureInPictureMode) {
-            onBackPressed()
-        }
-    }*/
 
     override fun onBackPressed() {
-        /*  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
-              && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
-              && isPIPModeeEnabled
-          ) {
-              enterPIPMode()
-          } else {*/
-
         val orientation = this.resources.configuration.orientation
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -881,8 +717,42 @@ class MyPlayer : AppCompatActivity() {
         } else {
             super.onBackPressed()
         }
-        /* }*/
+
     }
 
+    private fun setupPermissions(): Boolean {
+        val permission = ContextCompat.checkSelfPermission(
+            this@MyPlayer,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            makeRequest()
+            return false;
+        } else {
+            return true
+        }
+
+    }
+
+    private fun makeRequest() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            123
+        )
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            123 -> {
+                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
+                } else {
+                    DownloadTask(this@MyPlayer, play_share_url)
+                }
+            }
+        }
+    }
 
 }

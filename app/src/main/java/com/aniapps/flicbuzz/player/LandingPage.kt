@@ -484,9 +484,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
 
             }
             R.id.nav_fav -> {
-                val myintent = Intent(this@LandingPage, AboutUs::class.java)
-                myintent.putExtra("title", "My Favourites")
-                myintent.putExtra("url", "")
+                val myintent = Intent(this@LandingPage, FavoriteAct::class.java)
                 startActivity(myintent)
                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
 
@@ -548,7 +546,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 val appPackageName = packageName
                 val sendIntent = Intent()
                 sendIntent.action = Intent.ACTION_SEND
-                sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Carneeds")
+                sendIntent.putExtra(Intent.EXTRA_SUBJECT, "FlickBuzz")
                 sendIntent.putExtra(
                     Intent.EXTRA_TEXT,
                     "Hi,I would like to share this FlicBuzz application, Please download from Google Play! \nhttps://play.google.com/store/apps/details?id=$appPackageName"

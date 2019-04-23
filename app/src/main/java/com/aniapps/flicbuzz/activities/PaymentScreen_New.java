@@ -7,8 +7,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,7 +32,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
-public class PaymentScreen_New extends Activity {
+public class PaymentScreen_New extends AppCompatActivity {
     ConstraintLayout threemonths, sixmonths, oneyear;
     public static IabHelper mHelper;
     private final int PURCHSE_REQUEST = 3;
@@ -48,15 +50,10 @@ public class PaymentScreen_New extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
 
         setContentView(R.layout.activity_payment_new);
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setTitle(getString(R.string.app_name));
-        mToolbar.setNavigationIcon(R.drawable.arrow);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.mytoolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Packages");
 
         plan_details = (LinearLayout) findViewById(R.id.plan_details);
         plan_expiry_date = (TextView) findViewById(R.id.plan_expiry_text);
@@ -142,7 +139,11 @@ public class PaymentScreen_New extends Activity {
             }
         });
     }
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        return super.onOptionsItemSelected(item);
+    }
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -326,5 +327,6 @@ public class PaymentScreen_New extends Activity {
             }
         });
     }
+
 
 }

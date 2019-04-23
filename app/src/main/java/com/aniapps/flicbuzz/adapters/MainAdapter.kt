@@ -35,24 +35,15 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: SingleItemRowHolder, i: Int) {
-
         val singleItem = itemsList[i]
-
         holder.tvTitle.setText(singleItem.headline)
         holder.tvDesc.setText(singleItem.description)
         holder.tvViews.setText("" + singleItem.views + " " + "Views")
-
-        /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-             holder.tvDesc.setText(Html.fromHtml("<b>Adgully Network</b> &nbsp; &nbsp;&nbsp; 1K Views &nbsp;&nbsp;&nbsp; - 1 day ago", Html.FROM_HTML_MODE_COMPACT));
-         } else {
-             holder.tvDesc.setText(Html.fromHtml("<b>Adgully Network</b> &nbsp; &nbsp;&nbsp; 1K Views &nbsp;&nbsp;&nbsp; - 1 day ago"));
-         }*/
-
-
-        if (!from.equals("main")) {
-            holder.tvDesc.setTextColor(ContextCompat.getColor(context, R.color.white))
-        } else {
+        if (from.equals("main")||from.equals("fav")) {
             holder.tvDesc.setTextColor(ContextCompat.getColor(context, R.color.lightgray))
+
+        } else {
+            holder.tvDesc.setTextColor(ContextCompat.getColor(context, R.color.white))
         }
        /* holder.itemImage.requestLayout()
         holder.itemImage.layoutParams.height=200;*/
@@ -93,12 +84,15 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
                         val status = jobj.getInt("status")
                         val details = jobj.getString("details")
                         if (status == 1) {
-                            if (from.equals("main")) {
+                            if (from.equals("main")||from.equals("fav")) {
                                 val player_in = Intent(context, MyPlayer::class.java)
                                 player_in.putExtra("url", myVideo.video_filename)
                                 player_in.putExtra("title", myVideo.headline)
                                 player_in.putExtra("desc", myVideo.description)
                                 player_in.putExtra("id", myVideo.id)
+                                player_in.putExtra("from",from)
+                                player_in.putExtra("fav",myVideo.fav_video)
+                                player_in.putExtra("play_share_url",myVideo.short_video_filename)
                                 context.startActivity(player_in)
                                 context.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
                             } else {
@@ -107,6 +101,9 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
                                 player_in.putExtra("title", myVideo.headline)
                                 player_in.putExtra("desc", myVideo.description)
                                 player_in.putExtra("id", myVideo.id)
+                                player_in.putExtra("from",from)
+                                player_in.putExtra("fav",myVideo.fav_video)
+                                player_in.putExtra("play_share_url",myVideo.short_video_filename)
                                 context.finish()
                                 context.startActivity(player_in)
                                 context.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
