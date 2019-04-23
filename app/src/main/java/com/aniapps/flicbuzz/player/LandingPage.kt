@@ -109,6 +109,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                     pageNo = 1
                     apiCall(tag_id);
                 } else {
+                    Log.e("TEST",""+mySearchData.get(i).type)
                     getVidoeById(mySearchData.get(i).search_id)
                 }
             }
@@ -752,16 +753,15 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                             val data = jobj.getJSONObject("data")
                             val videodata = data.getJSONObject("video")
                             val player_in = Intent(this@LandingPage, MyPlayer::class.java)
-                            player_in.putExtra(
-                                "url",
-                                videodata.getString("https://www.flicbuzz.com/vendor_videos/converted/vendor_3/video_57_20190402_1321.mp4.m3u8")
-                            )
+                            player_in.putExtra("url", videodata.getString("video_filename"))
                             player_in.putExtra("title", videodata.getString("headline"))
                             player_in.putExtra("desc", videodata.getString("description"))
                             player_in.putExtra("id", videodata.getString("id"))
+                            player_in.putExtra("from","main")
+                            player_in.putExtra("fav",videodata.getString("fav_video"))
+                            player_in.putExtra("play_share_url",videodata.getString("short_video_filename"))
                             startActivity(player_in)
                             overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-                            Toast.makeText(this@LandingPage, "" + jobj.getString("message"), Toast.LENGTH_LONG).show()
 
                         } else {
                             Toast.makeText(this@LandingPage, "status" + details, Toast.LENGTH_LONG).show()
