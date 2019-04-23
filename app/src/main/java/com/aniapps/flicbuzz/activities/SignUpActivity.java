@@ -33,7 +33,7 @@ public class SignUpActivity extends AppCompatActivity {
     RadioGroup gender;
     RadioButton male, female;
     RelativeLayout registerLL, otpLL;
-
+    String user_id="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,6 +124,7 @@ public class SignUpActivity extends AppCompatActivity {
                     HashMap<String, String> params = new HashMap<>();
                     params.put("mobile", mobileEditText.getText().toString());
                     params.put("otp", otpEditText.getText().toString());
+                    params.put("user_id", user_id);
                     params.put("from_source", "android");
                     params.put("action", "verify_otp");
                     ApiCall(params, 1);
@@ -207,6 +208,7 @@ public class SignUpActivity extends AppCompatActivity {
                     int status = jsonObject.getInt("status");
                     if (status == 1) {
                         if (from == 2) {
+                            user_id = jsonObject.getString("user_id");
                             Toast.makeText(SignUpActivity.this, jsonObject.getString("sms_details"), Toast.LENGTH_SHORT).show();
                             otpLL.setVisibility(View.VISIBLE);
                             registerLL.setVisibility(View.GONE);
