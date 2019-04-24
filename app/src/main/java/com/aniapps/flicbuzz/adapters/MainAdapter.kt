@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.support.constraint.ConstraintLayout
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -30,7 +31,7 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
     internal var imageheight = 0f
    internal var imageItem_height_calculation=0
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): SingleItemRowHolder {
-        val v = LayoutInflater.from(viewGroup.context).inflate(R.layout.list_single_card, null)
+        val v = LayoutInflater.from(viewGroup.context).inflate(R.layout.list_single_card_new, null)
         return SingleItemRowHolder(v)
     }
 
@@ -164,13 +165,13 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
         var tvTitle: TextView
         var tvDesc: TextView
         var tvViews: TextView
-        lateinit var lay_card: LinearLayout
+        lateinit var lay_card: ConstraintLayout
         var itemImage: ImageView
 
 
         init {
 
-            this.lay_card = view.findViewById<LinearLayout>(R.id.lay_card)
+            this.lay_card = view.findViewById<ConstraintLayout>(R.id.lay_card)
             this.tvTitle = view.findViewById<TextView>(R.id.tvTitle)
             this.tvDesc = view.findViewById<TextView>(R.id.tvDesc)
             this.tvViews = view.findViewById<TextView>(R.id.tvViews)
