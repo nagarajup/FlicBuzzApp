@@ -152,23 +152,27 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         }
         if (PrefManager.getIn().language.equals("Hindi")) {
             switchCompat.isChecked = false
+            switchCompat.text = "Language: "+"Hindi"
         } else {
             switchCompat.isChecked = true
+            switchCompat.text = "Language: "+"English"
         }
-        switchCompat.text = "Language: " + PrefManager.getIn().language
         switchCompat.setOnCheckedChangeListener({ _, isChecked ->
             PrefManager.getIn().language = if (isChecked) "English" else "Hindi"
             if (isChecked) {
                 menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_e))
+                switchCompat.text = "Language: "+"English"
             } else {
                 menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_h))
+                switchCompat.text = "Language: "+"Hindi"
             }
             pageNo = 1
 
             apiCall(tag_id);
-            switchCompat.text = "Language: " + PrefManager.getIn().language
             drawer_layout.closeDrawer(GravityCompat.START)
         })
+
+
 
         pbr = findViewById(R.id.load_progress) as ProgressBar
         pbr!!.getIndeterminateDrawable().setColorFilter(
@@ -217,6 +221,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 .error(R.mipmap.launcher_icon)
                 .into(imageView);
         }
+
         super.onResume()
 
     }
@@ -264,17 +269,23 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
 
-
         this.menu = menu;
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
-
         val menuItem = menu.findItem(R.id.action_search)
+
+        if (PrefManager.getIn().language.equals("Hindi")) {
+            menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_h))
+        } else {
+            menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_e))
+        }
+        // Inflate the menu; this adds items to the action bar if it is present.
         autoSuggestAdapter = AutoSuggestAdapter(
             this,
             android.R.layout.simple_dropdown_item_1line
         )
+
         searchFilters = ArrayList();
+        searchFilters.clear();
         mHighlightArrayAdapter = SearchAdapter(
             this@LandingPage,
             R.layout.serach_item,
@@ -283,6 +294,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         )
 
         search_list.adapter = mHighlightArrayAdapter;
+        mHighlightArrayAdapter.notifyDataSetChanged()
         //  search_list!!.adapter=autoSuggestAdapter
         searchEditText = MenuItemCompat.getActionView(menuItem).findViewById(R.id.edittext) as EditText
         menuView = MenuItemCompat.getActionView(menuItem).findViewById(R.id.menu_view) as FrameLayout
@@ -346,6 +358,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 imm.hideSoftInputFromWindow(currentFocus.windowToken, 0)
                 searchEditText.setText("")
                 search_list.visibility = View.GONE
+                searchFilters.clear();
                 tag_id = "";
                 apiCall(tag_id)
                 menu.findItem(R.id.action_language).setVisible(true)
@@ -456,11 +469,12 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
 
             else -> return super.onOptionsItemSelected(item)
         }
-
         if (PrefManager.getIn().language.equals("Hindi")) {
-            menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_h))
+            switchCompat.isChecked = false
+            switchCompat.text = "Language: "+"Hindi"
         } else {
-            menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_e))
+            switchCompat.isChecked = true
+            switchCompat.text = "Language: "+"English"
         }
         return true
     }
