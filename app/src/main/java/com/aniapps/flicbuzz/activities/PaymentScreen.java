@@ -30,6 +30,7 @@ public class PaymentScreen extends Activity {
             public void onClick(View v) {
                 Intent intent = new Intent(PaymentScreen.this,PaymentScreenFullAccess.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
             }
         });
 
@@ -38,6 +39,7 @@ public class PaymentScreen extends Activity {
             public void onClick(View v) {
                 Intent intent = new Intent(PaymentScreen.this,PaymentScreenLimitedAccess.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
             }
         });
     }

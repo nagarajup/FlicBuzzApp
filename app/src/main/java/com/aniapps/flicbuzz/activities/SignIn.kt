@@ -20,12 +20,14 @@ class SignIn : AppCompatActivity() {
         btn_login.setOnClickListener {
              val i = Intent(this@SignIn, LoginActivity::class.java)
               startActivity(i)
+            overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
 
         }
 
         btn_signup.setOnClickListener {
             val i = Intent(this@SignIn, SignUpActivity::class.java)
             startActivity(i)
+            overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
 
         }
     }

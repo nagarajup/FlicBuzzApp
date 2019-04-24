@@ -180,6 +180,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         imageView.setOnClickListener(View.OnClickListener {
             val myintent = Intent(this@LandingPage, UpdateProfileActivity::class.java)
             startActivity(myintent)
+            overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
         })
         my_recycler_view!!.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -542,6 +543,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
+                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
             }
             R.id.nav_share -> {
                 val appPackageName = packageName
@@ -554,6 +556,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 )
                 sendIntent.type = "text/plain"
                 startActivity(sendIntent)
+
             }
 
         }

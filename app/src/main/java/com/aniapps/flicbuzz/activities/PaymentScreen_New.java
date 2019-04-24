@@ -49,8 +49,8 @@ public class PaymentScreen_New extends AppCompatActivity {
 
         // Making notification bar transparent
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+     /*   getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
         setContentView(R.layout.activity_payment_new);
         Toolbar mToolbar = (Toolbar) findViewById(R.id.mytoolbar);
         setSupportActionBar(mToolbar);
@@ -378,6 +378,7 @@ public class PaymentScreen_New extends AppCompatActivity {
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
+                            overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
                         }
                     } else {
                         Utility.alertDialog(PaymentScreen_New.this, "Alert", jsonObject.getString("message"));

@@ -62,6 +62,7 @@ public class SettingsActivity extends AppCompatActivity {
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
+                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
             }
         });
         cancelSubscription.setOnClickListener(new View.OnClickListener() {

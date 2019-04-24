@@ -9,26 +9,28 @@
             android:id="@+id/bar"
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.AppBarOverlay">
-    <android.support.v7.widget.Toolbar
-            android:id="@+id/mytoolbar"
-            android:layout_width="match_parent"
-            android:layout_height="56sp"
-            android:background="@color/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay"/>
+        <android.support.v7.widget.Toolbar
+                android:id="@+id/mytoolbar"
+                android:layout_width="match_parent"
+                android:layout_height="56sp"
+                android:background="@color/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay"/>
     </android.support.design.widget.AppBarLayout>
     <RelativeLayout android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:layout_below="@+id/bar"
-                    android:id="@+id/screenLayout" android:background="@mipmap/package_bg">
+                    android:id="@+id/screenLayout"
+                    android:background="@mipmap/bg_package">
 
         <LinearLayout android:layout_width="match_parent"
                       android:gravity="left"
                       android:id="@+id/plan_details"
                       android:visibility="gone"
-                      android:orientation="vertical" android:layout_height="wrap_content">
-            <TextView android:textSize="25.0sp"
+                      android:orientation="vertical"
+                      android:layout_height="wrap_content">
+            <TextView android:textSize="25sp"
                       android:id="@+id/plan_text"
-                      android:layout_marginTop="30dp"
+                      android:layout_marginTop="20dp"
                       android:layout_marginLeft="30dp"
                       android:textColor="@color/black"
                       android:layout_width="wrap_content"
@@ -37,31 +39,28 @@
                       android:fontFamily="@font/cera_gr_bold"/>
             <LinearLayout android:layout_width="match_parent"
                           android:gravity="left"
-                          android:orientation="horizontal" android:layout_height="wrap_content">
-                <TextView android:textSize="18.0sp"
-                          android:layout_marginTop="10dp"
+                          android:orientation="horizontal"
+                          android:layout_height="wrap_content">
+                <TextView android:textSize="18sp"
                           android:layout_marginLeft="30dp"
                           android:textColor="@color/red"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
-                          android:text="Expiry Date: "
-                          android:fontFamily="@font/cera_black"/>
-                <TextView android:textSize="18.0sp"
+                          android:text="Expiry Date: " />
+                <TextView android:textSize="18sp"
                           android:id="@+id/plan_expiry_text"
-                          android:layout_marginTop="10dp"
                           android:textColor="@color/black"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
-                          android:text=""
-                          android:fontFamily="@font/cera_black"/>
+                          android:text="" />
             </LinearLayout>
         </LinearLayout>
         <android.support.constraint.ConstraintLayout android:layout_width="match_parent"
-                                                     android:padding="10dp"
+                                                     android:padding="5dp"
                                                      android:id="@+id/threemonths"
                                                      android:layout_alignParentBottom="true"
                                                      android:layout_height="wrap_content"
-                                                     android:layout_marginBottom="277dp">
+                                                     android:layout_marginBottom="267dp">
 
             <TextView android:layout_width="fill_parent" android:layout_height="79dp"
                       android:text="3 Months"
@@ -85,7 +84,7 @@
                           app:layout_constraintVertical_bias="1.0">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                           android:text="Package"
-                          android:fontFamily="@font/cera_gr_regular"
+                          android:fontFamily="@font/cera_gr_bold"
                           android:textColor="@color/colorAccent"/>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                           android:fontFamily="@font/cera_black"
@@ -110,11 +109,11 @@
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout android:layout_width="match_parent"
-                                                     android:padding="10dp"
+                                                     android:padding="5dp"
                                                      android:id="@+id/sixmonths"
                                                      android:layout_alignParentBottom="true"
                                                      android:layout_height="wrap_content"
-                                                     android:layout_marginBottom="150dp">
+                                                     android:layout_marginBottom="140dp">
 
             <TextView android:layout_width="fill_parent" android:layout_height="79dp"
                       android:text="6 Months"
@@ -138,7 +137,7 @@
                           app:layout_constraintVertical_bias="1.0">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                           android:text="Package"
-                          android:fontFamily="@font/cera_gr_regular"
+                          android:fontFamily="@font/cera_gr_bold"
                           android:textColor="@color/colorAccent"/>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                           android:fontFamily="@font/cera_black"
@@ -164,11 +163,11 @@
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout android:layout_width="match_parent"
-                                                     android:padding="10dp"
+                                                     android:padding="5dp"
                                                      android:id="@+id/oneyear"
                                                      android:layout_alignParentBottom="true"
                                                      android:layout_height="wrap_content"
-                                                     android:layout_marginBottom="25dp">
+                                                     android:layout_marginBottom="20dp">
 
             <TextView android:layout_width="fill_parent" android:layout_height="79dp"
                       android:text="1 Year"
@@ -192,7 +191,7 @@
                           app:layout_constraintVertical_bias="1.0">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                           android:text="Package"
-                          android:fontFamily="@font/cera_gr_regular"
+                          android:fontFamily="@font/cera_gr_bold"
                           android:textColor="@color/colorAccent"/>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                           android:fontFamily="@font/cera_black"
