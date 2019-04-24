@@ -13,6 +13,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import com.aniapps.flicbuzz.AppApplication
 import com.aniapps.flicbuzz.player.MyPlayer
 import com.aniapps.flicbuzz.R
 import com.aniapps.flicbuzz.models.MyVideos
@@ -48,10 +49,36 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
        /* holder.itemImage.requestLayout()
         holder.itemImage.layoutParams.height=200;*/
 
+        AppApplication.myImgeRes(imageItem_height_calculation,context,holder.itemImage)
        /* if (imageItem_height_calculation == 0) {
             imageItem_height_calculation = 1
             holder.itemImage.getLayoutParams().height = (((context
-                .resources.displayMetrics.widthPixels - dpToPx(10, context)) / 2)  / 1.33).toInt()
+                .resources.displayMetrics.widthPixels -
+                dpToPx(10, context)) / 2) as Float / 1.33).toFloat().toInt()
+            imageheight = (((context
+                .resources.displayMetrics.widthPixels-
+                dpToPx(10, context)) / 2) as Float / 1.33).toInt().toFloat()
+        } else {
+            holder.itemImage.getLayoutParams().height = imageheight.toInt()
+        }*/
+
+
+        /* if (imageItem_height_calculation == 0) {
+            imageItem_height_calculation = 1;
+            holder.image_car.getLayoutParams().height = (int) ((float) ((context
+                    .getResources().getDisplayMetrics().widthPixels - AppConstants
+                    .dpToPx(10, context)) / 2) / 1.33);
+            imageheight = (int) ((float) ((context
+                    .getResources().getDisplayMetrics().widthPixels - AppConstants
+                    .dpToPx(10, context)) / 2) / 1.33);
+        } else {
+            holder.image_car.getLayoutParams().height = (int) imageheight;
+        }*/
+
+        /*if (imageItem_height_calculation == 0) {
+            imageItem_height_calculation = 1
+            holder.itemImage.getLayoutParams().height = (((context
+                .resources.displayMetrics.widthPixels - dpToPx(10, context)) / 2)  / 1.33).toInt().toFloat()
             imageheight = (((context
                 .resources.displayMetrics.widthPixels - dpToPx(10, context)) / 2)  / 1.33).toInt().toFloat()
         } else {
@@ -61,7 +88,6 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
 
         Picasso.with(context)
             .load(singleItem.thumb)
-            .fit()
             .error(R.mipmap.launcher_icon)
             .into(holder.itemImage);
 

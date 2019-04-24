@@ -323,6 +323,7 @@ class MyPlayer : AppCompatActivity() {
         mFullScreenButton.setOnClickListener {
             val orientation = this.resources.configuration.orientation
             if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+              //  getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
                 mFullScreenIcon.setImageDrawable(
                     ContextCompat.getDrawable(
                         this@MyPlayer,
@@ -361,13 +362,14 @@ class MyPlayer : AppCompatActivity() {
                 )
             );
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
             mFullScreenIcon.setImageDrawable(
                 ContextCompat.getDrawable(
                     this@MyPlayer,
                     R.drawable.ic_fullscreen_expand
                 )
             );
-            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
         }
 
 

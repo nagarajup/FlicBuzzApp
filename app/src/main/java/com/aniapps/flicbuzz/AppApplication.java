@@ -7,6 +7,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.StrictMode;
 import android.provider.Settings;
+import android.widget.ImageView;
 import com.aniapps.flicbuzz.utils.PrefManager;
 
 public class AppApplication extends Application {
@@ -34,6 +35,25 @@ public class AppApplication extends Application {
             NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             nm.createNotificationChannel(new NotificationChannel("CHID_CallDetector", "Caller Id Service", NotificationManager.IMPORTANCE_DEFAULT));
         }
+    }
+    static float imageheight = 0;
+    public static void myImgeRes(int cal,Context context,ImageView imageView){
+        if (cal == 0) {
+            cal = 1;
+        imageView.getLayoutParams().height = (int) ((float) ((context
+                    .getResources().getDisplayMetrics().widthPixels-
+                    dpToPx(10, context)) ) / 1.77);
+            imageheight = (int) ((float) ((context
+                    .getResources().getDisplayMetrics().widthPixels-
+                    dpToPx(10, context)) ) / 1.77);
+        } else {
+        imageView.getLayoutParams().height = (int) imageheight;
+        }
+    }
+
+    public static int dpToPx(int dp, Context context) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dp * scale);
     }
 
 }
