@@ -16,8 +16,6 @@
             android:background="#000000">
 
 
-
-
         <com.google.android.exoplayer2.ui.PlayerView
                 android:id="@+id/video_view"
                 android:layout_width="match_parent"
@@ -46,6 +44,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/playerview"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/player_scroll"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:scrollbars="none">
         <LinearLayout android:layout_width="match_parent"
@@ -135,9 +135,10 @@
                 <android.support.v7.widget.RecyclerView
                         android:id="@+id/rc_list"
                         android:layout_below="@+id/tv_play_header"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"/>
+                        android:layout_centerHorizontal="true"
+                />
             </RelativeLayout>
 
         </LinearLayout>

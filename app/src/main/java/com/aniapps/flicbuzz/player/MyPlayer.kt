@@ -2,6 +2,7 @@ package com.aniapps.flicbuzz.player
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.ActionBar
 import android.app.Dialog
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -49,6 +50,7 @@ import com.google.android.exoplayer2.util.Util
 import com.google.android.exoplayer2.util.Util.SDK_INT
 import com.google.android.exoplayer2.util.Util.getUserAgent
 import com.google.gson.Gson
+import kotlinx.android.synthetic.main.list_item.*
 import kotlinx.android.synthetic.main.myplayer.*
 import org.json.JSONObject
 import java.util.ArrayList
@@ -362,15 +364,23 @@ class MyPlayer : AppCompatActivity() {
                 )
             );
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
-            mFullScreenIcon.setImageDrawable(
-                ContextCompat.getDrawable(
-                    this@MyPlayer,
-                    R.drawable.ic_fullscreen_expand
-                )
-            );
+
+                playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+                mFullScreenIcon.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        this@MyPlayer,
+                        R.drawable.ic_fullscreen_expand
+                    )
+                );
+
+
+
         }
+
+
+      //  my_recycler_view.adapter!!.notifyDataSetChanged()
+       // recycler_view_list.adapter!!.notifyDataSetChanged()
 
 
     }
