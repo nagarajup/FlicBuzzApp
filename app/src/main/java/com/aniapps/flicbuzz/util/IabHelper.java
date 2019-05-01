@@ -352,7 +352,7 @@ public class IabHelper {
      * Initiate the UI flow for an in-app purchase. Call this method to initiate an in-app purchase,
      * which will involve bringing up the Google Play screen. The calling activity will be paused while
      * the user interacts with Google Play, and the result will be delivered via the activity's
-     * {@link Activity#onActivityResult} method, at which point you must call
+     * {@linkActivity#onActivityResult} method, at which point you must call
      * this object's {@link #handleActivityResult} method to continue the purchase flow. This method
      * MUST be called from the UI thread of the Activity.
      *
@@ -525,7 +525,7 @@ public class IabHelper {
     /**
      * Queries the inventory. This will query all owned items from the server, as well as
      * information on additional skus, if specified. This method may block or take long to execute.
-     * Do not call from a UI thread. For that, use the non-blocking version {@link #refreshInventoryAsync}.
+     * Do not call from a UI thread. For that, use the non-blocking version {@link#refreshInventoryAsync}.
      *
      * @param querySkuDetails if true, SKU details (price, description, etc) will be queried as well
      *     as purchase information.
@@ -828,7 +828,6 @@ public class IabHelper {
         mAsyncOperation = "";
         mAsyncInProgress = false;
     }
-
 
     int queryPurchases(Inventory inv, String itemType) throws JSONException, RemoteException {
         // Query purchases

@@ -11,15 +11,7 @@
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
-                android:id="@+id/mytoolbar"
-                android:layout_width="match_parent"
-                android:layout_height="56sp"
-                android:background="@color/colorPrimary"
-                app:popupTheme="@style/AppTheme.PopupOverlay">
-
-
-        </android.support.v7.widget.Toolbar>
+        <include layout="@layout/toolbar"/>
 
 
     </android.support.design.widget.AppBarLayout>

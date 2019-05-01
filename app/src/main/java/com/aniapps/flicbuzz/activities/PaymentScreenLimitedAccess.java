@@ -76,6 +76,7 @@ public class PaymentScreenLimitedAccess extends Activity {
             @Override
             public void onClick(View view) {
                 finish();
+                overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
             }
         });
         proceed = (Button) findViewById(R.id.proceed);

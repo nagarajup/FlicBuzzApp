@@ -1,9 +1,11 @@
 package com.aniapps.flicbuzz.player
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.content.ContextCompat
@@ -11,13 +13,11 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.view.MenuItemCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.*
 import android.support.v7.widget.SearchView
-import android.support.v7.widget.SwitchCompat
-import android.text.Editable
-import android.text.TextUtils
-import android.text.TextWatcher
+import android.support.v7.widget.Toolbar
+import android.text.*
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -35,11 +35,9 @@ import com.aniapps.flicbuzz.utils.PrefManager
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_update_profile.*
-import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.app_bar_main.toolbar
 import org.json.JSONArray
 import org.json.JSONObject
+import org.w3c.dom.Text
 import java.util.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.set
@@ -71,22 +69,31 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
     internal lateinit var tv_profile_email: TextView
     internal lateinit var tv_profile_plan: TextView
     internal lateinit var switchCompat: SwitchCompat
+    internal lateinit var nav_lang: TextView
     internal var tag_id: String = "";
 
     internal var pageNo = 1
     internal var my_recycler_view: RecyclerView? = null
     internal lateinit var search_list: ListView
+    internal lateinit var header_title: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
+        val mToolbar = findViewById<View>(R.id.toolbar) as Toolbar
+        header_title = findViewById<View>(R.id.title) as TextView
+
+        setSupportActionBar(mToolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
+        header_title.text = "Hindi | English"
+        setColor(header_title,1)
         myvideos = ArrayList()
         // val jsonArray = intent.getStringExtra("jsonArray")
         //myData(jsonArray)
 
         // Toast.makeText(this, PrefManager.getIn().getPayment_data().toString(), Toast.LENGTH_SHORT).show()
         val toggle = ActionBarDrawerToggle(
-            this, drawer_layout, toolbar,
+            this, drawer_layout, mToolbar,
             R.string.navigation_drawer_open,
             R.string.navigation_drawer_close
         )
@@ -99,7 +106,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         search_list = findViewById<ListView>(R.id.search_list)
 
         search_list.setOnItemClickListener { adapterView, view, i, l ->
-            if(!searchFilters.get(0).toString().equals("No Search results found")) {
+            if (!searchFilters.get(0).toString().equals("No Search results found")) {
                 search_list.visibility = View.GONE
                 searchEditText.setText(mySearchData.get(i).display)
                 val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
@@ -109,7 +116,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                     pageNo = 1
                     apiCall(tag_id);
                 } else {
-                    Log.e("TEST",""+mySearchData.get(i).type)
+                    Log.e("TEST", "" + mySearchData.get(i).type)
                     getVidoeById(mySearchData.get(i).search_id)
                 }
             }
@@ -141,6 +148,8 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         nav_settings.setOnClickListener(this@LandingPage)
         nav_logout.setOnClickListener(this@LandingPage)
         switchCompat = findViewById<SwitchCompat>(R.id.nav_language)
+        nav_lang = findViewById<TextView>(R.id.nav_lang)
+        setColor(nav_lang,2)
         tv_profile_name.setText(PrefManager.getIn().getName())
         tv_profile_email.setText(PrefManager.getIn().getEmail())
         if (PrefManager.getIn().getPlan().equals("3")) {
@@ -149,22 +158,56 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
             tv_profile_plan.setText("Plan : Six Months")
         } else if (PrefManager.getIn().getPlan().equals("12")) {
             tv_profile_plan.setText("Plan : One Year")
+        } else if (PrefManager.getIn().getPlan().equals("expired")) {
+            tv_profile_plan.setText("Plan : Expired")
+        } else if (PrefManager.getIn().getPlan().equals("trail")) {
+            tv_profile_plan.setText("Plan : Trail")
         }
         if (PrefManager.getIn().language.equals("Hindi")) {
             switchCompat.isChecked = false
-            switchCompat.text = "Language: "+"Hindi"
+            switchCompat.text = "Language: " + "Hindi"
         } else {
             switchCompat.isChecked = true
-            switchCompat.text = "Language: "+"English"
+            switchCompat.text = "Language: " + "English"
         }
+        header_title .setOnClickListener(View.OnClickListener {
+            PrefManager.getIn().language = if (PrefManager.getIn().language.equals("Hindi")) "English" else "Hindi"
+            /*if (isChecked) {
+                menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_e))
+                switchCompat.text = "Language: " + "English"
+            } else {
+                menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_h))
+                switchCompat.text = "Language: " + "Hindi"
+            }*/
+            pageNo = 1
+            setColor(header_title,1)
+            setColor(nav_lang,2)
+            apiCall(tag_id);
+            drawer_layout.closeDrawer(GravityCompat.START)
+        })
+        nav_lang .setOnClickListener(View.OnClickListener {
+            PrefManager.getIn().language = if (PrefManager.getIn().language.equals("Hindi")) "English" else "Hindi"
+            /*if (isChecked) {
+                menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_e))
+                switchCompat.text = "Language: " + "English"
+            } else {
+                menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_h))
+                switchCompat.text = "Language: " + "Hindi"
+            }*/
+            pageNo = 1
+            setColor(header_title,1)
+            setColor(nav_lang,2)
+            apiCall(tag_id);
+            drawer_layout.closeDrawer(GravityCompat.START)
+        })
         switchCompat.setOnCheckedChangeListener({ _, isChecked ->
             PrefManager.getIn().language = if (isChecked) "English" else "Hindi"
             if (isChecked) {
                 menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_e))
-                switchCompat.text = "Language: "+"English"
+                switchCompat.text = "Language: " + "English"
             } else {
                 menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_h))
-                switchCompat.text = "Language: "+"Hindi"
+                switchCompat.text = "Language: " + "Hindi"
             }
             pageNo = 1
 
@@ -221,9 +264,40 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 .error(R.mipmap.launcher_icon)
                 .into(imageView);
         }
+        if (PrefManager.getIn().getPlan().equals("3")) {
+            tv_profile_plan.setText("Plan : Three Months")
+        } else if (PrefManager.getIn().getPlan().equals("6")) {
+            tv_profile_plan.setText("Plan : Six Months")
+        } else if (PrefManager.getIn().getPlan().equals("12")) {
+            tv_profile_plan.setText("Plan : One Year")
+        } else if (PrefManager.getIn().getPlan().equals("expired")) {
+            tv_profile_plan.setText("Plan : Expired")
+        } else if (PrefManager.getIn().getPlan().equals("trail")) {
+            tv_profile_plan.setText("Plan : Trail")
+        }
+        if (PrefManager.getIn().getPlan().equals("expired")) {
+            alertDialog(this@LandingPage, "Alert", "Your plan is expired, Please purchase subscription.")
+        }
 
         super.onResume()
 
+    }
+
+    fun alertDialog(context: Context, title: String, msg: String) {
+        val builder = AlertDialog.Builder(context)
+        builder.setMessage(msg)
+        builder.setTitle(title)
+        builder.setCancelable(false)
+        builder.setPositiveButton("OK") { dialog, which ->
+            val intent = Intent(this@LandingPage, PaymentScreen_New::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(intent)
+            overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+        }
+        //builder.setNegativeButton("NO", null);
+        builder.show()
     }
 
     fun myData(myData: String) {
@@ -370,6 +444,39 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         return true
     }
 
+    private fun setColor(view: TextView,from : Int) {
+        val spannable = SpannableString(view.text)
+        if (PrefManager.getIn().language.equals("Hindi")) {
+            spannable.setSpan(
+                ForegroundColorSpan(Color.RED), 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            if(from==1) {
+                spannable.setSpan(
+                    ForegroundColorSpan(Color.WHITE), 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }else{
+                spannable.setSpan(
+                    ForegroundColorSpan(resources.getColor(R.color.darkgray)), 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+        }else{
+            spannable.setSpan(
+                ForegroundColorSpan(Color.RED), 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            if(from==1) {
+            spannable.setSpan(
+                ForegroundColorSpan(Color.WHITE), 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            }else{
+                spannable.setSpan(
+                    ForegroundColorSpan(resources.getColor(R.color.darkgray)), 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+        }
+
+        view.text = spannable
+    }
+
     private fun makeApiCall(mytag: String) {
 
         val params = HashMap<String, String>()
@@ -471,11 +578,13 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         }
         if (PrefManager.getIn().language.equals("Hindi")) {
             switchCompat.isChecked = false
-            switchCompat.text = "Language: "+"Hindi"
+            switchCompat.text = "Language: " + "Hindi"
         } else {
             switchCompat.isChecked = true
-            switchCompat.text = "Language: "+"English"
+            switchCompat.text = "Language: " + "English"
         }
+        setColor(header_title,1)
+        setColor(nav_lang,2)
         return true
     }
 
@@ -774,9 +883,9 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                             player_in.putExtra("title", videodata.getString("headline"))
                             player_in.putExtra("desc", videodata.getString("description"))
                             player_in.putExtra("id", videodata.getString("id"))
-                            player_in.putExtra("from","main")
-                            player_in.putExtra("fav",videodata.getString("fav_video"))
-                            player_in.putExtra("play_share_url",videodata.getString("short_video_filename"))
+                            player_in.putExtra("from", "main")
+                            player_in.putExtra("fav", videodata.getString("fav_video"))
+                            player_in.putExtra("play_share_url", videodata.getString("short_video_filename"))
                             startActivity(player_in)
                             overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 

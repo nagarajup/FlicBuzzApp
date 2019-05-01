@@ -15,6 +15,7 @@
 
 package com.aniapps.flicbuzz.util;
 
+import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,6 +30,7 @@ public class Purchase implements Serializable {
     String mPackageName;
     String mSku;
     long mPurchaseTime;
+    long mPurchaseExpiryTime;
     int mPurchaseState;
     String mDeveloperPayload;
     String mToken;
@@ -36,6 +38,7 @@ public class Purchase implements Serializable {
     String mSignature;
 
     public Purchase(String itemType, String jsonPurchaseInfo, String signature) throws JSONException {
+       // Log.e("test","purchase::"+jsonPurchaseInfo);
         mItemType = itemType;
         mOriginalJson = jsonPurchaseInfo;
         JSONObject o = new JSONObject(mOriginalJson);

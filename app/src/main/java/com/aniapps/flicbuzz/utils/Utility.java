@@ -7,6 +7,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.EditText;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Utility {
 
     public static String sharedKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzr+a6xv9poxx25sfgIhmC4i1Msg7uOenQC6Bb6RieL0NXQV5g9voJef1GtrjLxfLIJXDFmqRBxEePM3UzceCjSq3MLvlCnhmOTYWP7EXRzb8A0fnn8jHM2KO17N7yl/Go1801CbsMQ7f0u5UR02LNdQfy7xfdZ2wGDkiusuZcHNrGUitL5EJib97FMxg8fbEGrsTAwXMabueS4V955i3Lony2b4MmJuztfLinW+8HK/M5IB8HC+GCZJ6UztCClY4Z/6Ir3sxEj8z4vYInVKsVhSZs7GvPGEorz3rbFkX4tXkyUzwM7tl6/dVrXTgN3fhV/++cJBGXNv944kVeoKVHwIDAQAB";
@@ -28,6 +31,15 @@ public class Utility {
         return true;
     }
 
+    public static long getMilliSeconds(String date_str) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date = sdf.parse(date_str);
+            return date.getTime();
+        } catch (Exception e) {
+            return 0;
+        }
+    }
 
     public static boolean hasName(EditText editText) {
         String text = editText.getText().toString().trim();

@@ -96,13 +96,19 @@
                 android:name=".activities.PaymentScreen_New"
                 android:label="@string/app_name"
                 android:screenOrientation="portrait"/>
+
         <activity android:name=".activities.PaymentScreenLimitedAccess"
                   android:label="@string/app_name"
                   android:screenOrientation="portrait"/>
         <activity android:name=".activities.PaymentScreenFullAccess"
                   android:label="@string/app_name"
                   android:screenOrientation="portrait"/>
-
+        <receiver android:name=".activities.IAPBroadcastReciever"  android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.INPUT_METHOD_CHANGED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

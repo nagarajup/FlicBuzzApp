@@ -51,6 +51,7 @@ public class SignUpActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (registerLL.getVisibility() == View.VISIBLE) {
             finish();
+            overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
         } else {
             registerLL.setVisibility(View.VISIBLE);
             otpLL.setVisibility(View.GONE);
@@ -99,6 +100,7 @@ public class SignUpActivity extends AppCompatActivity {
                 Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
+                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
             }
         });
         signUp.setOnClickListener(new View.OnClickListener() {
@@ -114,6 +116,7 @@ public class SignUpActivity extends AppCompatActivity {
                 params.put("mobile", mobileEditText.getText().toString());
                 params.put("from_source", "android");
                 params.put("action", "resend_otp");
+                params.put("user_id", user_id);
                 ApiCall(params, 3);
             }
         });

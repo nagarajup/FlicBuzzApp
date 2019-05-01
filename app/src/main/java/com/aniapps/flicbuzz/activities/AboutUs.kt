@@ -4,6 +4,7 @@ import android.app.Activity
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import android.view.View
 import android.webkit.WebSettings
@@ -21,11 +22,14 @@ class AboutUs : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.frgment_about)
-        setSupportActionBar(findViewById(R.id.mytoolbar));
-        getSupportActionBar()!!.setDisplayHomeAsUpEnabled(true);
+        val mToolbar = findViewById<View>(R.id.toolbar) as Toolbar
+        val header_title = findViewById<View>(R.id.title) as TextView
+
+        setSupportActionBar(mToolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         title = intent.getStringExtra("title")
 
-        getSupportActionBar()!!.setTitle(title)
+        header_title.text = title
         webview = findViewById<WebView>(R.id.web_page)
         tv_note = findViewById<TextView>(R.id.tv_note)
 
@@ -49,6 +53,7 @@ class AboutUs : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         finish();
+        overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out)
         return super.onOptionsItemSelected(item)
     }
 
