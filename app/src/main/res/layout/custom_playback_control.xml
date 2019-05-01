@@ -8,20 +8,32 @@
              android:background="#11000000"
              android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center|right"
+            android:gravity="center_horizontal"
             android:layout_gravity="top"
             android:layout_alignParentTop="true"
-            android:paddingTop="4dp"
             android:orientation="horizontal">
 
         <ImageButton android:layout_width="wrap_content"
                      android:layout_height="wrap_content"
-                     android:layout_gravity="top|right"
+                     android:layout_gravity="left"
+                     android:id="@+id/icon_pip"
+                     android:padding="5sp"
+                     android:layout_marginLeft="40sp"
+                     android:layout_marginStart="40sp"
+                     android:tint="@color/white"
+                     android:background="@null"
+                     android:src="@mipmap/icon_arrow_down"/>
+
+        <ImageButton android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_alignParentRight="true"
                      android:id="@+id/icon_setting"
                      android:padding="5sp"
+                     android:layout_marginRight="20sp"
+                     android:layout_marginEnd="20sp"
                      android:tint="@color/white"
                      android:background="@null"
                      android:src="@mipmap/icon_settings"/>
@@ -30,12 +42,16 @@
                      android:layout_height="wrap_content"
                      android:layout_gravity="center_vertical"
                      android:id="@+id/icon_share"
-                     android:layout_margin="5sp"
+                     android:layout_marginRight="30sp"
+                     android:layout_marginEnd="30sp"
+                     android:layout_toEndOf="@+id/icon_setting"
+                     android:layout_toRightOf="@+id/icon_setting"
+                     android:padding="5sp"
                      android:background="@null"
                      android:tint="@color/white"
                      android:src="@mipmap/icon_share"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <!--https://stackoverflow.com/questions/39510837/android-exoplayer-play-pause-button-in-the-middle-of-videoplayer-->
 
@@ -46,8 +62,15 @@
             android:layout_gravity="center"
             android:id="@+id/layplay"
             android:layout_centerInParent="true"
-            android:paddingTop="4dp"
             android:orientation="horizontal">
+
+        <ImageButton
+                android:id="@id/exo_prev"
+                style="@style/ExoMediaButton.Previous"/>
+
+        <ImageButton android:id="@id/exo_rew"
+                     style="@style/ExoMediaButton.Rewind"/>
+
 
         <ImageButton android:id="@id/exo_play"
                      android:layout_height="wrap_content"
@@ -65,12 +88,17 @@
                      android:layout_margin="5sp"
                      android:src="@mipmap/video_pause"/>
 
+        <ImageButton android:id="@id/exo_ffwd"
+                     style="@style/ExoMediaButton.FastForward"/>
+        <ImageButton
+                android:id="@id/exo_next"
+                style="@style/ExoMediaButton.Next"/>
+
     </LinearLayout>
 
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
             android:layout_below="@+id/layplay"
             android:id="@+id/lay_bar"
             android:layout_gravity="bottom"

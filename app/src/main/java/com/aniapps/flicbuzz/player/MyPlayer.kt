@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.ActionBar
 import android.app.Dialog
+import android.app.PictureInPictureParams
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
@@ -24,6 +25,7 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.util.Log
+import android.util.Rational
 import android.view.*
 import android.view.animation.AnimationUtils
 import android.widget.*
@@ -110,6 +112,7 @@ class MyPlayer : AppCompatActivity() {
     /*https://medium.com/@mayur_solanki/adaptive-streaming-with-exoplayer-c77b0032acdd*/
     private val progressBar: ProgressBar by lazy { findViewById<ProgressBar>(R.id.progress_bar) }
     private val settings: ImageButton by lazy { findViewById<ImageButton>(R.id.icon_setting) }
+    private val icon_pip: ImageButton by lazy { findViewById<ImageButton>(R.id.icon_pip) }
     private val share: ImageButton by lazy { findViewById<ImageButton>(R.id.icon_share) }
     /*https://stackoverflow.com/questions/16300959/android-share-image-from-url*/
     private val fullscreen: FrameLayout by lazy { findViewById<FrameLayout>(R.id.exo_fullscreen_button) }
@@ -163,6 +166,13 @@ class MyPlayer : AppCompatActivity() {
 
         settings.setOnClickListener {
             myTracker()
+        }
+        icon_pip.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
+                && isPIPModeeEnabled
+            ) {
+                enterPIPMode()
+            }
         }
         share.setOnClickListener {
             if (setupPermissions()) {
@@ -325,7 +335,7 @@ class MyPlayer : AppCompatActivity() {
         mFullScreenButton.setOnClickListener {
             val orientation = this.resources.configuration.orientation
             if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-              //  getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+                //  getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
                 mFullScreenIcon.setImageDrawable(
                     ContextCompat.getDrawable(
                         this@MyPlayer,
@@ -365,22 +375,21 @@ class MyPlayer : AppCompatActivity() {
             );
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
 
-                playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
-                mFullScreenIcon.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        this@MyPlayer,
-                        R.drawable.ic_fullscreen_expand
-                    )
-                );
-
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+            mFullScreenIcon.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this@MyPlayer,
+                    R.drawable.ic_fullscreen_expand
+                )
+            );
 
 
         }
 
 
-      //  my_recycler_view.adapter!!.notifyDataSetChanged()
-       // recycler_view_list.adapter!!.notifyDataSetChanged()
+        //  my_recycler_view.adapter!!.notifyDataSetChanged()
+        // recycler_view_list.adapter!!.notifyDataSetChanged()
 
 
     }
@@ -591,30 +600,6 @@ class MyPlayer : AppCompatActivity() {
         }
 
 
-        /* val mediaSource = ExtractorMediaSource.Factory(mediaDataSourceFactory)
-                 .createMediaSource(Uri.parse("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"))*/
-
-
-        /*  when (Util.inferContentType(Uri.parse(mUrl))) {
-            C.TYPE_HLS -> {
-                val mediaSource = HlsMediaSource
-                        .Factory(dataFactory)
-                        .createMediaSource(Uri.parse(mUrl))
-            }
-
-            C.TYPE_OTHER -> {
-                val mediaSource = ExtractorMediaSource
-                        .Factory(mediaDataSourceFactory)
-                        .createMediaSource(Uri.parse(mUrl))
-            }
-
-            else -> {
-                //This is to catch SmoothStreaming and
-                //DASH types which we won't support currently, exit
-                finish()
-            }
-        }*/
-
         //https://www.flicbuzz.com/vendor_videos/converted/video7.m3u8
         //https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8
         val haveStartPosition = currentWindow != C.INDEX_UNSET
@@ -722,13 +707,16 @@ class MyPlayer : AppCompatActivity() {
 
 
     override fun onBackPressed() {
-        val orientation = this.resources.configuration.orientation
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
-        } else {
-            super.onBackPressed()
-        }
+
+
+            val orientation = this.resources.configuration.orientation
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+            } else {
+                super.onBackPressed()
+            }
+
 
     }
 
@@ -767,4 +755,74 @@ class MyPlayer : AppCompatActivity() {
         }
     }
 
+    //For N devices that support it, not "officially"
+    //https://medium.com/s23nyc-tech/drop-in-android-video-exoplayer2-with-picture-in-picture-e2d4f8c1eb30
+    @Suppress("DEPRECATION")
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration?) {
+        if (newConfig != null) {
+            playbackPosition = player.currentPosition
+            isInPipMode = !isInPictureInPictureMode
+        }
+
+        if (!isInPictureInPictureMode) {
+            playerView.showController()
+            playerView.controllerAutoShow = true
+
+        }
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+    }
+
+   /* //Called when the user touches the Home or Recents button to leave the app.
+    override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
+        enterPIPMode()
+    }*/
+
+
+    @Suppress("DEPRECATION")
+    fun enterPIPMode() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+            && packageManager
+                .hasSystemFeature(
+                    PackageManager.FEATURE_PICTURE_IN_PICTURE
+                )
+        ) {
+            playbackPosition = player.currentPosition
+            playerView.useController = false
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val params = PictureInPictureParams.Builder()
+                this.enterPictureInPictureMode(params.build())
+            } else {
+                this.enterPictureInPictureMode()
+            }
+            Handler().postDelayed({checkPIPPermission()}, 30)
+        }
+    }
+
+   /* @Suppress("DEPRECATION")
+    fun enterPIPMode() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+            && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
+        ) {
+            playbackPosition = player.currentPosition
+            playerView.useController = false
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val rational = Rational(playerView.width, playerView.height)
+                val params = PictureInPictureParams.Builder().setAspectRatio(rational)
+                this.enterPictureInPictureMode(params.build())
+            } else {
+                this.enterPictureInPictureMode()
+            }
+
+            Handler().postDelayed({ checkPIPPermission() }, 30)
+        }
+    }*/
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun checkPIPPermission() {
+        isPIPModeeEnabled = isInPictureInPictureMode
+        if (!isInPictureInPictureMode) {
+            icon_pip.performClick()
+        }
+    }
 }

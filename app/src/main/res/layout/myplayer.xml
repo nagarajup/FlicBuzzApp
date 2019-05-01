@@ -22,6 +22,8 @@
                 android:layout_height="wrap_content"
                 app:use_controller="true"
                 android:gravity="center"
+                app:rewind_increment="10000"
+                app:fastforward_increment="10000"
                 app:auto_show="false"
                 app:player_layout_id="@layout/exo_simple_player_view"
                 app:controller_layout_id="@layout/custom_playback_control"/>
