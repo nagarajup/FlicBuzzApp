@@ -26,15 +26,17 @@ import java.util.Set;
 
 public class SettingsActivity extends AppCompatActivity {
     TextView changePswd, cancelSubscription, logout;
-
+    TextView header_title;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.mytoolbar);
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        header_title = (TextView) findViewById(R.id.title);
+        header_title.setText("Settings");
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(getString(R.string.action_settings));
+       // getSupportActionBar().setTitle(getString(R.string.action_settings));
 
     /*  mToolbar.setTitle(getString(R.string.action_settings));
         *//* mToolbar.setNavigationIcon(R.drawable.arrow);
@@ -89,6 +91,7 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         finish();
+        overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
         return super.onOptionsItemSelected(item);
     }
 }

@@ -76,7 +76,7 @@ public class PrefManager {
     }
 
     public String getLanguage() {
-        return pref.getString("language", "hindi");
+        return pref.getString("language", "Hindi");
     }
 
     public String payment_status = "";
@@ -93,7 +93,6 @@ public class PrefManager {
     }
 
     public String plan = "";
-
 
 
     public String getPlan_type() {
@@ -197,6 +196,28 @@ public class PrefManager {
 
     public String subscription_start_date = "";
     public String subscription_end_date = "";
+
+    public String getServer_date_time() {
+        return pref.getString("server_date_time", "");
+    }
+
+    public void setServer_date_time(String server_date_time) {
+        editor.putString("server_date_time", server_date_time);
+        editor.commit();
+    }
+
+    public String server_date_time = "";
+
+    public String getSubscription_renewal_date() {
+        return pref.getString("subscription_renewal_date", "");
+    }
+
+    public void setSubscription_renewal_date(String subscription_renewal_date) {
+        editor.putString("subscription_renewal_date", subscription_renewal_date);
+        editor.commit();
+    }
+
+    public String subscription_renewal_date = "";
     public String name = "";
     public String email = "";
     public String mobile = "";

@@ -28,16 +28,16 @@ public class UpdatePasswordActivity extends AppCompatActivity {
     TextView passwordError, confirmPasswordError, oldPasswordError;
     EditText passwordEditText, confirmPasswordEditText, oldPasswordEditText;
     JSONObject jsonObject;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_changepassword);
 
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.mytoolbar);
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        TextView  header_title = (TextView) findViewById(R.id.title);
+        header_title.setText("Change Password");
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Change Password");
         initViews();
     }
 

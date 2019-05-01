@@ -28,10 +28,11 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgotpassword);
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.mytoolbar);
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        TextView  header_title = (TextView) findViewById(R.id.title);
+        header_title.setText("Forgot Password");
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Forgot your password");
         initViews();
     }
 

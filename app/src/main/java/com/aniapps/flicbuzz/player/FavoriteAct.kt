@@ -5,10 +5,12 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import com.aniapps.flicbuzz.R
 import com.aniapps.flicbuzz.adapters.MainAdapter
@@ -34,9 +36,13 @@ class FavoriteAct : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.favourite_list)
-        setSupportActionBar(findViewById(R.id.mytoolbar));
-        getSupportActionBar()!!.setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar()!!.setTitle("My Favourites")
+        val mToolbar = findViewById<View>(R.id.toolbar) as Toolbar
+        val header_title = findViewById<View>(R.id.title) as TextView
+
+        setSupportActionBar(mToolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
+        header_title.text = "My Favourites"
         myvideos = ArrayList()
 
         my_recycler_view = findViewById<RecyclerView>(R.id.fmy_recyclerview)
@@ -159,6 +165,7 @@ class FavoriteAct : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         finish();
+        overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out)
         return super.onOptionsItemSelected(item)
     }
 }

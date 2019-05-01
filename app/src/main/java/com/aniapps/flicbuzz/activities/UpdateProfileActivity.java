@@ -60,10 +60,11 @@ public class UpdateProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_profile);
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.mytoolbar);
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        TextView  header_title = (TextView) findViewById(R.id.title);
+        header_title.setText("My Profile");
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(getString(R.string.nav_profile));
         initViews();
     }
 
@@ -462,6 +463,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         finish();
+        overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
         return super.onOptionsItemSelected(item);
     }
 }

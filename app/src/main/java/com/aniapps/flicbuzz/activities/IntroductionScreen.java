@@ -114,6 +114,8 @@ public class IntroductionScreen extends Activity {
         PrefManager.getIn().setFirstTimeLaunch(false);
         startActivity(new Intent(IntroductionScreen.this, SignIn.class));
         finish();
+        overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
+
     }
 
     //  viewpager change listener
