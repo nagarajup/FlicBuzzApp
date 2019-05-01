@@ -85,7 +85,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         setSupportActionBar(mToolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        header_title.text = "English | Hindi"
+        header_title.text = "Hindi | English"
         setColor(header_title,1)
         myvideos = ArrayList()
         // val jsonArray = intent.getStringExtra("jsonArray")
@@ -448,28 +448,28 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         val spannable = SpannableString(view.text)
         if (PrefManager.getIn().language.equals("Hindi")) {
             spannable.setSpan(
-                ForegroundColorSpan(Color.RED), 10, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                ForegroundColorSpan(Color.RED), 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             if(from==1) {
                 spannable.setSpan(
-                    ForegroundColorSpan(Color.WHITE), 0, 7, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    ForegroundColorSpan(Color.WHITE), 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
             }else{
                 spannable.setSpan(
-                    ForegroundColorSpan(resources.getColor(R.color.darkgray)), 0, 7, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    ForegroundColorSpan(resources.getColor(R.color.darkgray)), 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
             }
         }else{
             spannable.setSpan(
-                ForegroundColorSpan(Color.RED), 0, 7, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                ForegroundColorSpan(Color.RED), 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             if(from==1) {
             spannable.setSpan(
-                ForegroundColorSpan(Color.WHITE), 10, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                ForegroundColorSpan(Color.WHITE), 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             }else{
                 spannable.setSpan(
-                    ForegroundColorSpan(resources.getColor(R.color.darkgray)), 10, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    ForegroundColorSpan(resources.getColor(R.color.darkgray)), 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
             }
         }
