@@ -767,6 +767,7 @@ class MyPlayer : AppCompatActivity() {
         if (!isInPictureInPictureMode) {
             playerView.showController()
             playerView.controllerAutoShow = true
+            playerView.useController = true
 
         }
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
