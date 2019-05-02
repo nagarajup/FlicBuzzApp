@@ -51,6 +51,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="0dp"
+            android:layout_marginLeft="5sp"
+            android:layout_marginRight="5sp"
             android:background="?android:selectableItemBackground"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
@@ -60,7 +62,7 @@
         <TextView android:textSize="18sp"
                   android:textColor="@color/colorPrimary"
                   android:ellipsize="end"
-                  android:layout_margin="3sp"
+                  android:layout_margin="4sp"
                   android:id="@+id/tvTitle"
                   android:layout_width="fill_parent"
                   android:layout_height="wrap_content"
@@ -71,7 +73,7 @@
         <TextView android:textSize="14sp"
                   android:ellipsize="end"
                   android:id="@+id/tvDesc"
-                  android:layout_margin="3sp"
+                  android:layout_margin="4sp"
                   android:layout_width="fill_parent"
                   android:fontFamily="@font/cera_gr_regular"
                   android:layout_height="wrap_content"
@@ -83,7 +85,7 @@
                 android:ellipsize="end"
                 android:id="@+id/tvViews"
                 android:textColor="#ffa5a5a5"
-                android:layout_marginRight="3sp"
+                android:layout_marginRight="8sp"
                 android:layout_marginBottom="2sp"
                 android:layout_gravity="left"
                 android:gravity="right"
@@ -92,7 +94,7 @@
                 android:layout_height="wrap_content"
                 android:text="1M Views"
                 android:textStyle="bold"
-                android:maxLines="2"/>
+                android:maxLines="2" android:layout_marginEnd="8sp"/>
     </LinearLayout>
 
 

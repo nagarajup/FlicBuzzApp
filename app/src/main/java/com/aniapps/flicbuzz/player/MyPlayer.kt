@@ -114,6 +114,7 @@ class MyPlayer : AppCompatActivity() {
     private val settings: ImageButton by lazy { findViewById<ImageButton>(R.id.icon_setting) }
     private val icon_pip: ImageButton by lazy { findViewById<ImageButton>(R.id.icon_pip) }
     private val share: ImageButton by lazy { findViewById<ImageButton>(R.id.icon_share) }
+    private val next: ImageButton by lazy { findViewById<ImageButton>(R.id.exo_next) }
     /*https://stackoverflow.com/questions/16300959/android-share-image-from-url*/
     private val fullscreen: FrameLayout by lazy { findViewById<FrameLayout>(R.id.exo_fullscreen_button) }
 
@@ -163,7 +164,9 @@ class MyPlayer : AppCompatActivity() {
         tv_play_title.setText(play_title)
         tv_play_description.setText(play_desc)
         lay_playerview = findViewById<FrameLayout>(R.id.playerview)
-
+        next.setOnClickListener {
+            Toast.makeText(this@MyPlayer, "Cliked on next", Toast.LENGTH_LONG).show()
+        }
         settings.setOnClickListener {
             myTracker()
         }
@@ -658,9 +661,11 @@ class MyPlayer : AppCompatActivity() {
                 -> progressBar.visibility = View.GONE
                 Player.STATE_ENDED      // The player has finished playing the media
                 -> progressBar.visibility = View.GONE
+
             }
             updateButtonVisibilities()
         }
+
 
         override fun onTracksChanged(trackGroups: TrackGroupArray?, trackSelections: TrackSelectionArray?) {
             updateButtonVisibilities()
@@ -676,13 +681,16 @@ class MyPlayer : AppCompatActivity() {
                 lastSeenTrackGroupArray = trackGroups
             }
         }
+
+        /* override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters?) {
+             super.onPlaybackParametersChanged(playbackParameters)
+         }*/
     }
 
 
     fun myTracker() {
         //https://medium.com/google-exoplayer/exoplayer-2-x-track-selection-2b62ff712cc9
         //https://medium.com/@mayur_solanki/adaptive-streaming-with-exoplayer-c77b0032acdd
-        //https://android.jlelse.eu/exoplayer-components-explained-9937e3a5d2f5
         //https://android.jlelse.eu/exoplayer-components-explained-9937e3a5d2f5
         //https://exoplayer.dev/guide.html
         //https://medium.com/google-exoplayer/exoplayer-2-x-track-selection-2b62ff712cc9
@@ -709,13 +717,13 @@ class MyPlayer : AppCompatActivity() {
     override fun onBackPressed() {
 
 
-            val orientation = this.resources.configuration.orientation
-            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
-            } else {
-                super.onBackPressed()
-            }
+        val orientation = this.resources.configuration.orientation
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+        } else {
+            super.onBackPressed()
+        }
 
 
     }
@@ -773,11 +781,11 @@ class MyPlayer : AppCompatActivity() {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
     }
 
-   /* //Called when the user touches the Home or Recents button to leave the app.
+    //Called when the user touches the Home or Recents button to leave the app.
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
         enterPIPMode()
-    }*/
+    }
 
 
     @Suppress("DEPRECATION")
@@ -796,28 +804,28 @@ class MyPlayer : AppCompatActivity() {
             } else {
                 this.enterPictureInPictureMode()
             }
-            Handler().postDelayed({checkPIPPermission()}, 30)
+            Handler().postDelayed({ checkPIPPermission() }, 30)
         }
     }
 
-   /* @Suppress("DEPRECATION")
-    fun enterPIPMode() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
-            && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
-        ) {
-            playbackPosition = player.currentPosition
-            playerView.useController = false
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val rational = Rational(playerView.width, playerView.height)
-                val params = PictureInPictureParams.Builder().setAspectRatio(rational)
-                this.enterPictureInPictureMode(params.build())
-            } else {
-                this.enterPictureInPictureMode()
-            }
+    /* @Suppress("DEPRECATION")
+     fun enterPIPMode() {
+         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+             && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
+         ) {
+             playbackPosition = player.currentPosition
+             playerView.useController = false
+             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                 val rational = Rational(playerView.width, playerView.height)
+                 val params = PictureInPictureParams.Builder().setAspectRatio(rational)
+                 this.enterPictureInPictureMode(params.build())
+             } else {
+                 this.enterPictureInPictureMode()
+             }
 
-            Handler().postDelayed({ checkPIPPermission() }, 30)
-        }
-    }*/
+             Handler().postDelayed({ checkPIPPermission() }, 30)
+         }
+     }*/
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun checkPIPPermission() {

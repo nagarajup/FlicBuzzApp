@@ -53,7 +53,7 @@ public class DownloadTask {
         protected void onPreExecute() {
             super.onPreExecute();
             FlickLoading.getInstance().show(context);
-         //  FlickLoading.tv_progress.setVisibility(View.VISIBLE);
+           FlickLoading.tv_progress.setVisibility(View.VISIBLE);
 
             // buttonText.setEnabled(false);
             //  buttonText.setText(R.string.downloadStarted);//Set Button Text when download started
@@ -63,7 +63,7 @@ public class DownloadTask {
         protected void onPostExecute(Void result) {
             try {
                 FlickLoading.getInstance().dismiss(context);
-              // FlickLoading.tv_progress.setVisibility(View.GONE);
+               FlickLoading.tv_progress.setVisibility(View.GONE);
                 if (outputFile != null) {
                     //Toast.makeText(context, "Video Saved Successfully"+outputFile, Toast.LENGTH_SHORT).show();
                   // File videoFile = new File(outputFile);
@@ -72,7 +72,7 @@ public class DownloadTask {
                     videoshare.putExtra(Intent.EXTRA_SUBJECT, "FlickBuzz App");
                     videoshare.putExtra(
                             Intent.EXTRA_TEXT,
-                            "Hi,I would like to share this FlicBuzz application, for more vidoes Please download app from Google Play! \nhttps://play.google.com/store/apps/details?id=$appPackageName"
+                            "Hi,I Sharing FlicBuzz - A Complete Entertainment App download link from Google Play! \nhttp://bit.ly/2vjXlam"
                     );
                     videoshare.setType("*/*");
                     videoshare.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);

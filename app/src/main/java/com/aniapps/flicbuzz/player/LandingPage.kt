@@ -673,7 +673,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 sendIntent.putExtra(Intent.EXTRA_SUBJECT, "FlickBuzz")
                 sendIntent.putExtra(
                     Intent.EXTRA_TEXT,
-                    "Hi,I would like to share this FlicBuzz application, Please download from Google Play! \nhttps://play.google.com/store/apps/details?id=$appPackageName"
+                    "Hi,I would like to share this FlicBuzz application, Please download from Google Play! \nhttp://bit.ly/2vjXlam"
                 )
                 sendIntent.type = "text/plain"
                 startActivity(sendIntent)
