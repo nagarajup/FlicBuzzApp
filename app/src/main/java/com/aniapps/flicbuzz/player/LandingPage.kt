@@ -68,7 +68,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
     internal lateinit var tv_profile_name: TextView
     internal lateinit var tv_profile_email: TextView
     internal lateinit var tv_profile_plan: TextView
-    internal lateinit var switchCompat: SwitchCompat
+   // internal lateinit var switchCompat: SwitchCompat
     internal lateinit var nav_lang: TextView
     internal var tag_id: String = "";
 
@@ -147,7 +147,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         nav_feedback.setOnClickListener(this@LandingPage)
         nav_settings.setOnClickListener(this@LandingPage)
         nav_logout.setOnClickListener(this@LandingPage)
-        switchCompat = findViewById<SwitchCompat>(R.id.nav_language)
+     //   switchCompat = findViewById<SwitchCompat>(R.id.nav_language)
         nav_lang = findViewById<TextView>(R.id.nav_lang)
         setColor(nav_lang,2)
         tv_profile_name.setText(PrefManager.getIn().getName())
@@ -163,13 +163,13 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         } else if (PrefManager.getIn().getPlan().equals("trail")) {
             tv_profile_plan.setText("Plan : Trail")
         }
-        if (PrefManager.getIn().language.equals("Hindi")) {
+       /* if (PrefManager.getIn().language.equals("Hindi")) {
             switchCompat.isChecked = false
             switchCompat.text = "Language: " + "Hindi"
         } else {
             switchCompat.isChecked = true
             switchCompat.text = "Language: " + "English"
-        }
+        }*/
         header_title .setOnClickListener(View.OnClickListener {
             PrefManager.getIn().language = if (PrefManager.getIn().language.equals("Hindi")) "English" else "Hindi"
             /*if (isChecked) {
@@ -200,7 +200,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
             apiCall(tag_id);
             drawer_layout.closeDrawer(GravityCompat.START)
         })
-        switchCompat.setOnCheckedChangeListener({ _, isChecked ->
+       /* switchCompat.setOnCheckedChangeListener({ _, isChecked ->
             PrefManager.getIn().language = if (isChecked) "English" else "Hindi"
             if (isChecked) {
                 menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_e))
@@ -213,7 +213,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
 
             apiCall(tag_id);
             drawer_layout.closeDrawer(GravityCompat.START)
-        })
+        })*/
 
 
 
@@ -347,11 +347,11 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         menuInflater.inflate(R.menu.main, menu)
         val menuItem = menu.findItem(R.id.action_search)
 
-        if (PrefManager.getIn().language.equals("Hindi")) {
+       /* if (PrefManager.getIn().language.equals("Hindi")) {
             menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_h))
         } else {
             menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_e))
-        }
+        }*/
         // Inflate the menu; this adds items to the action bar if it is present.
         autoSuggestAdapter = AutoSuggestAdapter(
             this,
@@ -422,7 +422,6 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                     val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
                 }
-                menu.findItem(R.id.action_language).setVisible(false)
                 search_list.visibility = View.VISIBLE
                 return true
             }
@@ -435,7 +434,6 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 searchFilters.clear();
                 tag_id = "";
                 apiCall(tag_id)
-                menu.findItem(R.id.action_language).setVisible(true)
 
                 return true
             }
@@ -543,7 +541,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
             })
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+   /* override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -587,7 +585,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         setColor(nav_lang,2)
         return true
     }
-
+*/
 
     override fun onClick(p0: View?) {
         when (p0!!.id) {

@@ -46,16 +46,13 @@ public class PaymentScreen_New extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Making notification bar transparent
-
-     /*   getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
         setContentView(R.layout.activity_payment_new);
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.mytoolbar);
+
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        TextView header_title = (TextView) findViewById(R.id.title);
+        header_title.setText("Packages");
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Packages");
+      getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         plan_details = (LinearLayout) findViewById(R.id.plan_details);
         plan_expiry_date = (TextView) findViewById(R.id.plan_expiry_text);
