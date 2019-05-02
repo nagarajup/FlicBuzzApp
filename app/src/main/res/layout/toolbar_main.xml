@@ -27,11 +27,12 @@
                 android:layout_gravity="center_vertical"
                 android:src="@mipmap/header_icon"
                 android:visibility="visible"/>
-        <TextView android:textSize="20sp"
+        <TextView android:textSize="18sp"
                   android:id="@+id/title"
                   android:layout_gravity="center|center_vertical"
                   android:textColor="@color/white"
                   android:layout_width="wrap_content"
+                  android:gravity="center_vertical"
                   android:paddingLeft="10dp"
                   android:layout_height="wrap_content"
                   android:text="Settings"

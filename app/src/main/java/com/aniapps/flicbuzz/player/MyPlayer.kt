@@ -114,7 +114,6 @@ class MyPlayer : AppCompatActivity() {
     private val settings: ImageButton by lazy { findViewById<ImageButton>(R.id.icon_setting) }
     private val icon_pip: ImageButton by lazy { findViewById<ImageButton>(R.id.icon_pip) }
     private val share: ImageButton by lazy { findViewById<ImageButton>(R.id.icon_share) }
-    private val next: ImageButton by lazy { findViewById<ImageButton>(R.id.exo_next) }
     /*https://stackoverflow.com/questions/16300959/android-share-image-from-url*/
     private val fullscreen: FrameLayout by lazy { findViewById<FrameLayout>(R.id.exo_fullscreen_button) }
 
@@ -164,9 +163,9 @@ class MyPlayer : AppCompatActivity() {
         tv_play_title.setText(play_title)
         tv_play_description.setText(play_desc)
         lay_playerview = findViewById<FrameLayout>(R.id.playerview)
-        next.setOnClickListener {
+       /* next.setOnClickListener {
             Toast.makeText(this@MyPlayer, "Cliked on next", Toast.LENGTH_LONG).show()
-        }
+        }*/
         settings.setOnClickListener {
             myTracker()
         }
@@ -179,7 +178,7 @@ class MyPlayer : AppCompatActivity() {
         }
         share.setOnClickListener {
             if (setupPermissions()) {
-                DownloadTask(this@MyPlayer, play_share_url)
+                DownloadTask(this@MyPlayer, play_share_url,playerView)
             } else {
                 Toast.makeText(this@MyPlayer, "Please allow storage permission to share video", Toast.LENGTH_SHORT)
                     .show()
@@ -205,7 +204,7 @@ class MyPlayer : AppCompatActivity() {
 
         img_share.setOnClickListener {
             if (setupPermissions()) {
-                DownloadTask(this@MyPlayer, play_share_url)
+                DownloadTask(this@MyPlayer, play_share_url,playerView)
             } else {
                 Toast.makeText(this@MyPlayer, "Please allow storage permission to share video", Toast.LENGTH_SHORT)
                     .show()
@@ -757,7 +756,8 @@ class MyPlayer : AppCompatActivity() {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
                 } else {
-                    DownloadTask(this@MyPlayer, play_share_url)
+                    DownloadTask(this@MyPlayer, play_share_url,playerView)
+
                 }
             }
         }

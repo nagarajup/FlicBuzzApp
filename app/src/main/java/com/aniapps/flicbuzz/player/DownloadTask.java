@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.Toast;
 import com.aniapps.flicbuzz.R;
 import com.aniapps.flicbuzz.utils.FlickLoading;
+import com.google.android.exoplayer2.ui.PlayerView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,10 +33,11 @@ public class DownloadTask {
     private Activity context;
 
     private String downloadUrl = "", downloadFileName = "";
+    PlayerView playerView;
 
-    public DownloadTask(Activity context, String downloadUrl) {
+    public DownloadTask(Activity context, String downloadUrl, PlayerView playerView) {
         this.context = context;
-
+        this.playerView = playerView;
         this.downloadUrl = downloadUrl;
 
         downloadFileName = downloadUrl.replace("https://www.flicbuzz.com/vendor_videos/original/vendor_3/", "");//Create file name by picking download file name from URL
@@ -53,7 +55,7 @@ public class DownloadTask {
         protected void onPreExecute() {
             super.onPreExecute();
             FlickLoading.getInstance().show(context);
-           FlickLoading.tv_progress.setVisibility(View.VISIBLE);
+            FlickLoading.tv_progress.setVisibility(View.VISIBLE);
 
             // buttonText.setEnabled(false);
             //  buttonText.setText(R.string.downloadStarted);//Set Button Text when download started
@@ -63,21 +65,25 @@ public class DownloadTask {
         protected void onPostExecute(Void result) {
             try {
                 FlickLoading.getInstance().dismiss(context);
-               FlickLoading.tv_progress.setVisibility(View.GONE);
+                FlickLoading.tv_progress.setVisibility(View.GONE);
+                playerView.showController();
+                playerView.setControllerAutoShow(true);
+                playerView.setUseController(true);
                 if (outputFile != null) {
                     //Toast.makeText(context, "Video Saved Successfully"+outputFile, Toast.LENGTH_SHORT).show();
-                  // File videoFile = new File(outputFile);
+                    // File videoFile = new File(outputFile);
                     Uri uri = Uri.fromFile(outputFile);
                     Intent videoshare = new Intent(Intent.ACTION_SEND);
                     videoshare.putExtra(Intent.EXTRA_SUBJECT, "FlickBuzz App");
                     videoshare.putExtra(
                             Intent.EXTRA_TEXT,
-                            "Hi,I Sharing FlicBuzz - A Complete Entertainment App download link from Google Play! \nhttp://bit.ly/2vjXlam"
+                            "Hi, I Sharing FlicBuzz - A Complete Entertainment App download link from Google Play! \nhttp://bit.ly/2vjXlam"
                     );
                     videoshare.setType("*/*");
                     videoshare.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    videoshare.putExtra(Intent.EXTRA_STREAM,uri);
-                    context.startActivity(Intent.createChooser(videoshare, "Share to"));;
+                    videoshare.putExtra(Intent.EXTRA_STREAM, uri);
+                    context.startActivity(Intent.createChooser(videoshare, "Share to"));
+                    ;
                 } else {
                     Toast.makeText(context, "Downloading failed", Toast.LENGTH_SHORT).show();
                 }

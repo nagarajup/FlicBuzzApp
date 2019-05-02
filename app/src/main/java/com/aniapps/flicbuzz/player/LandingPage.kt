@@ -6,6 +6,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.content.ContextCompat
@@ -18,6 +19,7 @@ import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
 import android.text.*
 import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -68,7 +70,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
     internal lateinit var tv_profile_name: TextView
     internal lateinit var tv_profile_email: TextView
     internal lateinit var tv_profile_plan: TextView
-   // internal lateinit var switchCompat: SwitchCompat
+    // internal lateinit var switchCompat: SwitchCompat
     internal lateinit var nav_lang: TextView
     internal var tag_id: String = "";
 
@@ -86,7 +88,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         header_title.text = "Hindi | English"
-        setColor(header_title,1)
+        setColor(header_title, 1)
         myvideos = ArrayList()
         // val jsonArray = intent.getStringExtra("jsonArray")
         //myData(jsonArray)
@@ -147,9 +149,9 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         nav_feedback.setOnClickListener(this@LandingPage)
         nav_settings.setOnClickListener(this@LandingPage)
         nav_logout.setOnClickListener(this@LandingPage)
-     //   switchCompat = findViewById<SwitchCompat>(R.id.nav_language)
+        //   switchCompat = findViewById<SwitchCompat>(R.id.nav_language)
         nav_lang = findViewById<TextView>(R.id.nav_lang)
-        setColor(nav_lang,2)
+        setColor(nav_lang, 2)
         tv_profile_name.setText(PrefManager.getIn().getName())
         tv_profile_email.setText(PrefManager.getIn().getEmail())
         if (PrefManager.getIn().getPlan().equals("3")) {
@@ -163,14 +165,14 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         } else if (PrefManager.getIn().getPlan().equals("trail")) {
             tv_profile_plan.setText("Plan : Trail")
         }
-       /* if (PrefManager.getIn().language.equals("Hindi")) {
-            switchCompat.isChecked = false
-            switchCompat.text = "Language: " + "Hindi"
-        } else {
-            switchCompat.isChecked = true
-            switchCompat.text = "Language: " + "English"
-        }*/
-        header_title .setOnClickListener(View.OnClickListener {
+        /* if (PrefManager.getIn().language.equals("Hindi")) {
+             switchCompat.isChecked = false
+             switchCompat.text = "Language: " + "Hindi"
+         } else {
+             switchCompat.isChecked = true
+             switchCompat.text = "Language: " + "English"
+         }*/
+        header_title.setOnClickListener(View.OnClickListener {
             PrefManager.getIn().language = if (PrefManager.getIn().language.equals("Hindi")) "English" else "Hindi"
             /*if (isChecked) {
                 menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_e))
@@ -180,12 +182,12 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 switchCompat.text = "Language: " + "Hindi"
             }*/
             pageNo = 1
-            setColor(header_title,1)
-            setColor(nav_lang,2)
+            setColor(header_title, 1)
+            setColor(nav_lang, 2)
             apiCall(tag_id);
             drawer_layout.closeDrawer(GravityCompat.START)
         })
-        nav_lang .setOnClickListener(View.OnClickListener {
+        nav_lang.setOnClickListener(View.OnClickListener {
             PrefManager.getIn().language = if (PrefManager.getIn().language.equals("Hindi")) "English" else "Hindi"
             /*if (isChecked) {
                 menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_e))
@@ -195,25 +197,25 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 switchCompat.text = "Language: " + "Hindi"
             }*/
             pageNo = 1
-            setColor(header_title,1)
-            setColor(nav_lang,2)
+            setColor(header_title, 1)
+            setColor(nav_lang, 2)
             apiCall(tag_id);
             drawer_layout.closeDrawer(GravityCompat.START)
         })
-       /* switchCompat.setOnCheckedChangeListener({ _, isChecked ->
-            PrefManager.getIn().language = if (isChecked) "English" else "Hindi"
-            if (isChecked) {
-                menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_e))
-                switchCompat.text = "Language: " + "English"
-            } else {
-                menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_h))
-                switchCompat.text = "Language: " + "Hindi"
-            }
-            pageNo = 1
+        /* switchCompat.setOnCheckedChangeListener({ _, isChecked ->
+             PrefManager.getIn().language = if (isChecked) "English" else "Hindi"
+             if (isChecked) {
+                 menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_e))
+                 switchCompat.text = "Language: " + "English"
+             } else {
+                 menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_h))
+                 switchCompat.text = "Language: " + "Hindi"
+             }
+             pageNo = 1
 
-            apiCall(tag_id);
-            drawer_layout.closeDrawer(GravityCompat.START)
-        })*/
+             apiCall(tag_id);
+             drawer_layout.closeDrawer(GravityCompat.START)
+         })*/
 
 
 
@@ -347,11 +349,11 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         menuInflater.inflate(R.menu.main, menu)
         val menuItem = menu.findItem(R.id.action_search)
 
-       /* if (PrefManager.getIn().language.equals("Hindi")) {
-            menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_h))
-        } else {
-            menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_e))
-        }*/
+        /* if (PrefManager.getIn().language.equals("Hindi")) {
+             menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_h))
+         } else {
+             menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_e))
+         }*/
         // Inflate the menu; this adds items to the action bar if it is present.
         autoSuggestAdapter = AutoSuggestAdapter(
             this,
@@ -442,26 +444,71 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         return true
     }
 
+    private fun setColor2(view: TextView, from: Int) {
+        val spannable = SpannableString(view.text)
+        if (PrefManager.getIn().language.equals("Hindi")) {
+
+            val boldSpan1 = StyleSpan(Typeface.BOLD);
+            spannable.setSpan(boldSpan1, 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+            val boldSpan2 = StyleSpan(Typeface.NORMAL);
+            spannable.setSpan(boldSpan2, 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        } else {
+
+            val boldSpan4 = StyleSpan(Typeface.NORMAL);
+            spannable.setSpan(boldSpan4, 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+            val boldSpan3 = StyleSpan(Typeface.BOLD);
+            spannable.setSpan(boldSpan3, 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+
+        }
+
+        view.text = spannable
+    }
+
     private fun setColor(view: TextView,from : Int) {
         val spannable = SpannableString(view.text)
         if (PrefManager.getIn().language.equals("Hindi")) {
-            spannable.setSpan(
+            val boldSpan1 = StyleSpan(Typeface.BOLD);
+            spannable.setSpan(boldSpan1, 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+          /*  spannable.setSpan(
                 ForegroundColorSpan(Color.RED), 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            if(from==1) {
-                spannable.setSpan(
+            )*/
+            /*if(from==1) {*/
+
+
+               // val boldSpan2 = StyleSpan(Typeface.NORMAL);
+             var span = spannable.getSpans(8,15,Spannable::class.java)
+            for (i in 0 until span.size) {
+                spannable.removeSpan(span[i])
+            }
+
+            //spannable.removeSpan(view.text)
+                //spannable.setSpan(boldSpan2, 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+               /* spannable.setSpan(
                     ForegroundColorSpan(Color.WHITE), 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }else{
+                )*/
+           /* }else{
                 spannable.setSpan(
                     ForegroundColorSpan(resources.getColor(R.color.darkgray)), 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-            }
+            }*/
         }else{
-            spannable.setSpan(
+            val boldSpan1 = StyleSpan(Typeface.BOLD);
+            spannable.setSpan(boldSpan1, 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+           /* spannable.setSpan(
                 ForegroundColorSpan(Color.RED), 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            if(from==1) {
+            )*/
+            var span = spannable.getSpans(0,5,Spannable::class.java)
+            for (i in 0 until span.size) {
+                spannable.removeSpan(span[i])
+            }
+          /*  val boldSpan2 = StyleSpan(Typeface.NORMAL);
+            spannable.setSpan(boldSpan2, 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)*/
+
+           /* if(from==1) {
             spannable.setSpan(
                 ForegroundColorSpan(Color.WHITE), 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
@@ -469,7 +516,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 spannable.setSpan(
                     ForegroundColorSpan(resources.getColor(R.color.darkgray)), 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-            }
+            }*/
         }
 
         view.text = spannable
@@ -541,51 +588,51 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
             })
     }
 
-   /* override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        when (item.itemId) {
-            R.id.action_search -> {
-                return true
-            }
-            R.id.action_language ->
-                if (PrefManager.getIn().language == "Hindi") {
-                    PrefManager.getIn().language = "English"
-                    pageNo = 1
-                    menu!!.getItem(0).setIcon(
-                        ContextCompat.getDrawable(
-                            this,
-                            R.mipmap.icon_language_e
-                        )
-                    )
-                    apiCall(tag_id)
-                } else {
-                    PrefManager.getIn().language = "Hindi"
-                    pageNo = 1
-                    menu!!.getItem(0).setIcon(
-                        ContextCompat.getDrawable(
-                            this,
-                            R.mipmap.icon_language_h
-                        )
-                    )
-                    apiCall(tag_id)
-                }
+    /* override fun onOptionsItemSelected(item: MenuItem): Boolean {
+         // Handle action bar item clicks here. The action bar will
+         // automatically handle clicks on the Home/Up button, so long
+         // as you specify a parent activity in AndroidManifest.xml.
+         when (item.itemId) {
+             R.id.action_search -> {
+                 return true
+             }
+             R.id.action_language ->
+                 if (PrefManager.getIn().language == "Hindi") {
+                     PrefManager.getIn().language = "English"
+                     pageNo = 1
+                     menu!!.getItem(0).setIcon(
+                         ContextCompat.getDrawable(
+                             this,
+                             R.mipmap.icon_language_e
+                         )
+                     )
+                     apiCall(tag_id)
+                 } else {
+                     PrefManager.getIn().language = "Hindi"
+                     pageNo = 1
+                     menu!!.getItem(0).setIcon(
+                         ContextCompat.getDrawable(
+                             this,
+                             R.mipmap.icon_language_h
+                         )
+                     )
+                     apiCall(tag_id)
+                 }
 
-            else -> return super.onOptionsItemSelected(item)
-        }
-        if (PrefManager.getIn().language.equals("Hindi")) {
-            switchCompat.isChecked = false
-            switchCompat.text = "Language: " + "Hindi"
-        } else {
-            switchCompat.isChecked = true
-            switchCompat.text = "Language: " + "English"
-        }
-        setColor(header_title,1)
-        setColor(nav_lang,2)
-        return true
-    }
-*/
+             else -> return super.onOptionsItemSelected(item)
+         }
+         if (PrefManager.getIn().language.equals("Hindi")) {
+             switchCompat.isChecked = false
+             switchCompat.text = "Language: " + "Hindi"
+         } else {
+             switchCompat.isChecked = true
+             switchCompat.text = "Language: " + "English"
+         }
+         setColor(header_title,1)
+         setColor(nav_lang,2)
+         return true
+     }
+ */
 
     override fun onClick(p0: View?) {
         when (p0!!.id) {
@@ -673,7 +720,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 sendIntent.putExtra(Intent.EXTRA_SUBJECT, "FlickBuzz")
                 sendIntent.putExtra(
                     Intent.EXTRA_TEXT,
-                    "Hi,I would like to share this FlicBuzz application, Please download from Google Play! \nhttp://bit.ly/2vjXlam"
+                    "Hi, I Sharing FlicBuzz - A Complete Entertainment App download link from Google Play! \nhttp://bit.ly/2vjXlam"
                 )
                 sendIntent.type = "text/plain"
                 startActivity(sendIntent)
