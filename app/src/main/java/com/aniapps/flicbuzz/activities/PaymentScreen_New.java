@@ -431,14 +431,19 @@ public class PaymentScreen_New extends AppCompatActivity {
                         PrefManager.getIn().setSubscription_end_date(params.get("subscription_end_date"));
                         PrefManager.getIn().setPlan(params.get("package"));
                         if (PrefManager.getIn().getPlan().equals("3")) {
+                            PrefManager.getIn().setPayment_mode("1");
                             plan_text.setText("Three Months Subscription");
                         } else if (PrefManager.getIn().getPlan().equals("6")) {
+                            PrefManager.getIn().setPayment_mode("1");
                             plan_text.setText("Six Months Subscription");
                         } else if (PrefManager.getIn().getPlan().equals("12")) {
+                            PrefManager.getIn().setPayment_mode("1");
                             plan_text.setText("One Year Subscription");
                         }else if (PrefManager.getIn().getPlan().equals("expired")) {
+                            PrefManager.getIn().setPayment_mode("3");
                             plan_text.setText("Plan Expired");
                         }else if (PrefManager.getIn().getPlan().equals("trail")) {
+                            PrefManager.getIn().setPayment_mode("1");
                             plan_text.setText("Trail");
                         }
                         if (renewal == 0) {
