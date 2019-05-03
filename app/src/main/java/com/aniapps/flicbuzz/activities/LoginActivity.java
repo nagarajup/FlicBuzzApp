@@ -29,6 +29,7 @@ public class LoginActivity extends AppCompatActivity {
     RelativeLayout loginLL, otpLL;
     String user_id = "", mobile_num = "";
     CountDownTimer timer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(timer!=null){
+                if (timer != null) {
                     timer.cancel();
                 }
                 if (loginLL.getVisibility() == View.VISIBLE) {
@@ -90,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
         resendOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(resendOTP.getText().toString().equalsIgnoreCase("Resend OTP")) {
+                if (resendOTP.getText().toString().equalsIgnoreCase("Resend OTP")) {
                     HashMap<String, String> params = new HashMap<>();
                     params.put("mobile", mobile_num);
                     params.put("from_source", "android");
@@ -173,6 +174,7 @@ public class LoginActivity extends AppCompatActivity {
                             PrefManager.getIn().setSubscription_start_date(jsonObject.getString("subscription_start_date"));
                             PrefManager.getIn().setSubscription_end_date(jsonObject.getString("subscription_end_date"));
                             PrefManager.getIn().setPlan(jsonObject.getString("plan"));
+                            PrefManager.getIn().setPayment_mode(jsonObject.getString("payment_mode"));
                             JSONObject userObject = jsonObject.getJSONObject("data");
                             PrefManager.getIn().setName(userObject.getString("name"));
                             PrefManager.getIn().setEmail(userObject.getString("email"));
@@ -182,7 +184,7 @@ public class LoginActivity extends AppCompatActivity {
                             PrefManager.getIn().setPincode(userObject.getString("pincode"));
                             PrefManager.getIn().setDob(userObject.getString("dob"));
                             PrefManager.getIn().setProfile_pic(userObject.getString("profile_pic"));
-                            if (PrefManager.getIn().getPlan().equals("trail") || PrefManager.getIn().getPlan().equals("3") || PrefManager.getIn().getPlan().equals("6") || PrefManager.getIn().getPlan().equals("12")) {
+                            if (PrefManager.getIn().getPayment_mode().equals("1")) {
                                 Intent intent = new Intent(LoginActivity.this, LandingPage.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -201,7 +203,7 @@ public class LoginActivity extends AppCompatActivity {
                             PrefManager.getIn().saveUserId(jsonObject.getString("user_id"));
                             user_id = jsonObject.getString("user_id");
                             mobile_num = jsonObject.getString("mobile");
-                            Toast.makeText(LoginActivity.this, jsonObject.getString("message")+", Please authenticate with otp", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, jsonObject.getString("message") + ", Please authenticate with otp", Toast.LENGTH_SHORT).show();
                             otpLL.setVisibility(View.VISIBLE);
                             loginLL.setVisibility(View.GONE);
                             countDown(resendOTP);
@@ -216,6 +218,7 @@ public class LoginActivity extends AppCompatActivity {
                             PrefManager.getIn().setSubscription_start_date(jsonObject.getString("subscription_start_date"));
                             PrefManager.getIn().setSubscription_end_date(jsonObject.getString("subscription_end_date"));
                             PrefManager.getIn().setPlan(jsonObject.getString("plan"));
+                            PrefManager.getIn().setPayment_mode(jsonObject.getString("payment_mode"));
                             JSONObject userObject = jsonObject.getJSONObject("data");
                             PrefManager.getIn().setName(userObject.getString("name"));
                             PrefManager.getIn().setEmail(userObject.getString("email"));
@@ -225,7 +228,7 @@ public class LoginActivity extends AppCompatActivity {
                             PrefManager.getIn().setPincode(userObject.getString("pincode"));
                             PrefManager.getIn().setDob(userObject.getString("dob"));
                             PrefManager.getIn().setProfile_pic(userObject.getString("profile_pic"));
-                            if (PrefManager.getIn().getPlan().equals("trail") || PrefManager.getIn().getPlan().equals("3") || PrefManager.getIn().getPlan().equals("6") || PrefManager.getIn().getPlan().equals("12")) {
+                            if (PrefManager.getIn().getPayment_mode().equals("1")) {
                                 Intent intent = new Intent(LoginActivity.this, LandingPage.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -281,7 +284,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(timer!=null){
+        if (timer != null) {
             timer.cancel();
         }
         if (loginLL.getVisibility() == View.VISIBLE) {
@@ -296,7 +299,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(timer!=null){
+        if (timer != null) {
             timer.cancel();
         }
         if (loginLL.getVisibility() == View.VISIBLE) {

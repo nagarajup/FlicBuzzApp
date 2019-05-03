@@ -83,6 +83,17 @@ public class PrefManager {
     public String plan_type = "";
     public String payment_data = "";
 
+    public String getPayment_mode() {
+        return pref.getString("payment_mode", "");
+    }
+
+    public void setPayment_mode(String payment_mode) {
+        editor.putString("payment_mode", payment_mode);
+        editor.commit();
+    }
+
+    public String payment_mode = "";
+
     public String getPlan() {
         return pref.getString("plan", "");
     }

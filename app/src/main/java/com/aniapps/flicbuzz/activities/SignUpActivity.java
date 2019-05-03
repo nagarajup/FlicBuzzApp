@@ -259,6 +259,7 @@ public class SignUpActivity extends AppCompatActivity {
                             PrefManager.getIn().setSubscription_start_date(jsonObject.getString("subscription_start_date"));
                             PrefManager.getIn().setSubscription_end_date(jsonObject.getString("subscription_end_date"));
                             PrefManager.getIn().setPlan(jsonObject.getString("plan"));
+                            PrefManager.getIn().setPayment_mode(jsonObject.getString("payment_mode"));
                             JSONObject userObject = jsonObject.getJSONObject("data");
                             PrefManager.getIn().setName(userObject.getString("name"));
                             PrefManager.getIn().setEmail(userObject.getString("email"));
@@ -268,7 +269,7 @@ public class SignUpActivity extends AppCompatActivity {
                             PrefManager.getIn().setPincode(userObject.getString("pincode"));
                             PrefManager.getIn().setDob(userObject.getString("dob"));
                             PrefManager.getIn().setProfile_pic(userObject.getString("profile_pic"));
-                            if(PrefManager.getIn().getPlan().equals("trail")||PrefManager.getIn().getPlan().equals("3")||PrefManager.getIn().getPlan().equals("6")||PrefManager.getIn().getPlan().equals("12")) {
+                            if(PrefManager.getIn().getPayment_mode().equals("1")) {
                                 Intent intent = new Intent(SignUpActivity.this, LandingPage.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
