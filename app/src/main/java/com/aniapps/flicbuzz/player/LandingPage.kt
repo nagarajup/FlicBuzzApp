@@ -466,57 +466,35 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
 
         view.text = spannable
     }
-
     private fun setColor(view: TextView,from : Int) {
+        view.setText("Hindi | English")
         val spannable = SpannableString(view.text)
         if (PrefManager.getIn().language.equals("Hindi")) {
-            val boldSpan1 = StyleSpan(Typeface.BOLD);
-            spannable.setSpan(boldSpan1, 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-          /*  spannable.setSpan(
-                ForegroundColorSpan(Color.RED), 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )*/
-            /*if(from==1) {*/
-
-
-               // val boldSpan2 = StyleSpan(Typeface.NORMAL);
-             var span = spannable.getSpans(8,15,Spannable::class.java)
-            for (i in 0 until span.size) {
-                spannable.removeSpan(span[i])
-            }
-
-            //spannable.removeSpan(view.text)
-                //spannable.setSpan(boldSpan2, 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-               /* spannable.setSpan(
-                    ForegroundColorSpan(Color.WHITE), 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )*/
-           /* }else{
-                spannable.setSpan(
-                    ForegroundColorSpan(resources.getColor(R.color.darkgray)), 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }*/
-        }else{
-            val boldSpan1 = StyleSpan(Typeface.BOLD);
-            spannable.setSpan(boldSpan1, 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-           /* spannable.setSpan(
-                ForegroundColorSpan(Color.RED), 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )*/
-            var span = spannable.getSpans(0,5,Spannable::class.java)
-            for (i in 0 until span.size) {
-                spannable.removeSpan(span[i])
-            }
-          /*  val boldSpan2 = StyleSpan(Typeface.NORMAL);
-            spannable.setSpan(boldSpan2, 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)*/
-
-           /* if(from==1) {
             spannable.setSpan(
-                ForegroundColorSpan(Color.WHITE), 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                StyleSpan(Typeface.BOLD), 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
+            if(from==1) {
+                spannable.setSpan(
+                    StyleSpan(Typeface.NORMAL), 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
             }else{
                 spannable.setSpan(
-                    ForegroundColorSpan(resources.getColor(R.color.darkgray)), 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    StyleSpan(Typeface.NORMAL), 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-            }*/
+            }
+        }else{
+            spannable.setSpan(
+                StyleSpan(Typeface.BOLD), 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            if(from==1) {
+                spannable.setSpan(
+                    StyleSpan(Typeface.NORMAL), 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }else{
+                spannable.setSpan(
+                    StyleSpan(Typeface.NORMAL), 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
         }
 
         view.text = spannable
