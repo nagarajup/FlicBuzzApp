@@ -15,6 +15,7 @@ import android.widget.*;
 import com.aniapps.flicbuzz.R;
 import com.aniapps.flicbuzz.networkcall.APIResponse;
 import com.aniapps.flicbuzz.networkcall.RetrofitClient;
+import com.aniapps.flicbuzz.player.LandingPage;
 import com.aniapps.flicbuzz.utils.PrefManager;
 import com.aniapps.flicbuzz.utils.Utility;
 import org.json.JSONObject;
@@ -34,7 +35,8 @@ public class SignUpActivity extends AppCompatActivity {
     RadioGroup gender;
     RadioButton male, female;
     RelativeLayout registerLL, otpLL;
-    String user_id="";
+    String user_id = "";
+    CountDownTimer timer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +51,25 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        if(timer!=null){
+            timer.cancel();
+        }
+        if (registerLL.getVisibility() == View.VISIBLE) {
+            finish();
+            overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
+        } else {
+            registerLL.setVisibility(View.VISIBLE);
+            otpLL.setVisibility(View.GONE);
+        }
+        super.onBackPressed();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if(timer!=null){
+            timer.cancel();
+        }
         if (registerLL.getVisibility() == View.VISIBLE) {
             finish();
             overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
@@ -113,12 +133,14 @@ public class SignUpActivity extends AppCompatActivity {
         resendOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                HashMap<String, String> params = new HashMap<>();
-                params.put("mobile", mobileEditText.getText().toString());
-                params.put("from_source", "android");
-                params.put("action", "resend_otp");
-                params.put("user_id", user_id);
-                ApiCall(params, 3);
+                if(resendOTP.getText().toString().equalsIgnoreCase("Resend OTP")) {
+                    HashMap<String, String> params = new HashMap<>();
+                    params.put("mobile", mobileEditText.getText().toString());
+                    params.put("from_source", "android");
+                    params.put("action", "resend_otp");
+                    params.put("user_id", user_id);
+                    ApiCall(params, 3);
+                }
             }
         });
         validateMobile.setOnClickListener(new View.OnClickListener() {
@@ -213,32 +235,63 @@ public class SignUpActivity extends AppCompatActivity {
 
                     jsonObject = new JSONObject(result);
                     int status = jsonObject.getInt("status");
-                    if (status == 1) {
-                        if (from == 2) {
+
+                    if (from == 2) {
+                        if (status == 1 || status == 14) {
                             user_id = jsonObject.getString("user_id");
-                            Toast.makeText(SignUpActivity.this, jsonObject.getString("sms_details"), Toast.LENGTH_SHORT).show();
+                            PrefManager.getIn().saveUserId(jsonObject.getString("user_id"));
+                            if(status==14) {
+                                Toast.makeText(SignUpActivity.this, "Otp sent succussfully", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(SignUpActivity.this, jsonObject.getString("sms_details"), Toast.LENGTH_SHORT).show();
+                            }
                             otpLL.setVisibility(View.VISIBLE);
                             registerLL.setVisibility(View.GONE);
                             countDown(resendOTP);
-                        } else if (from == 1) {
-                            Toast.makeText(SignUpActivity.this, "Otp Succussfully verified", Toast.LENGTH_SHORT).show();
-                            PrefManager.getIn().setLogin(true);
-                            Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                        } else if (from == 3) {
-                            Toast.makeText(SignUpActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                        } else {
+                                Utility.alertDialog(SignUpActivity.this, "Alert", jsonObject.getString("message"));
                         }
-                    } else {
-                        if (status == 13) {
-                            Utility.alertDialog(SignUpActivity.this, "Alert", jsonObject.getString("message"));
+                    } else if (from == 1) {
+                        if (status == 1) {
+                            PrefManager.getIn().setLogin(true);
+                            PrefManager.getIn().saveUserId(jsonObject.getString("user_id"));
+                            PrefManager.getIn().setPayment_data(jsonObject.getString("payment_data"));
+                            PrefManager.getIn().setSubscription_start_date(jsonObject.getString("subscription_start_date"));
+                            PrefManager.getIn().setSubscription_end_date(jsonObject.getString("subscription_end_date"));
+                            PrefManager.getIn().setPlan(jsonObject.getString("plan"));
+                            JSONObject userObject = jsonObject.getJSONObject("data");
+                            PrefManager.getIn().setName(userObject.getString("name"));
+                            PrefManager.getIn().setEmail(userObject.getString("email"));
+                            PrefManager.getIn().setMobile(userObject.getString("mobile"));
+                            PrefManager.getIn().setGender(userObject.getString("gender"));
+                            PrefManager.getIn().setCity(userObject.getString("city"));
+                            PrefManager.getIn().setPincode(userObject.getString("pincode"));
+                            PrefManager.getIn().setDob(userObject.getString("dob"));
+                            PrefManager.getIn().setProfile_pic(userObject.getString("profile_pic"));
+                            if(PrefManager.getIn().getPlan().equals("trail")||PrefManager.getIn().getPlan().equals("3")||PrefManager.getIn().getPlan().equals("6")||PrefManager.getIn().getPlan().equals("12")) {
+                                Intent intent = new Intent(SignUpActivity.this, LandingPage.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
+                            }else{
+                                Intent intent = new Intent(SignUpActivity.this, PaymentScreen_New.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
+                            }
                         } else {
                             Utility.alertDialog(SignUpActivity.this, "Alert", jsonObject.getString("message"));
-
                         }
+
+                    }else{
+                        Toast.makeText(SignUpActivity.this,jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                       // Utility.alertDialog(SignUpActivity.this, "Alert", jsonObject.getString("message"));
                     }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     Utility.alertDialog(SignUpActivity.this, "Alert", e.getMessage());
@@ -256,7 +309,7 @@ public class SignUpActivity extends AppCompatActivity {
     public void countDown(final TextView mTextField) {
         validateMobile.setBackground(getDrawable(R.drawable.rounded_corners_grey));
         validateMobile.setEnabled(false);
-        new CountDownTimer(30000, 1000) {
+        timer = new CountDownTimer(30000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 mTextField.setText(millisUntilFinished / 1000 + " Sec");
@@ -269,7 +322,8 @@ public class SignUpActivity extends AppCompatActivity {
                 validateMobile.setEnabled(true);
             }
 
-        }.start();
+        };
+        timer.start();
     }
 
     public static void datePickerDialog(Context context, final EditText editText, final Calendar myCalendar) {

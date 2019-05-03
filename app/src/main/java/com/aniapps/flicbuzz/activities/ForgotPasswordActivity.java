@@ -150,6 +150,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         finish();
+        overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
         return super.onOptionsItemSelected(item);
     }
 }

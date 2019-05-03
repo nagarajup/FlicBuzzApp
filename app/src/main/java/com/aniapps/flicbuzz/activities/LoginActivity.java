@@ -1,18 +1,19 @@
 package com.aniapps.flicbuzz.activities;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import com.aniapps.flicbuzz.player.LandingPage;
+import android.widget.*;
 import com.aniapps.flicbuzz.R;
 import com.aniapps.flicbuzz.networkcall.APIResponse;
 import com.aniapps.flicbuzz.networkcall.RetrofitClient;
+import com.aniapps.flicbuzz.player.LandingPage;
 import com.aniapps.flicbuzz.utils.PrefManager;
 import com.aniapps.flicbuzz.utils.Utility;
 import org.json.JSONObject;
@@ -21,11 +22,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
-    Button signIn;
-    TextView emailError, passwordError, signUp, forgotPassword;
-    EditText emailEditText, passwordEditText;
+    Button signIn, validateMobile;
+    TextView emailError, passwordError, signUp, forgotPassword, otpErro, resendOTP;
+    EditText otpEditText, emailEditText, passwordEditText;
     JSONObject jsonObject;
-
+    RelativeLayout loginLL, otpLL;
+    String user_id = "", mobile_num = "";
+    CountDownTimer timer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,10 +38,31 @@ public class LoginActivity extends AppCompatActivity {
         header_title.setText("Login");
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(timer!=null){
+                    timer.cancel();
+                }
+                if (loginLL.getVisibility() == View.VISIBLE) {
+                    finish();
+                    overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
+                } else {
+                    loginLL.setVisibility(View.VISIBLE);
+                    otpLL.setVisibility(View.GONE);
+                }
+            }
+        });
         initViews();
     }
 
     void initViews() {
+        otpErro = (TextView) findViewById(R.id.otp_error);
+        resendOTP = (TextView) findViewById(R.id.resendOTP);
+        otpEditText = (EditText) findViewById(R.id.ot_et);
+        validateMobile = (Button) findViewById(R.id.validate_otp_btn);
+        loginLL = (RelativeLayout) findViewById(R.id.loginLL);
+        otpLL = (RelativeLayout) findViewById(R.id.otpLL);
         signIn = (Button) findViewById(R.id.login_btn);
         emailError = (TextView) findViewById(R.id.req_customer_email_error);
         passwordError = (TextView) findViewById(R.id.req_customer_password_error);
@@ -61,6 +85,36 @@ public class LoginActivity extends AppCompatActivity {
                 Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
+            }
+        });
+        resendOTP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(resendOTP.getText().toString().equalsIgnoreCase("Resend OTP")) {
+                    HashMap<String, String> params = new HashMap<>();
+                    params.put("mobile", mobile_num);
+                    params.put("from_source", "android");
+                    params.put("action", "resend_otp");
+                    params.put("user_id", user_id);
+                    ApiCall(params, 3);
+                }
+            }
+        });
+        validateMobile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (otpEditText.getText().toString().length() < 4) {
+                    otpErro.setVisibility(View.VISIBLE);
+                } else {
+                    otpErro.setVisibility(View.GONE);
+                    HashMap<String, String> params = new HashMap<>();
+                    params.put("mobile", mobile_num);
+                    params.put("otp", otpEditText.getText().toString());
+                    params.put("user_id", user_id);
+                    params.put("from_source", "android");
+                    params.put("action", "verify_otp");
+                    ApiCall(params, 1);
+                }
             }
         });
         signIn.setOnClickListener(new View.OnClickListener() {
@@ -92,7 +146,7 @@ public class LoginActivity extends AppCompatActivity {
                 params.put("email", emailEditText.getText().toString());
                 params.put("from_source", "android");
                 params.put("action", "login");
-                ApiCall(params);
+                ApiCall(params, 2);
             }
 
 
@@ -101,48 +155,95 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public void ApiCall(Map<String, String> params) {
+    public void ApiCall(Map<String, String> params, final int from) {
 
         RetrofitClient.getInstance().doBackProcess(LoginActivity.this, params, "", new APIResponse() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onSuccess(String result) {
                 try {
 
                     jsonObject = new JSONObject(result);
                     int status = jsonObject.getInt("status");
-                    if (status == 1) {
-                        PrefManager.getIn().setLogin(true);
-                        PrefManager.getIn().saveUserId(jsonObject.getString("user_id"));
-                        PrefManager.getIn().setPayment_data(jsonObject.getString("payment_data"));
-                        PrefManager.getIn().setSubscription_start_date(jsonObject.getString("subscription_start_date"));
-                        PrefManager.getIn().setSubscription_end_date(jsonObject.getString("subscription_end_date"));
-                        PrefManager.getIn().setPlan(jsonObject.getString("plan"));
-                        JSONObject userObject = jsonObject.getJSONObject("data");
-                        PrefManager.getIn().setName(userObject.getString("name"));
-                        PrefManager.getIn().setEmail(userObject.getString("email"));
-                        PrefManager.getIn().setMobile(userObject.getString("mobile"));
-                        PrefManager.getIn().setGender(userObject.getString("gender"));
-                        PrefManager.getIn().setCity(userObject.getString("city"));
-                        PrefManager.getIn().setPincode(userObject.getString("pincode"));
-                        PrefManager.getIn().setDob(userObject.getString("dob"));
-                        PrefManager.getIn().setProfile_pic(userObject.getString("profile_pic"));
-                        if(PrefManager.getIn().getPlan().equals("3")||PrefManager.getIn().getPlan().equals("6")||PrefManager.getIn().getPlan().equals("12")) {
-                            Intent intent = new Intent(LoginActivity.this, LandingPage.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
-                        }else{
-                            Intent intent = new Intent(LoginActivity.this, PaymentScreen_New.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
+                    if (from == 2) {
+                        if (status == 1) {
+                            PrefManager.getIn().setLogin(true);
+                            PrefManager.getIn().saveUserId(jsonObject.getString("user_id"));
+                            PrefManager.getIn().setPayment_data(jsonObject.getString("payment_data"));
+                            PrefManager.getIn().setSubscription_start_date(jsonObject.getString("subscription_start_date"));
+                            PrefManager.getIn().setSubscription_end_date(jsonObject.getString("subscription_end_date"));
+                            PrefManager.getIn().setPlan(jsonObject.getString("plan"));
+                            JSONObject userObject = jsonObject.getJSONObject("data");
+                            PrefManager.getIn().setName(userObject.getString("name"));
+                            PrefManager.getIn().setEmail(userObject.getString("email"));
+                            PrefManager.getIn().setMobile(userObject.getString("mobile"));
+                            PrefManager.getIn().setGender(userObject.getString("gender"));
+                            PrefManager.getIn().setCity(userObject.getString("city"));
+                            PrefManager.getIn().setPincode(userObject.getString("pincode"));
+                            PrefManager.getIn().setDob(userObject.getString("dob"));
+                            PrefManager.getIn().setProfile_pic(userObject.getString("profile_pic"));
+                            if (PrefManager.getIn().getPlan().equals("trail") || PrefManager.getIn().getPlan().equals("3") || PrefManager.getIn().getPlan().equals("6") || PrefManager.getIn().getPlan().equals("12")) {
+                                Intent intent = new Intent(LoginActivity.this, LandingPage.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
+                            } else {
+                                Intent intent = new Intent(LoginActivity.this, PaymentScreen_New.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
+                            }
+                        } else if (status == 18) {
+                            PrefManager.getIn().saveUserId(jsonObject.getString("user_id"));
+                            user_id = jsonObject.getString("user_id");
+                            mobile_num = jsonObject.getString("mobile");
+                            Toast.makeText(LoginActivity.this, jsonObject.getString("message")+", Please authenticate with otp", Toast.LENGTH_SHORT).show();
+                            otpLL.setVisibility(View.VISIBLE);
+                            loginLL.setVisibility(View.GONE);
+                            countDown(resendOTP);
+                        } else {
+                            Utility.alertDialog(LoginActivity.this, "Alert", jsonObject.getString("message"));
                         }
-                    } else {
-                        Utility.alertDialog(LoginActivity.this, "Alert", jsonObject.getString("message"));
+                    } else if (from == 1) {
+                        if (status == 1) {
+                            PrefManager.getIn().setLogin(true);
+                            PrefManager.getIn().saveUserId(jsonObject.getString("user_id"));
+                            PrefManager.getIn().setPayment_data(jsonObject.getString("payment_data"));
+                            PrefManager.getIn().setSubscription_start_date(jsonObject.getString("subscription_start_date"));
+                            PrefManager.getIn().setSubscription_end_date(jsonObject.getString("subscription_end_date"));
+                            PrefManager.getIn().setPlan(jsonObject.getString("plan"));
+                            JSONObject userObject = jsonObject.getJSONObject("data");
+                            PrefManager.getIn().setName(userObject.getString("name"));
+                            PrefManager.getIn().setEmail(userObject.getString("email"));
+                            PrefManager.getIn().setMobile(userObject.getString("mobile"));
+                            PrefManager.getIn().setGender(userObject.getString("gender"));
+                            PrefManager.getIn().setCity(userObject.getString("city"));
+                            PrefManager.getIn().setPincode(userObject.getString("pincode"));
+                            PrefManager.getIn().setDob(userObject.getString("dob"));
+                            PrefManager.getIn().setProfile_pic(userObject.getString("profile_pic"));
+                            if (PrefManager.getIn().getPlan().equals("trail") || PrefManager.getIn().getPlan().equals("3") || PrefManager.getIn().getPlan().equals("6") || PrefManager.getIn().getPlan().equals("12")) {
+                                Intent intent = new Intent(LoginActivity.this, LandingPage.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
+                            } else {
+                                Intent intent = new Intent(LoginActivity.this, PaymentScreen_New.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
+                            }
+                        } else {
+                            Utility.alertDialog(LoginActivity.this, "Alert", jsonObject.getString("message"));
+                        }
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -156,10 +257,55 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void countDown(final TextView mTextField) {
+        validateMobile.setBackground(getDrawable(R.drawable.rounded_corners_grey));
+        validateMobile.setEnabled(false);
+        timer = new CountDownTimer(30000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                mTextField.setText(millisUntilFinished / 1000 + " Sec");
+                //here you can have your logic to set text to edittext
+            }
+
+            public void onFinish() {
+                mTextField.setText("Resend OTP");
+                validateMobile.setBackground(getDrawable(R.drawable.rounded_corners_signup));
+                validateMobile.setEnabled(true);
+            }
+
+        };
+        timer.start();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(timer!=null){
+            timer.cancel();
+        }
+        if (loginLL.getVisibility() == View.VISIBLE) {
+            finish();
+            overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
+        } else {
+            loginLL.setVisibility(View.VISIBLE);
+            otpLL.setVisibility(View.GONE);
+        }
+        super.onBackPressed();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        finish();
-        overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
+        if(timer!=null){
+            timer.cancel();
+        }
+        if (loginLL.getVisibility() == View.VISIBLE) {
+            finish();
+            overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
+        } else {
+            loginLL.setVisibility(View.VISIBLE);
+            otpLL.setVisibility(View.GONE);
+        }
         return super.onOptionsItemSelected(item);
     }
 }
