@@ -57,6 +57,7 @@
                 android:resizeableActivity="true"
                 android:theme="@style/PlayerTheme"
                 tools:targetApi="n"/>
+        <!-- -->
         <!--
                         android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
 //android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"-->

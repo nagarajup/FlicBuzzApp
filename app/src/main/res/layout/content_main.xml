@@ -14,9 +14,11 @@
               android:layout_height="wrap_content"
               android:id="@+id/tvtitle"
               android:padding="8sp"
-              android:textSize="18sp"
+              android:gravity="center"
+              android:textSize="20sp"
               android:fontFamily="@font/cera_gr_bold"
               android:text="Latest Bolloywood News"
+              android:visibility="gone"
               tools:ignore="MissingConstraints"/>
 
     <android.support.v7.widget.RecyclerView

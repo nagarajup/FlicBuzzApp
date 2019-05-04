@@ -33,6 +33,7 @@ import com.aniapps.flicbuzz.models.MyVideos
 import com.aniapps.flicbuzz.models.SearchData
 import com.aniapps.flicbuzz.networkcall.APIResponse
 import com.aniapps.flicbuzz.networkcall.RetrofitClient
+import com.aniapps.flicbuzz.utils.CircleImageView
 import com.aniapps.flicbuzz.utils.PrefManager
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
@@ -55,8 +56,9 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
     internal var layoutManager: LinearLayoutManager? = null
     internal var total_records = ""
     private var pbr: ProgressBar? = null
-    internal lateinit var imageView: ImageView
+    internal lateinit var imageView: CircleImageView
     internal lateinit var nav_about: TextView
+    internal lateinit var tvtitle: TextView
     internal lateinit var nav_profile: TextView
     internal lateinit var nav_privacy: TextView
     internal lateinit var nav_fav: TextView
@@ -124,9 +126,10 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
             }
         }
         tv_profile_name = findViewById<TextView>(R.id.tv_profile_name);
-        imageView = findViewById<ImageView>(R.id.imageView);
+        imageView = findViewById<CircleImageView>(R.id.imageView);
         tv_profile_email = findViewById<TextView>(R.id.tv_profile_email);
         tv_profile_plan = findViewById<TextView>(R.id.tv_profile_plan);
+        tvtitle = findViewById<TextView>(R.id.tvtitle);
         nav_about = findViewById<TextView>(R.id.nav_about);
         nav_profile = findViewById<TextView>(R.id.nav_profile);
         nav_privacy = findViewById<TextView>(R.id.nav_privacy);
@@ -165,22 +168,9 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         } else if (PrefManager.getIn().getPlan().equals("trail")) {
             tv_profile_plan.setText("Plan : Trail")
         }
-        /* if (PrefManager.getIn().language.equals("Hindi")) {
-             switchCompat.isChecked = false
-             switchCompat.text = "Language: " + "Hindi"
-         } else {
-             switchCompat.isChecked = true
-             switchCompat.text = "Language: " + "English"
-         }*/
+
         header_title.setOnClickListener(View.OnClickListener {
             PrefManager.getIn().language = if (PrefManager.getIn().language.equals("Hindi")) "English" else "Hindi"
-            /*if (isChecked) {
-                menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_e))
-                switchCompat.text = "Language: " + "English"
-            } else {
-                menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_h))
-                switchCompat.text = "Language: " + "Hindi"
-            }*/
             pageNo = 1
             setColor(header_title, 1)
             setColor(nav_lang, 2)
@@ -189,34 +179,12 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         })
         nav_lang.setOnClickListener(View.OnClickListener {
             PrefManager.getIn().language = if (PrefManager.getIn().language.equals("Hindi")) "English" else "Hindi"
-            /*if (isChecked) {
-                menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_e))
-                switchCompat.text = "Language: " + "English"
-            } else {
-                menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_h))
-                switchCompat.text = "Language: " + "Hindi"
-            }*/
             pageNo = 1
             setColor(header_title, 1)
             setColor(nav_lang, 2)
             apiCall(tag_id);
             drawer_layout.closeDrawer(GravityCompat.START)
         })
-        /* switchCompat.setOnCheckedChangeListener({ _, isChecked ->
-             PrefManager.getIn().language = if (isChecked) "English" else "Hindi"
-             if (isChecked) {
-                 menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_e))
-                 switchCompat.text = "Language: " + "English"
-             } else {
-                 menu!!.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_h))
-                 switchCompat.text = "Language: " + "Hindi"
-             }
-             pageNo = 1
-
-             apiCall(tag_id);
-             drawer_layout.closeDrawer(GravityCompat.START)
-         })*/
-
 
 
         pbr = findViewById(R.id.load_progress) as ProgressBar
@@ -255,8 +223,6 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         })
 
     }
-
-    internal lateinit var search: android.widget.SearchView
 
     override fun onResume() {
         if (!PrefManager.getIn().getProfile_pic().equals("")) {
@@ -298,7 +264,6 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
             startActivity(intent)
             overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
         }
-        //builder.setNegativeButton("NO", null);
         builder.show()
     }
 
@@ -348,12 +313,6 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         this.menu = menu;
         menuInflater.inflate(R.menu.main, menu)
         val menuItem = menu.findItem(R.id.action_search)
-
-        /* if (PrefManager.getIn().language.equals("Hindi")) {
-             menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_h))
-         } else {
-             menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.mipmap.icon_language_e))
-         }*/
         // Inflate the menu; this adds items to the action bar if it is present.
         autoSuggestAdapter = AutoSuggestAdapter(
             this,
@@ -444,53 +403,32 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         return true
     }
 
-    private fun setColor2(view: TextView, from: Int) {
-        val spannable = SpannableString(view.text)
-        if (PrefManager.getIn().language.equals("Hindi")) {
 
-            val boldSpan1 = StyleSpan(Typeface.BOLD);
-            spannable.setSpan(boldSpan1, 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-            val boldSpan2 = StyleSpan(Typeface.NORMAL);
-            spannable.setSpan(boldSpan2, 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        } else {
-
-            val boldSpan4 = StyleSpan(Typeface.NORMAL);
-            spannable.setSpan(boldSpan4, 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-            val boldSpan3 = StyleSpan(Typeface.BOLD);
-            spannable.setSpan(boldSpan3, 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-
-        }
-
-        view.text = spannable
-    }
-    private fun setColor(view: TextView,from : Int) {
+    private fun setColor(view: TextView, from: Int) {
         view.setText("Hindi | English")
         val spannable = SpannableString(view.text)
         if (PrefManager.getIn().language.equals("Hindi")) {
             spannable.setSpan(
                 StyleSpan(Typeface.BOLD), 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
-            if(from==1) {
+            if (from == 1) {
                 spannable.setSpan(
                     StyleSpan(Typeface.NORMAL), 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-            }else{
+            } else {
                 spannable.setSpan(
                     StyleSpan(Typeface.NORMAL), 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
             }
-        }else{
+        } else {
             spannable.setSpan(
                 StyleSpan(Typeface.BOLD), 8, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
-            if(from==1) {
+            if (from == 1) {
                 spannable.setSpan(
                     StyleSpan(Typeface.NORMAL), 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-            }else{
+            } else {
                 spannable.setSpan(
                     StyleSpan(Typeface.NORMAL), 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
@@ -566,51 +504,6 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
             })
     }
 
-    /* override fun onOptionsItemSelected(item: MenuItem): Boolean {
-         // Handle action bar item clicks here. The action bar will
-         // automatically handle clicks on the Home/Up button, so long
-         // as you specify a parent activity in AndroidManifest.xml.
-         when (item.itemId) {
-             R.id.action_search -> {
-                 return true
-             }
-             R.id.action_language ->
-                 if (PrefManager.getIn().language == "Hindi") {
-                     PrefManager.getIn().language = "English"
-                     pageNo = 1
-                     menu!!.getItem(0).setIcon(
-                         ContextCompat.getDrawable(
-                             this,
-                             R.mipmap.icon_language_e
-                         )
-                     )
-                     apiCall(tag_id)
-                 } else {
-                     PrefManager.getIn().language = "Hindi"
-                     pageNo = 1
-                     menu!!.getItem(0).setIcon(
-                         ContextCompat.getDrawable(
-                             this,
-                             R.mipmap.icon_language_h
-                         )
-                     )
-                     apiCall(tag_id)
-                 }
-
-             else -> return super.onOptionsItemSelected(item)
-         }
-         if (PrefManager.getIn().language.equals("Hindi")) {
-             switchCompat.isChecked = false
-             switchCompat.text = "Language: " + "Hindi"
-         } else {
-             switchCompat.isChecked = true
-             switchCompat.text = "Language: " + "English"
-         }
-         setColor(header_title,1)
-         setColor(nav_lang,2)
-         return true
-     }
- */
 
     override fun onClick(p0: View?) {
         when (p0!!.id) {
@@ -625,8 +518,9 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
 
             R.id.nav_about -> {
                 val myintent = Intent(this@LandingPage, AboutUs::class.java)
+                // myintent.putExtra("title", "About FlicBuzz")
                 myintent.putExtra("title", "About FlicBuzz")
-                myintent.putExtra("url", "")
+                myintent.putExtra("url", "https://www.flicbuzz.com/about_us_text.html")
                 startActivity(myintent)
                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
 
@@ -803,10 +697,12 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                         val status = jobj.getInt("status")
                         val details = jobj.getString("details")
                         if (status == 1) {
+
                             loading = false
                             val jsonArray = jobj.getJSONArray("data")
                             if (pageNo == 1) {
                                 myvideos.clear()
+                                tvtitle.visibility = View.VISIBLE
                             }
                             myData(jsonArray.toString())
                             if (myvideos.size < 20) {

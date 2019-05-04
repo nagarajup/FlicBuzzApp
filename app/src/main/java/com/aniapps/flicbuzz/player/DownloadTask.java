@@ -33,16 +33,11 @@ public class DownloadTask {
     private Activity context;
 
     private String downloadUrl = "", downloadFileName = "";
-    PlayerView playerView;
 
-    public DownloadTask(Activity context, String downloadUrl, PlayerView playerView) {
+    public DownloadTask(Activity context, String downloadUrl) {
         this.context = context;
-        this.playerView = playerView;
         this.downloadUrl = downloadUrl;
-
         downloadFileName = downloadUrl.replace("https://www.flicbuzz.com/vendor_videos/original/vendor_3/", "");//Create file name by picking download file name from URL
-        //downloadFileName = downloadUrl.replace("http://androhub.com/demo/", "");//Create file name by picking download file name from URL
-        Log.e(TAG, downloadFileName);
         new DownloadingTask().execute();
     }
 
@@ -56,9 +51,6 @@ public class DownloadTask {
             super.onPreExecute();
             FlickLoading.getInstance().show(context);
             FlickLoading.tv_progress.setVisibility(View.VISIBLE);
-
-            // buttonText.setEnabled(false);
-            //  buttonText.setText(R.string.downloadStarted);//Set Button Text when download started
         }
 
         @Override
@@ -66,12 +58,11 @@ public class DownloadTask {
             try {
                 FlickLoading.getInstance().dismiss(context);
                 FlickLoading.tv_progress.setVisibility(View.GONE);
-                playerView.showController();
+
+              /*  playerView.showController();
                 playerView.setControllerAutoShow(true);
-                playerView.setUseController(true);
+                playerView.setUseController(true);*/
                 if (outputFile != null) {
-                    //Toast.makeText(context, "Video Saved Successfully"+outputFile, Toast.LENGTH_SHORT).show();
-                    // File videoFile = new File(outputFile);
                     Uri uri = Uri.fromFile(outputFile);
                     Intent videoshare = new Intent(Intent.ACTION_SEND);
                     videoshare.putExtra(Intent.EXTRA_SUBJECT, "FlickBuzz App");
@@ -87,22 +78,7 @@ public class DownloadTask {
                 } else {
                     Toast.makeText(context, "Downloading failed", Toast.LENGTH_SHORT).show();
                 }
-               /* if (outputFile != null) {
-                    buttonText.setEnabled(true);
-                    buttonText.setText(R.string.downloadCompleted);//If Download completed then change button text
-                } else {
-                    buttonText.setText(R.string.downloadFailed);//If download failed change button text
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            buttonText.setEnabled(true);
-                            buttonText.setText(R.string.downloadAgain);//Change button text again after 3sec
-                        }
-                    }, 3000);
 
-                    Log.e(TAG, "Download Failed");
-
-                }*/
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.e(TAG, "Download Failed with Exception - " + e.getLocalizedMessage());
@@ -120,8 +96,6 @@ public class DownloadTask {
                 HttpURLConnection c = (HttpURLConnection) url.openConnection();//Open Url Connection
                 c.setRequestMethod("GET");//Set Request Method to "GET" since we are grtting data
                 c.connect();//connect the URL Connection
-
-                //If Connection response is not OK then show Logs
                 if (c.getResponseCode() != HttpURLConnection.HTTP_OK) {
                     Log.e(TAG, "Server returned HTTP " + c.getResponseCode()
                             + " " + c.getResponseMessage());

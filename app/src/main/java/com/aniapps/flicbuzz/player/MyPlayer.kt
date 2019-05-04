@@ -10,10 +10,7 @@ import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.PersistableBundle
+import android.os.*
 import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -37,6 +34,7 @@ import com.aniapps.flicbuzz.networkcall.APIResponse
 import com.aniapps.flicbuzz.networkcall.RetrofitClient
 import com.aniapps.flicbuzz.utils.PrefManager
 import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
@@ -67,7 +65,6 @@ class MyPlayer : AppCompatActivity() {
 
     private lateinit var player: SimpleExoPlayer
     private val playerView: PlayerView by lazy { findViewById<PlayerView>(R.id.video_view) }
-
 
     private var shouldAutoPlay: Boolean = true
     private var trackSelector: DefaultTrackSelector? = null
@@ -156,6 +153,7 @@ class MyPlayer : AppCompatActivity() {
             android.graphics.PorterDuff.Mode.MULTIPLY
         )
         myvideos.clear()
+
         LoginApi(pageNo)
 
         my_recycler_view.setNestedScrollingEnabled(false)
@@ -163,12 +161,7 @@ class MyPlayer : AppCompatActivity() {
         tv_play_title.setText(play_title)
         tv_play_description.setText(play_desc)
         lay_playerview = findViewById<FrameLayout>(R.id.playerview)
-       /* next.setOnClickListener {
-            Toast.makeText(this@MyPlayer, "Cliked on next", Toast.LENGTH_LONG).show()
-        }*/
-        settings.setOnClickListener {
-            myTracker()
-        }
+
         icon_pip.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
                 && isPIPModeeEnabled
@@ -178,7 +171,7 @@ class MyPlayer : AppCompatActivity() {
         }
         share.setOnClickListener {
             if (setupPermissions()) {
-                DownloadTask(this@MyPlayer, play_share_url,playerView)
+                DownloadTask(this@MyPlayer, play_share_url)
             } else {
                 Toast.makeText(this@MyPlayer, "Please allow storage permission to share video", Toast.LENGTH_SHORT)
                     .show()
@@ -204,7 +197,7 @@ class MyPlayer : AppCompatActivity() {
 
         img_share.setOnClickListener {
             if (setupPermissions()) {
-                DownloadTask(this@MyPlayer, play_share_url,playerView)
+                DownloadTask(this@MyPlayer, play_share_url)
             } else {
                 Toast.makeText(this@MyPlayer, "Please allow storage permission to share video", Toast.LENGTH_SHORT)
                     .show()
@@ -470,7 +463,6 @@ class MyPlayer : AppCompatActivity() {
         params["action"] = "get_similar_by_video_id"
         params["video_id"] = play_id
         params["page_number"] = "" + pno
-        params["device_name"] = "abcd"
 
 
         RetrofitClient.getInstance()
@@ -482,6 +474,7 @@ class MyPlayer : AppCompatActivity() {
                         val details = jobj.getString("details")
 
                         if (status == 1) {
+
                             val jsonArray = jobj.getJSONArray("data")
                             for (i in 0 until jsonArray.length()) {
                                 var lead = Gson().fromJson(
@@ -496,6 +489,7 @@ class MyPlayer : AppCompatActivity() {
                             my_recycler_view.setLayoutManager(layoutManager)
                             my_recycler_view.setNestedScrollingEnabled(false)
                             my_recycler_view.adapter = adapter
+                            initializePlayer()
                         }
 
                     } catch (e: Exception) {
@@ -577,10 +571,10 @@ class MyPlayer : AppCompatActivity() {
             addListener(PlayerEventListener())
             playWhenReady = shouldAutoPlay
         }
-
-        // Use Hls, Dash or other smooth streaming media source if you want to test the track quality selection.
-        /* val mediaSource: MediaSource = HlsMediaSource(Uri.parse("ttps://www.flicbuzz.com/vendor_videos/converted/video7.m3u8"),
-                 mediaDataSourceFactory, mainHandler, null)*/
+        preparePlayer()
+       /* // Use Hls, Dash or other smooth streaming media source if you want to test the track quality selection.
+        *//* val mediaSource: MediaSource = HlsMediaSource(Uri.parse("ttps://www.flicbuzz.com/vendor_videos/converted/video7.m3u8"),
+                 mediaDataSourceFactory, mainHandler, null)*//*
         when (Util.inferContentType(Uri.parse(mUrl))) {
             C.TYPE_HLS -> {
                 mediaSource = HlsMediaSource.Factory(dataFactory)
@@ -610,9 +604,35 @@ class MyPlayer : AppCompatActivity() {
         }
 
         player.prepare(mediaSource, !haveStartPosition, false)
-        updateButtonVisibilities()
+        updateButtonVisibilities()*/
 
     }
+
+    fun preparePlayer() {
+//https://medium.com/androiddevelopers/building-a-video-player-app-in-android-part-3-5-19543ea9d416
+        //  https://stackoverflow.com/questions/40284772/exoplayer-2-playlist-listener
+        //https://stackoverflow.com/questions/tagged/exoplayer
+        //https://stackoverflow.com/questions/40555405/how-to-pause-exoplayer-2-playback-and-resume-playercontrol-was-removed
+        Log.e("MyList", "@@@" + myvideos);
+        val uriList = mutableListOf<MediaSource>()
+        for (i in 0 until myvideos.size) {
+            uriList.add(
+                HlsMediaSource.Factory(dataFactory)
+                    .setAllowChunklessPreparation(true)
+                    .createMediaSource(Uri.parse(myvideos.get(i).video_filename))
+            )
+        }
+        val mediaSource = ConcatenatingMediaSource(*uriList.toTypedArray())
+        val haveStartPosition = currentWindow != C.INDEX_UNSET
+        if (haveStartPosition) {
+            player.seekTo(currentWindow, playbackPosition)
+        }
+        player.setPlayWhenReady(true);
+        player.prepare(mediaSource, !haveStartPosition, false)
+        updateButtonVisibilities()
+        // ConcatenatingMediaSource(mediaSources.toArray(MediaSource[mediaSources.size]),false))
+    }
+
 
     private fun releasePlayer() {
         updateStartPosition()
@@ -638,11 +658,13 @@ class MyPlayer : AppCompatActivity() {
         for (i in 0 until mappedTrackInfo.rendererCount) {
             val trackGroups = mappedTrackInfo.getTrackGroups(i)
             if (trackGroups.length != 0) {
-                /*if (player.getRendererType(i) == C.TRACK_TYPE_VIDEO) {
-                    ivSettings.visibility = View.VISIBLE
-                    ivSettings.setOnClickListener(this)
-                    ivSettings.tag = i
-                }*/
+                if (player.getRendererType(i) == C.TRACK_TYPE_VIDEO) {
+                    settings.visibility = View.VISIBLE
+                    settings.setOnClickListener{
+                        myTracker()
+                    }
+                    settings.tag = i
+                }
             }
         }
     }
@@ -662,7 +684,17 @@ class MyPlayer : AppCompatActivity() {
                 -> progressBar.visibility = View.GONE
 
             }
+
             updateButtonVisibilities()
+        }
+
+        override fun onPositionDiscontinuity(reason: Int) {
+            super.onPositionDiscontinuity(reason)
+
+            Log.e("#####","Index"+reason);
+            Log.e("#####","widow index"+currentWindow);
+
+
         }
 
 
@@ -696,26 +728,19 @@ class MyPlayer : AppCompatActivity() {
         //https://gist.github.com/abhiint16/b473e9b1111bd8bda4833c288ae6a1b4
         //https://stackoverflow.com/questions/52112981/customizing-exoplayer-quality-dialog-in-my-app
         val mappedTrackInfo = trackSelector!!.getCurrentMappedTrackInfo();
-
-
         if (mappedTrackInfo != null) {
             MappingTrackSelector.MappedTrackInfo.RENDERER_SUPPORT_NO_TRACKS
-            var dialogPair =
+            val dialogPair =
                 TrackSelectionView.getDialog(this, "Select Video Resolution", trackSelector, 0);
             dialogPair.second.setShowDisableOption(false);
             dialogPair.second.setAllowAdaptiveSelections(false);
             dialogPair.first.setIcon(R.mipmap.ic_launcher)
-
             dialogPair.first.show();
-
-
         }
     }
 
 
     override fun onBackPressed() {
-
-
         val orientation = this.resources.configuration.orientation
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -756,7 +781,7 @@ class MyPlayer : AppCompatActivity() {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
                 } else {
-                    DownloadTask(this@MyPlayer, play_share_url,playerView)
+                    DownloadTask(this@MyPlayer, play_share_url)
 
                 }
             }
@@ -782,10 +807,11 @@ class MyPlayer : AppCompatActivity() {
     }
 
     //Called when the user touches the Home or Recents button to leave the app.
-    override fun onUserLeaveHint() {
+   /* override fun onUserLeaveHint() {
         super.onUserLeaveHint()
         enterPIPMode()
-    }
+        playerView.useController=true
+    }*/
 
 
     @Suppress("DEPRECATION")
@@ -799,7 +825,8 @@ class MyPlayer : AppCompatActivity() {
             playbackPosition = player.currentPosition
             playerView.useController = false
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val params = PictureInPictureParams.Builder()
+                val rational = Rational(playerView.width, playerView.height)
+                val params = PictureInPictureParams.Builder().setAspectRatio(rational)
                 this.enterPictureInPictureMode(params.build())
             } else {
                 this.enterPictureInPictureMode()
@@ -808,30 +835,29 @@ class MyPlayer : AppCompatActivity() {
         }
     }
 
-    /* @Suppress("DEPRECATION")
-     fun enterPIPMode() {
-         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
-             && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
-         ) {
-             playbackPosition = player.currentPosition
-             playerView.useController = false
-             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                 val rational = Rational(playerView.width, playerView.height)
-                 val params = PictureInPictureParams.Builder().setAspectRatio(rational)
-                 this.enterPictureInPictureMode(params.build())
-             } else {
-                 this.enterPictureInPictureMode()
-             }
 
-             Handler().postDelayed({ checkPIPPermission() }, 30)
-         }
-     }*/
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun checkPIPPermission() {
         isPIPModeeEnabled = isInPictureInPictureMode
         if (!isInPictureInPictureMode) {
             icon_pip.performClick()
+
+          // onBackPressed()
         }
     }
+
+  /*  var downloadFileName: String = ""
+    fun shareVideo(myUrl: String) {
+        downloadFileName = myUrl.replace("https://www.flicbuzz.com/vendor_videos/original/vendor_3/", "")
+    }
+
+    class DownloadTask():AsyncTask<Void,Void,Void>(){
+
+        override fun doInBackground(vararg params: Void?): Void {
+
+            retun n
+        }
+
+    }*/
 }
