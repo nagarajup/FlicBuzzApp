@@ -56,13 +56,11 @@ import org.json.JSONObject
 import java.util.ArrayList
 
 class MyPlayer : AppCompatActivity() {
-
     companion object {
         private const val KEY_PLAY_WHEN_READY = "play_when_ready"
         private const val KEY_WINDOW = "window"
         private const val KEY_POSITION = "position"
     }
-
     private lateinit var player: SimpleExoPlayer
     private val playerView: PlayerView by lazy { findViewById<PlayerView>(R.id.video_view) }
 
@@ -107,7 +105,7 @@ class MyPlayer : AppCompatActivity() {
     private val next_video: ImageButton by lazy { findViewById<ImageButton>(R.id.exo_next_video) }
     /*https://stackoverflow.com/questions/16300959/android-share-image-from-url*/
     private val fullscreen: FrameLayout by lazy { findViewById<FrameLayout>(R.id.exo_fullscreen_button) }
-
+    var window = Timeline.Window();
     internal var layoutManager: LinearLayoutManager? = null
 
     internal lateinit var my_recycler_view: RecyclerView
@@ -413,7 +411,9 @@ class MyPlayer : AppCompatActivity() {
         params["video_id"] = id
         params["page_number"] = "1"
 
-        Log.e("Current ID", "" + currentWindow)
+        Log.e("@@@@", "current position" + currentWindow)
+        Log.e("@@@@", "Suggested id" + LandingPage.playingVideos.get(currentWindow).id)
+        Log.e("@@@@", "Passing id" +id)
 
 
         RetrofitClient.getInstance()
@@ -446,7 +446,8 @@ class MyPlayer : AppCompatActivity() {
                             my_recycler_view.setNestedScrollingEnabled(false)
                             my_recycler_view.adapter = adapter
 
-                            initializePlayer()
+                           // if (SDK_INT > 23) initializePlayer()
+                           // initializePlayer()
                         }
 
                     } catch (e: Exception) {
@@ -511,7 +512,7 @@ class MyPlayer : AppCompatActivity() {
     private fun initializePlayer() {
 
         playerView.requestFocus()
-
+         window = Timeline.Window();
         val videoTrackSelectionFactory = AdaptiveTrackSelection.Factory(bandwidthMeter)
 
         trackSelector = DefaultTrackSelector(videoTrackSelectionFactory)
@@ -528,26 +529,13 @@ class MyPlayer : AppCompatActivity() {
             addListener(PlayerEventListener())
             playWhenReady = shouldAutoPlay
         }
-        preparePlayer()
 
-
-    }
-
-    fun preparePlayer() {
-//https://medium.com/androiddevelopers/building-a-video-player-app-in-android-part-3-5-19543ea9d416
-        //  https://stackoverflow.com/questions/40284772/exoplayer-2-playlist-listener
-        //https://stackoverflow.com/questions/tagged/exoplayer
-        //https://stackoverflow.com/questions/40555405/how-to-pause-exoplayer-2-playback-and-resume-playercontrol-was-removed
-        // Log.e("MyList", "@@@" + LandingPage.playingVideos);
-
-
-        /*val hashset = HashSet<MyVideos>();
-        hashset.addAll(LandingPage.playingVideos)
-        LandingPage.playingVideos.clear()
-        LandingPage.playingVideos.addAll(hashset)*/
         val uriList = mutableListOf<MediaSource>()
+        uriList.clear();
+        Log.e("@@@@", "Player Size" + LandingPage.playingVideos.size);
+
         for (i in 0 until LandingPage.playingVideos.size) {
-            Log.e("MyList", "@@@" + LandingPage.playingVideos.get(i).id);
+            Log.e("@@@@", "Player List"+i+ LandingPage.playingVideos.get(i).id);
             uriList.add(
                 HlsMediaSource.Factory(dataFactory)
                     .setAllowChunklessPreparation(true)
@@ -562,6 +550,21 @@ class MyPlayer : AppCompatActivity() {
         player.setPlayWhenReady(true);
         player.prepare(mediaSource, !haveStartPosition, false)
         updateButtonVisibilities()
+    }
+
+    fun preparePlayer() {
+//https://medium.com/androiddevelopers/building-a-video-player-app-in-android-part-3-5-19543ea9d416
+        //  https://stackoverflow.com/questions/40284772/exoplayer-2-playlist-listener
+        //https://stackoverflow.com/questions/tagged/exoplayer
+        //https://stackoverflow.com/questions/40555405/how-to-pause-exoplayer-2-playback-and-resume-playercontrol-was-removed
+        // Log.e("MyList", "@@@" + LandingPage.playingVideos);
+
+
+        /*val hashset = HashSet<MyVideos>();
+        hashset.addAll(LandingPage.playingVideos)
+        LandingPage.playingVideos.clear()
+        LandingPage.playingVideos.addAll(hashset)*/
+
     }
 
 
@@ -622,40 +625,45 @@ class MyPlayer : AppCompatActivity() {
         }
 
         previous_video.setOnClickListener {
-            LandingPage.videoCount--
+           // LandingPage.videoCount--
             //https://github.com/google/ExoPlayer/blob/3ada4e178dc320abb73c01ec7bdf4535334e0a3d/library/ui/src/main/java/com/google/android/exoplayer2/ui/PlaybackControlView.java#L944
-            val window = Timeline.Window();
             val timeline = player.currentTimeline
             if (timeline.isEmpty) {
                 return@setOnClickListener
             }
             currentWindow = player.currentWindowIndex
             timeline.getWindow(currentWindow, window)
-            if (currentWindow > 0 && LandingPage.videoCount > 0) {
-                player.seekTo(currentWindow - 1, C.TIME_UNSET);
-                myPlayerApi(LandingPage.playingVideos.get(LandingPage.videoCount).id)
-                Log.e("Player", "prev" + currentWindow)
+            if (currentWindow > 0 && (player.getCurrentPosition() <= 3000
+                        || (window.isDynamic && !window.isSeekable))) {
+                player.seekToDefaultPosition(currentWindow - 1);
+                myPlayerApi(LandingPage.playingVideos.get(currentWindow).id)
+                Log.e("@@@@", "prev1111111" + currentWindow)
             } else {
-                Log.e("Player", "prev2" + currentWindow)
+                Log.e("@@@@", "prev222222" + currentWindow)
                 player.seekTo(0);
             }
         }
 
+
+
+
+
+
+
         next_video.setOnClickListener {
-            LandingPage.videoCount++
-            val window = Timeline.Window();
+
             val timeline = player.currentTimeline
             if (timeline.isEmpty) {
                 return@setOnClickListener
             }
             currentWindow = player.currentWindowIndex
             if (currentWindow < timeline.getWindowCount() - 1) {
-                player.seekTo(currentWindow + 1, C.TIME_UNSET);
-                myPlayerApi(LandingPage.playingVideos.get(LandingPage.videoCount).id)
-                Log.e("Player", "next1" + currentWindow)
+                player.seekToDefaultPosition(currentWindow + 1);
+                myPlayerApi(LandingPage.playingVideos.get(currentWindow + 1).id)
+                Log.e("@@@@", "next1111" + currentWindow)
             } else if (timeline.getWindow(currentWindow, window, false).isDynamic) {
-                player.seekTo(currentWindow, C.TIME_UNSET);
-                Log.e("Player", "next" + currentWindow)
+                player.seekToDefaultPosition();
+                Log.e("@@@@", "next2222" + currentWindow)
                 myPlayerApi(LandingPage.playingVideos.get(currentWindow).id)
             }
 
@@ -674,7 +682,10 @@ class MyPlayer : AppCompatActivity() {
                 Player.STATE_READY      // The player is able to immediately play
                 -> progressBar.visibility = View.GONE
                 Player.STATE_ENDED      // The player has finished playing the media
-                -> progressBar.visibility = View.GONE
+                -> {
+                    progressBar.visibility = View.GONE
+                    Toast.makeText(this@MyPlayer, "My Player Ending" + currentWindow, Toast.LENGTH_SHORT).show()
+                }
 
 
             }
@@ -687,15 +698,31 @@ class MyPlayer : AppCompatActivity() {
 
         override fun onPositionDiscontinuity(reason: Int) {
             super.onPositionDiscontinuity(reason)
-            currentWindow = player.getCurrentWindowIndex();
-            Log.e("&&&&&&", " Window id" + currentWindow)
-            Log.e("&&&&&&", " video id" + LandingPage.videoCount)
-            if (currentWindow != 0 && currentWindow != LandingPage.videoCount) {
-                currentWindow = currentWindow
-                LandingPage.videoCount++;
-                Log.e("&&&&&&", "Currunt Window id" + currentWindow)
-                myPlayerApi(LandingPage.playingVideos.get(LandingPage.videoCount).id)
+
+            val newcurrentWindow = player.currentWindowIndex;
+
+            Log.e("@@@@@", " Window id" + currentWindow)
+            Log.e("@@@@@", " New Window id" + newcurrentWindow)
+
+            //Log.e("&&&&&&", " video id" + LandingPage.videoCount)
+            if ( currentWindow !=newcurrentWindow) {
+                currentWindow = player.currentWindowIndex
+                myPlayerApi(LandingPage.playingVideos.get(currentWindow).id)
+                Log.e("@@@@", "next3333" + currentWindow)
+               /* val timeline = player.currentTimeline
+                if (timeline.isEmpty) {
+                    return
+                }
+                currentWindow = player.currentWindowIndex
+                if (currentWindow < timeline.getWindowCount() - 1) {
+                    myPlayerApi(LandingPage.playingVideos.get(currentWindow + 1).id)
+                    Log.e("@@@@", "next3333" + currentWindow)
+                } else if (timeline.getWindow(currentWindow, window, false).isDynamic) {
+                    Log.e("@@@@", "next4444" + currentWindow)
+                    myPlayerApi(LandingPage.playingVideos.get(currentWindow).id)
+                }*/
             }
+            Log.e("@@@@", "next4444" + currentWindow)
             /*if (currentWindow != 0)
                 myPlayerApi(LandingPage.playingVideos.get(currentWindow).id)*//*
             Toast.makeText(this@MyPlayer,"Next or Previos", Toast.LENGTH_SHORT).show()
@@ -850,17 +877,5 @@ class MyPlayer : AppCompatActivity() {
         }
     }
 
-    /*  var downloadFileName: String = ""
-      fun shareVideo(myUrl: String) {
-          downloadFileName = myUrl.replace("https://www.flicbuzz.com/vendor_videos/original/vendor_3/", "")
-      }
 
-      class DownloadTask():AsyncTask<Void,Void,Void>(){
-
-          override fun doInBackground(vararg params: Void?): Void {
-
-              retun n
-          }
-
-      }*/
 }
