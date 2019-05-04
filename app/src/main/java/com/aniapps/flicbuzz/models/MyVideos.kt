@@ -1,7 +1,51 @@
 package com.aniapps.flicbuzz.models
 
+import android.os.Parcel
+import android.os.Parcelable
+
 data class MyVideos(val id:String, val headline:String, val description:String, val category:String,
                     val category_id:String, val video_filename:String,val short_video_filename:String,val
-                    thumb:String,val views:Int,val fav_video:String) {
+                    thumb:String,val views:Int,val fav_video:String):Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readInt(),
+        parcel.readString()
+    ) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(id)
+        parcel.writeString(headline)
+        parcel.writeString(description)
+        parcel.writeString(category)
+        parcel.writeString(category_id)
+        parcel.writeString(video_filename)
+        parcel.writeString(short_video_filename)
+        parcel.writeString(thumb)
+        parcel.writeInt(views)
+        parcel.writeString(fav_video)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<MyVideos> {
+        override fun createFromParcel(parcel: Parcel): MyVideos {
+            return MyVideos(parcel)
+        }
+
+        override fun newArray(size: Int): Array<MyVideos?> {
+            return arrayOfNulls(size)
+        }
+    }
+
 }
 

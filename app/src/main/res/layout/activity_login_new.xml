@@ -64,10 +64,10 @@
                 android:background="@drawable/rounded_corners_signup"
                 android:layout_width="fill_parent"
                 android:layout_alignParentBottom="true"
-                android:layout_centerInParent="true"
                 android:layout_height="wrap_content"
                 android:text="VALIDATE MOBILE NUMBER"
-                android:fontFamily="@font/cera_gr_medium"/>
+                android:fontFamily="@font/cera_gr_medium" android:layout_marginBottom="456dp"
+                android:layout_centerVertical="true"/>
     </RelativeLayout>
     <RelativeLayout
             android:layout_width="fill_parent"

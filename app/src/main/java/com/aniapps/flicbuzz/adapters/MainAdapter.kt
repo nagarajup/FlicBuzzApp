@@ -113,24 +113,14 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
                         if (status == 1) {
                             if (from.equals("main")||from.equals("fav")) {
                                 val player_in = Intent(context, MyPlayer::class.java)
-                                player_in.putExtra("url", myVideo.video_filename)
-                                player_in.putExtra("title", myVideo.headline)
-                                player_in.putExtra("desc", myVideo.description)
-                                player_in.putExtra("id", myVideo.id)
+                                player_in.putExtra("playingVideo",myVideo)
                                 player_in.putExtra("from",from)
-                                player_in.putExtra("fav",myVideo.fav_video)
-                                player_in.putExtra("play_share_url",myVideo.short_video_filename)
                                 context.startActivity(player_in)
                                 context.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
                             } else {
                                 val player_in = Intent(context, MyPlayer::class.java)
-                                player_in.putExtra("url", myVideo.video_filename)
-                                player_in.putExtra("title", myVideo.headline)
-                                player_in.putExtra("desc", myVideo.description)
-                                player_in.putExtra("id", myVideo.id)
+                                player_in.putExtra("playingVideo",myVideo)
                                 player_in.putExtra("from",from)
-                                player_in.putExtra("fav",myVideo.fav_video)
-                                player_in.putExtra("play_share_url",myVideo.short_video_filename)
                                 context.finish()
                                 context.startActivity(player_in)
                                 context.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);

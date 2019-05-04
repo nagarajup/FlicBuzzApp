@@ -75,7 +75,12 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
     // internal lateinit var switchCompat: SwitchCompat
     internal lateinit var nav_lang: TextView
     internal var tag_id: String = "";
+    companion object {
+        lateinit var playingVideos: ArrayList<MyVideos>
+         var videoCount: Int = 0
 
+
+    }
     internal var pageNo = 1
     internal var my_recycler_view: RecyclerView? = null
     internal lateinit var search_list: ListView
@@ -92,6 +97,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         header_title.text = "Hindi | English"
         setColor(header_title, 1)
         myvideos = ArrayList()
+        playingVideos= ArrayList()
         // val jsonArray = intent.getStringExtra("jsonArray")
         //myData(jsonArray)
 
@@ -120,7 +126,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                     pageNo = 1
                     apiCall(tag_id);
                 } else {
-                    Log.e("TEST", "" + mySearchData.get(i).type)
+                   // Log.e("TEST", "" + mySearchData.get(i).type)
                     getVidoeById(mySearchData.get(i).search_id)
                 }
             }
@@ -449,7 +455,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 override fun onSuccess(res: String?) {
                     try {
                         val jobj = JSONObject(res)
-                        Log.e("SERACH RES", "REEE" + res)
+                        //Log.e("SERACH RES", "REEE" + res)
                         val status = jobj.getInt("status")
 
                         val details = jobj.getString("details")

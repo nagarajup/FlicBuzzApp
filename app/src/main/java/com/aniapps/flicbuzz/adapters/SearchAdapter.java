@@ -160,7 +160,7 @@ public class SearchAdapter extends ArrayAdapter<String> {
                 text.setEllipsize(TextUtils.TruncateAt.END);
             }
         } catch (ClassCastException e) {
-            Log.e("ArrayAdapter", "You must supply a resource ID for a TextView");
+           // Log.e("ArrayAdapter", "You must supply a resource ID for a TextView");
             throw new IllegalStateException(
                     "ArrayAdapter requires the resource ID to be a TextView", e);
         }

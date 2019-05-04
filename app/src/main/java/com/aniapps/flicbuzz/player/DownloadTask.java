@@ -81,7 +81,7 @@ public class DownloadTask {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e(TAG, "Download Failed with Exception - " + e.getLocalizedMessage());
+               // Log.e(TAG, "Download Failed with Exception - " + e.getLocalizedMessage());
 
             }
 

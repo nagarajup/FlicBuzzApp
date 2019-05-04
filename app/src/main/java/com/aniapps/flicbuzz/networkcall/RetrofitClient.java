@@ -105,7 +105,7 @@ public class RetrofitClient extends AppCompatActivity {
         apiService.coreApiResult(context.getResources().getString(R.string.core_live) + postParams.get("action"), postParams).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, final Response<String> res) {
-                Log.e("RES", "res" + res.body());
+              //  Log.e("RES", "res" + res.body());
                 if (from.length() == 0) {
                     try {
                         runOnUiThread(new Runnable() {
@@ -165,7 +165,7 @@ public class RetrofitClient extends AppCompatActivity {
             apiService.uploadImage(context.getResources().getString(R.string.core_live)+ postParams.get("action"), body, postParams).enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, final Response<String> res) {
-                    Log.e("RES", "res" + res.body());
+                   // Log.e("RES", "res" + res.body());
                     if (res.isSuccessful()) {
                         try {
                             if (null != res.body() && !res.body().equals("")) {
@@ -191,7 +191,7 @@ public class RetrofitClient extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
-                    Log.e("RES", "failure" + t.getMessage());
+                   // Log.e("RES", "failure" + t.getMessage());
                     retrofit = null;
                     api_res.onFailure(t.getMessage());
                 }
