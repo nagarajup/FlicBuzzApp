@@ -3,6 +3,7 @@ package com.aniapps.flicbuzz.networkcall;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -96,7 +97,7 @@ public class RetrofitClient extends AppCompatActivity {
         this.context = context;
         apiService = RetrofitClient.getClient(context).create(APIService.class);
         postParams.put("version_code", "" + BuildConfig.VERSION_CODE);
-        postParams.put("device_id", PrefManager.getIn().getDeviceId());
+        postParams.put("device_id", Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID));
         if (!postParams.get("action").equals("login") && !postParams.get("action").equals("verify_otp")&& !postParams.get("action").equals("resend_otp")) {
             postParams.put("user_id", PrefManager.getIn().getUserId());
         }
@@ -105,7 +106,7 @@ public class RetrofitClient extends AppCompatActivity {
         apiService.coreApiResult(context.getResources().getString(R.string.core_live) + postParams.get("action"), postParams).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, final Response<String> res) {
-              //  Log.e("RES", "res" + res.body());
+                Log.e("RES", "res" + res.body());
                 if (from.length() == 0) {
                     try {
                         runOnUiThread(new Runnable() {
@@ -158,7 +159,8 @@ public class RetrofitClient extends AppCompatActivity {
                                     final MultipartBody.Part body, final APIResponse api_res) {
         apiService = RetrofitClient.getClient(context).create(APIService.class);
         postParams.put("version_code", "" + BuildConfig.VERSION_CODE);
-        postParams.put("device_id", PrefManager.getIn().getDeviceId());
+       // postParams.put("device_id", PrefManager.getIn().getDeviceId());
+        postParams.put("device_id", Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID));
         postParams.put("user_id", PrefManager.getIn().getUserId());
         Log.e(TAG, "post params" + postParams);
         if (body != null) {

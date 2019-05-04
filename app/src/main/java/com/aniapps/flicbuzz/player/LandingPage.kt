@@ -5,7 +5,6 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
@@ -14,13 +13,12 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.view.MenuItemCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.*
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
 import android.text.*
-import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
@@ -40,7 +38,6 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONArray
 import org.json.JSONObject
-import org.w3c.dom.Text
 import java.util.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.set
@@ -252,25 +249,41 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
             tv_profile_plan.setText("Plan : Trail")
         }
         if (PrefManager.getIn().getPlan().equals("expired")) {
-            alertDialog(this@LandingPage, "Alert", "Your plan is expired, Please purchase subscription.")
+            alertDialog(this@LandingPage, "Alert", "Your plan is expired, Please purchase subscription.", 1)
         }
 
         super.onResume()
 
     }
 
-    fun alertDialog(context: Context, title: String, msg: String) {
+    fun alertDialog(context: Context, title: String, msg: String, from: Int) {
         val builder = AlertDialog.Builder(context)
         builder.setMessage(msg)
         builder.setTitle(title)
         builder.setCancelable(false)
+        if (from == 2) {
+            builder.setNegativeButton("CANCEL") { dialog, which ->
+                dialog.dismiss()
+            }
+        }
         builder.setPositiveButton("OK") { dialog, which ->
-            val intent = Intent(this@LandingPage, PaymentScreen_New::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            startActivity(intent)
-            overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+            if (from == 1) {
+                val intent = Intent(this@LandingPage, PaymentScreen_New::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intent)
+                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+            } else {
+                PrefManager.getIn().clearLogins();
+                // PrefManager.getIn().setLogin(false);
+                val intent = Intent(this@LandingPage, SignIn::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intent)
+                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+            }
         }
         builder.show()
     }
@@ -585,13 +598,8 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
             }
 
             R.id.nav_logout -> {
-                PrefManager.getIn().setLogin(false);
-                val intent = Intent(this@LandingPage, SignIn::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                startActivity(intent)
-                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+                alertDialog(this@LandingPage, "Logout", "Are you sure to logout.", 2)
+
             }
             R.id.nav_share -> {
                 val appPackageName = packageName

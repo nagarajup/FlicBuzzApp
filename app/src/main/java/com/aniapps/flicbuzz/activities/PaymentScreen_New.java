@@ -52,7 +52,7 @@ public class PaymentScreen_New extends AppCompatActivity {
         TextView header_title = (TextView) findViewById(R.id.title);
         header_title.setText("Packages");
         setSupportActionBar(mToolbar);
-      getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         plan_details = (LinearLayout) findViewById(R.id.plan_details);
         plan_expiry_date = (TextView) findViewById(R.id.plan_expiry_text);
@@ -67,9 +67,9 @@ public class PaymentScreen_New extends AppCompatActivity {
                 plan_text.setText("Six Months Subscription");
             } else if (PrefManager.getIn().getPlan().equals("12")) {
                 plan_text.setText("One Year Subscription");
-            }else if (PrefManager.getIn().getPlan().equals("expired")) {
+            } else if (PrefManager.getIn().getPlan().equals("expired")) {
                 plan_text.setText("Plan Expired");
-            }else if (PrefManager.getIn().getPlan().equals("trail")) {
+            } else if (PrefManager.getIn().getPlan().equals("trail")) {
                 plan_text.setText("Trail");
             }
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -211,7 +211,7 @@ public class PaymentScreen_New extends AppCompatActivity {
                     if (inventory.hasPurchase(Utility.threemonths)) {
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         Calendar calender = Calendar.getInstance();
-                        if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) < calender.getTimeInMillis()) {
+                        if (PrefManager.getIn().getPayment_mode().equals("3")) {
                             Date start_date = null;
                             try {
                                 start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date());
@@ -219,10 +219,15 @@ public class PaymentScreen_New extends AppCompatActivity {
                                 threemonthsflag = true;
                                 Calendar c = Calendar.getInstance();
                                 c.setTime(start_date);
-                                c.add(Calendar.MONTH, 3);
                                 Calendar c1 = Calendar.getInstance();
-                                c1.setTime(start_date);
-                                c1.add(Calendar.MONTH, 6);
+                                if (!PrefManager.getIn().getPlan().equalsIgnoreCase("trail")) {
+                                    c.add(Calendar.MONTH, 3);
+                                    c1.setTime(start_date);
+                                    c1.add(Calendar.MONTH, 6);
+                                } else {
+                                    c1.setTime(start_date);
+                                    c1.add(Calendar.MONTH, 3);
+                                }
                                 String endDate1 = sdf.format(c.getTime());
                                 String endDate2 = sdf.format(c1.getTime());
                                 planUpdate(inventory.getPurchase(Utility.threemonths).getSku(), endDate1, endDate2, inventory.getPurchase(Utility.threemonths).toString(), 1);
@@ -241,7 +246,8 @@ public class PaymentScreen_New extends AppCompatActivity {
                     if (inventory.hasPurchase(Utility.six_months)) {
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         Calendar calender = Calendar.getInstance();
-                        if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) < calender.getTimeInMillis()) {
+                        // if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) < calender.getTimeInMillis()) {
+                        if (PrefManager.getIn().getPayment_mode().equals("3")) {
                             Date start_date = null;
                             try {
                                 start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date());
@@ -249,10 +255,20 @@ public class PaymentScreen_New extends AppCompatActivity {
                                 threemonthsflag = true;
                                 Calendar c = Calendar.getInstance();
                                 c.setTime(start_date);
-                                c.add(Calendar.MONTH, 6);
+                                Calendar c1 = Calendar.getInstance();
+                                if (!PrefManager.getIn().getPlan().equalsIgnoreCase("trail")) {
+                                    c.add(Calendar.MONTH, 6);
+                                    c1.setTime(start_date);
+                                    c1.add(Calendar.MONTH, 12);
+                                } else {
+                                    c1.setTime(start_date);
+                                    c1.add(Calendar.MONTH, 6);
+                                }
+
+                               /* c.add(Calendar.MONTH, 6);
                                 Calendar c1 = Calendar.getInstance();
                                 c1.setTime(start_date);
-                                c1.add(Calendar.MONTH, 12);
+                                c1.add(Calendar.MONTH, 12);*/
                                 String endDate1 = sdf.format(c.getTime());
                                 String endDate2 = sdf.format(c1.getTime());
                                 planUpdate(inventory.getPurchase(Utility.threemonths).getSku(), endDate1, endDate2, inventory.getPurchase(Utility.threemonths).toString(), 1);
@@ -270,7 +286,8 @@ public class PaymentScreen_New extends AppCompatActivity {
                     if (inventory.hasPurchase(Utility.one_year)) {
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         Calendar calender = Calendar.getInstance();
-                        if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) < calender.getTimeInMillis()) {
+                        //  if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) < calender.getTimeInMillis()) {
+                        if (PrefManager.getIn().getPayment_mode().equals("3")) {
                             Date start_date = null;
                             try {
                                 start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date());
@@ -278,10 +295,22 @@ public class PaymentScreen_New extends AppCompatActivity {
                                 threemonthsflag = true;
                                 Calendar c = Calendar.getInstance();
                                 c.setTime(start_date);
-                                c.add(Calendar.MONTH, 12);
+
+                                Calendar c1 = Calendar.getInstance();
+                                if (!PrefManager.getIn().getPlan().equalsIgnoreCase("trail")) {
+                                    c.add(Calendar.MONTH, 12);
+                                    c1.setTime(start_date);
+                                    c1.add(Calendar.MONTH, 24);
+                                } else {
+                                    c1.setTime(start_date);
+                                    c1.add(Calendar.MONTH, 12);
+                                }
+
+
+                                /*c.add(Calendar.MONTH, 12);
                                 Calendar c1 = Calendar.getInstance();
                                 c1.setTime(start_date);
-                                c1.add(Calendar.MONTH, 24);
+                                c1.add(Calendar.MONTH, 24);*/
                                 String endDate1 = sdf.format(c.getTime());
                                 String endDate2 = sdf.format(c1.getTime());
                                 planUpdate(inventory.getPurchase(Utility.threemonths).getSku(), endDate1, endDate2, inventory.getPurchase(Utility.threemonths).toString(), 1);
@@ -439,10 +468,10 @@ public class PaymentScreen_New extends AppCompatActivity {
                         } else if (PrefManager.getIn().getPlan().equals("12")) {
                             PrefManager.getIn().setPayment_mode("1");
                             plan_text.setText("One Year Subscription");
-                        }else if (PrefManager.getIn().getPlan().equals("expired")) {
+                        } else if (PrefManager.getIn().getPlan().equals("expired")) {
                             PrefManager.getIn().setPayment_mode("3");
                             plan_text.setText("Plan Expired");
-                        }else if (PrefManager.getIn().getPlan().equals("trail")) {
+                        } else if (PrefManager.getIn().getPlan().equals("trail")) {
                             PrefManager.getIn().setPayment_mode("1");
                             plan_text.setText("Trail");
                         }

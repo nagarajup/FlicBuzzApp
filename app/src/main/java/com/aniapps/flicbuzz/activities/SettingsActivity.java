@@ -1,5 +1,8 @@
 package com.aniapps.flicbuzz.activities;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -58,13 +61,7 @@ public class SettingsActivity extends AppCompatActivity {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PrefManager.getIn().setLogin(false);
-                Intent intent =new Intent(SettingsActivity.this,SignIn.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
+                alertDialog(SettingsActivity.this, "Logout", "Are you sure to logout.");
             }
         });
         cancelSubscription.setOnClickListener(new View.OnClickListener() {
@@ -87,7 +84,34 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
     }
+    public  void alertDialog(final Context context, String title, String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(msg);
+        builder.setTitle(title);
+        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                dialog.dismiss();
+            }
+        });
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                PrefManager.getIn().clearLogins();
+                //PrefManager.getIn().setLogin(false);
+                Intent intent =new Intent(SettingsActivity.this,SignIn.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
 
+            }
+        });
+        //builder.setNegativeButton("NO", null);
+        builder.show();
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         finish();

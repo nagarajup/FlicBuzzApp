@@ -57,6 +57,11 @@ public class PrefManager {
         editor.commit();
     }
 
+    public void clearLogins(){
+        editor.clear();
+        editor.commit();
+    }
+
     public boolean getPackage() {
         return pref.getBoolean("package", false);
     }
