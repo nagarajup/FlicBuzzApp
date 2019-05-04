@@ -75,12 +75,14 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
     // internal lateinit var switchCompat: SwitchCompat
     internal lateinit var nav_lang: TextView
     internal var tag_id: String = "";
+
     companion object {
         lateinit var playingVideos: ArrayList<MyVideos>
-         var videoCount: Int = 0
+        var videoCount: Int = 0
 
 
     }
+
     internal var pageNo = 1
     internal var my_recycler_view: RecyclerView? = null
     internal lateinit var search_list: ListView
@@ -97,7 +99,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         header_title.text = "Hindi | English"
         setColor(header_title, 1)
         myvideos = ArrayList()
-        playingVideos= ArrayList()
+        playingVideos = ArrayList()
         // val jsonArray = intent.getStringExtra("jsonArray")
         //myData(jsonArray)
 
@@ -126,7 +128,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                     pageNo = 1
                     apiCall(tag_id);
                 } else {
-                   // Log.e("TEST", "" + mySearchData.get(i).type)
+                    // Log.e("TEST", "" + mySearchData.get(i).type)
                     getVidoeById(mySearchData.get(i).search_id)
                 }
             }
@@ -803,14 +805,16 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                         if (status == 1) {
                             val data = jobj.getJSONObject("data")
                             val videodata = data.getJSONObject("video")
+
+
+                            var lead = Gson().fromJson(
+                                videodata.toString(),
+                                MyVideos::class.java
+                            )
+
                             val player_in = Intent(this@LandingPage, MyPlayer::class.java)
-                            player_in.putExtra("url", videodata.getString("video_filename"))
-                            player_in.putExtra("title", videodata.getString("headline"))
-                            player_in.putExtra("desc", videodata.getString("description"))
-                            player_in.putExtra("id", videodata.getString("id"))
+                            player_in.putExtra("playingVideo", lead)
                             player_in.putExtra("from", "main")
-                            player_in.putExtra("fav", videodata.getString("fav_video"))
-                            player_in.putExtra("play_share_url", videodata.getString("short_video_filename"))
                             startActivity(player_in)
                             overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 

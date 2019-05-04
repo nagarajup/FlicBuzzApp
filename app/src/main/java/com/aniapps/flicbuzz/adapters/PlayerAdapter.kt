@@ -54,10 +54,8 @@ class PlayerAdapter (var context: Activity, var itemsList: ArrayList<MyVideos>, 
 
             if (from.equals("main")) {
                 val player_in = Intent(it.context, MyPlayer::class.java)
-                player_in.putExtra("url", singleItem.video_filename)
-                player_in.putExtra("title", singleItem.headline)
-                player_in.putExtra("desc", singleItem.description)
-                player_in.putExtra("id", singleItem.id)
+                player_in.putExtra("playingVideo", singleItem)
+
 
                 it.context.startActivity(player_in)
                 context.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
