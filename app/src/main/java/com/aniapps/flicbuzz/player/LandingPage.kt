@@ -19,6 +19,7 @@ import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
 import android.text.*
 import android.text.style.StyleSpan
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
@@ -31,14 +32,20 @@ import com.aniapps.flicbuzz.models.MyVideos
 import com.aniapps.flicbuzz.models.SearchData
 import com.aniapps.flicbuzz.networkcall.APIResponse
 import com.aniapps.flicbuzz.networkcall.RetrofitClient
+import com.aniapps.flicbuzz.util.IabHelper
+import com.aniapps.flicbuzz.util.IabResult
+import com.aniapps.flicbuzz.util.Inventory
 import com.aniapps.flicbuzz.utils.CircleImageView
 import com.aniapps.flicbuzz.utils.PrefManager
+import com.aniapps.flicbuzz.utils.Utility
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.ArrayList
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.set
 import android.widget.SearchView.OnQueryTextListener as OnQueryTextListener1
@@ -72,7 +79,10 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
     // internal lateinit var switchCompat: SwitchCompat
     internal lateinit var nav_lang: TextView
     internal var tag_id: String = "";
-
+    var mHelper: IabHelper? = null
+    private val PURCHSE_REQUEST = 3
+    private val TAG = "Landing Screen"
+    internal var subDate = ""
     companion object {
         lateinit var playingVideos: ArrayList<MyVideos>
         var videoCount: Int = 0
@@ -92,7 +102,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
 
         setSupportActionBar(mToolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-
+        mHelper = IabHelper(this@LandingPage, Utility.sharedKey)
         header_title.text = "Hindi | English"
         setColor(header_title, 1)
         myvideos = ArrayList()
@@ -248,13 +258,242 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         } else if (PrefManager.getIn().getPlan().equals("trail")) {
             tv_profile_plan.setText("Plan : Trail")
         }
-        if (PrefManager.getIn().getPlan().equals("expired")) {
+       /* if (PrefManager.getIn().getPlan().equals("expired")) {
             alertDialog(this@LandingPage, "Alert", "Your plan is expired, Please purchase subscription.", 1)
-        }
+        }*/
+
+        //if(PrefManager.getIn().getPayment_mode().equals("3")){
+            mHelper?.startSetup(IabHelper.OnIabSetupFinishedListener { result ->
+                if (!result.isSuccess) {
+                    Log.e("limited", "In-app Billing is not set up OK")
+                } else {
+                    Log.v("Limites", "YAY, in app billing set up! $result")
+                    if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) > Utility.getMilliSeconds(
+                            PrefManager.getIn().getServer_date_time()
+                        )
+                    ) {
+                        mHelper?.queryInventoryAsync(mGotInventoryListener) //Getting inventory of purchases and assigning listener
+                    }
+                }
+            })
+       // }
 
         super.onResume()
 
     }
+    internal var mGotInventoryListener: IabHelper.QueryInventoryFinishedListener =
+        IabHelper.QueryInventoryFinishedListener { result, inventory ->
+            if (result.isFailure) {
+                // handle error here
+
+                Log.v(TAG, "failure in checking if user has purchases")
+            } else {
+                PrefManager.getIn().setPackage(false)
+                // does the user have the premium upgrade?
+                if (PrefManager.getIn().getPlan() == "3") {
+                    if (inventory.hasPurchase(Utility.threemonths)) {
+                        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                        val calender = Calendar.getInstance()
+                        if (PrefManager.getIn().getPayment_mode() == "3") {
+                            var start_date: Date? = null
+                            try {
+                                start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date())
+                                subDate = sdf.format(start_date)
+                                val c = Calendar.getInstance()
+                                c.time = start_date!!
+                                val c1 = Calendar.getInstance()
+                                if (!PrefManager.getIn().getPlan().equals("trail", ignoreCase = true)) {
+                                    c.add(Calendar.MONTH, 3)
+                                    c1.time = start_date
+                                    c1.add(Calendar.MONTH, 6)
+                                } else {
+                                    c1.time = start_date
+                                    c1.add(Calendar.MONTH, 3)
+                                }
+                                val endDate1 = sdf.format(c.time)
+                                val endDate2 = sdf.format(c1.time)
+                                planUpdate(
+                                    inventory.getPurchase(Utility.threemonths).sku,
+                                    endDate1,
+                                    endDate2,
+                                    inventory.getPurchase(Utility.threemonths).toString(),
+                                    1
+                                )
+
+                            } catch (e: ParseException) {
+                                e.printStackTrace()
+                            }
+
+                        }
+                    } else {
+                        planUpdate(
+                            "expired",
+                            PrefManager.getIn().getSubscription_start_date(),
+                            PrefManager.getIn().getSubscription_end_date(),
+                            PrefManager.getIn().getPayment_data(),
+                            1
+                        )
+                    }
+                } else if (PrefManager.getIn().getPlan() == "6") {
+                    if (inventory.hasPurchase(Utility.six_months)) {
+                        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                        val calender = Calendar.getInstance()
+                        // if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) < calender.getTimeInMillis()) {
+                        if (PrefManager.getIn().getPayment_mode() == "3") {
+                            var start_date: Date? = null
+                            try {
+                                start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date())
+                                subDate = sdf.format(start_date)
+                                val c = Calendar.getInstance()
+                                c.time = start_date!!
+                                val c1 = Calendar.getInstance()
+                                if (!PrefManager.getIn().getPlan().equals("trail", ignoreCase = true)) {
+                                    c.add(Calendar.MONTH, 6)
+                                    c1.time = start_date
+                                    c1.add(Calendar.MONTH, 12)
+                                } else {
+                                    c1.time = start_date
+                                    c1.add(Calendar.MONTH, 6)
+                                }
+
+                                val endDate1 = sdf.format(c.time)
+                                val endDate2 = sdf.format(c1.time)
+                                planUpdate(
+                                    inventory.getPurchase(Utility.threemonths).sku,
+                                    endDate1,
+                                    endDate2,
+                                    inventory.getPurchase(Utility.threemonths).toString(),
+                                    1
+                                )
+
+                            } catch (e: ParseException) {
+                                e.printStackTrace()
+                            }
+
+                        }
+                    } else {
+                        planUpdate(
+                            "expired",
+                            PrefManager.getIn().getSubscription_start_date(),
+                            PrefManager.getIn().getSubscription_end_date(),
+                            PrefManager.getIn().getPayment_data(),
+                            1
+                        )
+                    }
+                } else if (PrefManager.getIn().getPlan() == "12") {
+                    if (inventory.hasPurchase(Utility.one_year)) {
+                        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                        val calender = Calendar.getInstance()
+                        //  if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) < calender.getTimeInMillis()) {
+                        if (PrefManager.getIn().getPayment_mode() == "3") {
+                            var start_date: Date? = null
+                            try {
+                                start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date())
+                                subDate = sdf.format(start_date)
+                                val c = Calendar.getInstance()
+                                c.time = start_date!!
+
+                                val c1 = Calendar.getInstance()
+                                if (!PrefManager.getIn().getPlan().equals("trail", ignoreCase = true)) {
+                                    c.add(Calendar.MONTH, 12)
+                                    c1.time = start_date
+                                    c1.add(Calendar.MONTH, 24)
+                                } else {
+                                    c1.time = start_date
+                                    c1.add(Calendar.MONTH, 12)
+                                }
+
+                                val endDate1 = sdf.format(c.time)
+                                val endDate2 = sdf.format(c1.time)
+                                planUpdate(
+                                    inventory.getPurchase(Utility.threemonths).sku,
+                                    endDate1,
+                                    endDate2,
+                                    inventory.getPurchase(Utility.threemonths).toString(),
+                                    1
+                                )
+
+                            } catch (e: ParseException) {
+                                e.printStackTrace()
+                            }
+
+                        }
+                    } else {
+                        planUpdate(
+                            "expired",
+                            PrefManager.getIn().getSubscription_start_date(),
+                            PrefManager.getIn().getSubscription_end_date(),
+                            PrefManager.getIn().getPayment_data(),
+                            1
+                        )
+                    }
+                }
+            }
+        }
+    fun planUpdate(
+        package_data: String,
+        sub_start_date: String,
+        sub_end_date: String,
+        payment_data: String,
+        renewal: Int
+    ) {
+        val params = HashMap<String, String>()
+        params["subscription_start_date"] = sub_start_date
+        params["subscription_end_date"] = sub_end_date
+        params["payment_data"] = payment_data
+        params["action"] = "update_package"
+        if (package_data == Utility.threemonths) {
+            params["package"] = "3"
+        } else if (package_data == Utility.six_months) {
+            params["package"] = "6"
+        } else if (package_data == Utility.one_year) {
+            params["package"] = "12"
+        } else if (package_data == "trail") {
+            params["package"] = "trail"
+        } else if (package_data == "expired") {
+            params["package"] = "expired"
+        }
+        var jsonObject: JSONObject
+        RetrofitClient.getInstance()
+            .doBackProcess(this@LandingPage, params,  "online", object : APIResponse {
+                override fun onSuccess(result: String) {
+                    try {
+
+                        jsonObject = JSONObject(result)
+                        val status = jsonObject.getInt("status")
+                        if (status == 1) {
+
+                            PrefManager.getIn().setPayment_data(params["payment_data"])
+                            PrefManager.getIn().setSubscription_start_date(params["subscription_start_date"])
+                            PrefManager.getIn().setSubscription_renewal_date(params["subscription_renewal_date"])
+                            PrefManager.getIn().setSubscription_end_date(params["subscription_end_date"])
+                            PrefManager.getIn().setPlan(params["package"])
+                            if (PrefManager.getIn().getPlan() == "3") {
+                                PrefManager.getIn().setPayment_mode("1")
+                            } else if (PrefManager.getIn().getPlan() == "6") {
+                                PrefManager.getIn().setPayment_mode("1")
+                            } else if (PrefManager.getIn().getPlan() == "12") {
+                                PrefManager.getIn().setPayment_mode("1")
+                            } else if (PrefManager.getIn().getPlan() == "expired") {
+                                PrefManager.getIn().setPayment_mode("3")
+                                alertDialog(this@LandingPage, "Alert", "Your plan is expired, Please purchase subscription.", 1)
+                            } else if (PrefManager.getIn().getPlan() == "trail") {
+                                PrefManager.getIn().setPayment_mode("1")
+                            }
+
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+
+                }
+
+                override fun onFailure(res: String) {
+                }
+            })
+    }
+
+
 
     fun alertDialog(context: Context, title: String, msg: String, from: Int) {
         val builder = AlertDialog.Builder(context)
