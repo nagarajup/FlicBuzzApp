@@ -85,7 +85,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
     internal var subDate = ""
     companion object {
         lateinit var playingVideos: ArrayList<MyVideos>
-       // var videoCount: Int = 0
+       var videoCount: Int = 0
 
 
     }

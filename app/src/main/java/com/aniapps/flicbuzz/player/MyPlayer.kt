@@ -34,10 +34,7 @@ import com.aniapps.flicbuzz.networkcall.APIResponse
 import com.aniapps.flicbuzz.networkcall.RetrofitClient
 import com.aniapps.flicbuzz.utils.PrefManager
 import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.source.ConcatenatingMediaSource
-import com.google.android.exoplayer2.source.ExtractorMediaSource
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.TrackGroupArray
+import com.google.android.exoplayer2.source.*
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
@@ -55,15 +52,19 @@ import kotlinx.android.synthetic.main.myplayer.*
 import org.json.JSONObject
 import java.util.ArrayList
 
-class MyPlayer : AppCompatActivity() {
+class MyPlayer : AppCompatActivity(), MyPlayerIns {
+
+
     companion object {
         private const val KEY_PLAY_WHEN_READY = "play_when_ready"
         private const val KEY_WINDOW = "window"
         private const val KEY_POSITION = "position"
     }
+
+    //https://techdai.info/making-dynamic-video-player-from-exoplayer-android/
     private lateinit var player: SimpleExoPlayer
     private val playerView: PlayerView by lazy { findViewById<PlayerView>(R.id.video_view) }
-
+    lateinit var dynamicConcatenatingMediaSource: DynamicConcatenatingMediaSource;
     private var shouldAutoPlay: Boolean = true
     private var trackSelector: DefaultTrackSelector? = null
     private var lastSeenTrackGroupArray: TrackGroupArray? = null
@@ -75,7 +76,7 @@ class MyPlayer : AppCompatActivity() {
     internal lateinit var adapter: MainAdapter
     lateinit var playing_video: MyVideos
 
-    private val bandwidthMeter: BandwidthMeter = DefaultBandwidthMeter()
+    private var bandwidthMeter: BandwidthMeter = DefaultBandwidthMeter()
 
     private var playWhenReady: Boolean = false
     private var currentWindow: Int = 0
@@ -123,7 +124,7 @@ class MyPlayer : AppCompatActivity() {
         Log.e("####myPlayingvideo", playing_video.headline);
         Log.e("####myPlayingvideo", playing_video.description);
 
-        LandingPage.playingVideos.add(0, playing_video)
+        //LandingPage.playingVideos.add(playing_video)
 
         if (savedInstanceState != null) {
             mResumeWindow = savedInstanceState.getInt(STATE_RESUME_WINDOW);
@@ -145,8 +146,8 @@ class MyPlayer : AppCompatActivity() {
                     .toString()
             ), bandwidthMeter as TransferListener<in DataSource>
         )
-        dataFactory = DefaultDataSourceFactory(this@MyPlayer, "ua")
-        myPlayerApi(playing_video.id)
+        dynamicConcatenatingMediaSource = DynamicConcatenatingMediaSource()
+        myPlayerApi(playing_video.id, "")
     }
 
     fun initUi() {
@@ -404,17 +405,25 @@ class MyPlayer : AppCompatActivity() {
 
     }
 
+    override fun refresh(id: String, urs1: String, url2: String, from: String) {
+        Handler().postDelayed(Runnable {
+            preparePlayer(urs1)
+            myPlayerApi(id, from)
+        }, 500)
 
-    private fun myPlayerApi(id: String) {
+        Log.e("@@@@", "ins in Class")
+    }
+
+    private fun myPlayerApi(id: String, from: String) {
         val params = HashMap<String, String>()
         params["action"] = "get_similar_by_video_id"
         params["video_id"] = id
         params["page_number"] = "1"
 
-        Log.e("@@@@", "current position" + currentWindow)
-        Log.e("@@@@", "Suggested id" + LandingPage.playingVideos.get(currentWindow).id)
-        Log.e("@@@@", "Passing id" +id)
-
+        /*  Log.e("@@@@", "current position" + currentWindow)
+          Log.e("@@@@", "Suggested id" + LandingPage.playingVideos.get(currentWindow).id)
+          Log.e("@@@@", "Passing id" + id)*/
+        Log.e("@@@@", "From" + from)
 
         RetrofitClient.getInstance()
             .doBackProcess(this@MyPlayer, params, "", object : APIResponse {
@@ -434,9 +443,30 @@ class MyPlayer : AppCompatActivity() {
                                     MyVideos::class.java
                                 )
                                 myvideos.add(lead)
-
+                                //  LandingPage.playingVideos.add(lead)
                             }
-                            LandingPage.playingVideos.add(myvideos.get(0))
+
+                            preparePlayer(myvideos.get(0).video_filename)
+                            Log.e("@@@@", "@API@" + dynamicConcatenatingMediaSource.size)
+                            /*if (from.equals("next")) {
+                                LandingPage.playingVideos.add(myvideos.get(0))
+                            } else */
+
+                            if (from.equals("adapter")) {
+                                val timeline = player.currentTimeline
+                                if (timeline.isEmpty) {
+                                    return
+                                }
+                                currentWindow = player.currentWindowIndex
+                                if (currentWindow < timeline.getWindowCount() - 1) {
+                                    player.seekToDefaultPosition(currentWindow + 1);
+                                    Log.e("@@@@", "Adater1111" + currentWindow)
+                                } else if (timeline.getWindow(currentWindow, window, false).isDynamic) {
+                                    player.seekToDefaultPosition();
+                                    Log.e("@@@@", "Adater2222" + currentWindow)
+                                }
+                            }
+
                             initUi()
                             my_recycler_view.adapter = null;
                             my_recycler_view.setHasFixedSize(true)
@@ -446,8 +476,9 @@ class MyPlayer : AppCompatActivity() {
                             my_recycler_view.setNestedScrollingEnabled(false)
                             my_recycler_view.adapter = adapter
 
-                           // if (SDK_INT > 23) initializePlayer()
-                           // initializePlayer()
+
+                            // if (SDK_INT > 23) initializePlayer()
+                            // initializePlayer()
                         }
 
                     } catch (e: Exception) {
@@ -510,49 +541,60 @@ class MyPlayer : AppCompatActivity() {
 
     @SuppressLint("SwitchIntDef")
     private fun initializePlayer() {
-
         playerView.requestFocus()
-         window = Timeline.Window();
+        window = Timeline.Window();
         val videoTrackSelectionFactory = AdaptiveTrackSelection.Factory(bandwidthMeter)
-
         trackSelector = DefaultTrackSelector(videoTrackSelectionFactory)
-
         lastSeenTrackGroupArray = null
-
         player = ExoPlayerFactory.newSimpleInstance(this, trackSelector)
         player.addAnalyticsListener(EventLogger(trackSelector));
-
         playerView.player = player
         playerView.useController = true
-
         with(player) {
             addListener(PlayerEventListener())
             playWhenReady = shouldAutoPlay
         }
-
-        val uriList = mutableListOf<MediaSource>()
-        uriList.clear();
-        Log.e("@@@@", "Player Size" + LandingPage.playingVideos.size);
-
-        for (i in 0 until LandingPage.playingVideos.size) {
-            Log.e("@@@@", "Player List"+i+ LandingPage.playingVideos.get(i).id);
-            uriList.add(
-                HlsMediaSource.Factory(dataFactory)
-                    .setAllowChunklessPreparation(true)
-                    .createMediaSource(Uri.parse(LandingPage.playingVideos.get(i).video_filename))
-            )
-        }
-        val mediaSource = ConcatenatingMediaSource(*uriList.toTypedArray())
-        val haveStartPosition = currentWindow != C.INDEX_UNSET
-        if (haveStartPosition) {
-            player.seekTo(currentWindow, playbackPosition)
-        }
-        player.setPlayWhenReady(true);
-        player.prepare(mediaSource, !haveStartPosition, false)
+        preparePlayer(LandingPage.playingVideos.get(0).video_filename)
+        preparePlayer(LandingPage.playingVideos.get(1).video_filename)
         updateButtonVisibilities()
     }
 
-    fun preparePlayer() {
+    fun preparePlayer(url: String) {
+        Log.e("@@@@", "media  LIST" + dynamicConcatenatingMediaSource.size)
+        bandwidthMeter = DefaultBandwidthMeter()
+        dataFactory = DefaultDataSourceFactory(this@MyPlayer, "ua")
+        val uriList = mutableListOf<MediaSource>()
+        uriList.clear();
+        Log.e("@@@@", "Player Size" + LandingPage.playingVideos.size);
+        var mymediasourc = HlsMediaSource.Factory(dataFactory)
+            .setAllowChunklessPreparation(true)
+            .createMediaSource(Uri.parse(url))
+        if (dynamicConcatenatingMediaSource.getSize() == 0) {
+            dynamicConcatenatingMediaSource.addMediaSource(mymediasourc)
+            player.prepare(dynamicConcatenatingMediaSource);
+            player.setPlayWhenReady(true);
+        } else {
+            dynamicConcatenatingMediaSource.addMediaSource(mymediasourc);
+        }
+
+
+        /* for (i in 0 until LandingPage.playingVideos.size) {
+              Log.e("@@@@", "Player List" + i + LandingPage.playingVideos.get(i).id);
+              uriList.add(
+                  HlsMediaSource.Factory(dataFactory)
+                      .setAllowChunklessPreparation(true)
+                      .createMediaSource(Uri.parse(LandingPage.playingVideos.get(i).video_filename))
+              )
+          }
+          val mediaSource = ConcatenatingMediaSource(*uriList.toTypedArray())
+          val haveStartPosition = currentWindow != C.INDEX_UNSET
+          if (haveStartPosition) {
+              player.seekTo(currentWindow, playbackPosition)
+          }
+          player.setPlayWhenReady(true);
+          player.prepare(mediaSource, !haveStartPosition, false)*/
+
+
 //https://medium.com/androiddevelopers/building-a-video-player-app-in-android-part-3-5-19543ea9d416
         //  https://stackoverflow.com/questions/40284772/exoplayer-2-playlist-listener
         //https://stackoverflow.com/questions/tagged/exoplayer
@@ -625,7 +667,7 @@ class MyPlayer : AppCompatActivity() {
         }
 
         previous_video.setOnClickListener {
-           // LandingPage.videoCount--
+            // LandingPage.videoCount--
             //https://github.com/google/ExoPlayer/blob/3ada4e178dc320abb73c01ec7bdf4535334e0a3d/library/ui/src/main/java/com/google/android/exoplayer2/ui/PlaybackControlView.java#L944
             val timeline = player.currentTimeline
             if (timeline.isEmpty) {
@@ -634,9 +676,10 @@ class MyPlayer : AppCompatActivity() {
             currentWindow = player.currentWindowIndex
             timeline.getWindow(currentWindow, window)
             if (currentWindow > 0 && (player.getCurrentPosition() <= 3000
-                        || (window.isDynamic && !window.isSeekable))) {
+                        || (window.isDynamic && !window.isSeekable))
+            ) {
                 player.seekToDefaultPosition(currentWindow - 1);
-                myPlayerApi(LandingPage.playingVideos.get(currentWindow).id)
+                myPlayerApi(LandingPage.playingVideos.get(currentWindow).id, "previous")
                 Log.e("@@@@", "prev1111111" + currentWindow)
             } else {
                 Log.e("@@@@", "prev222222" + currentWindow)
@@ -656,15 +699,16 @@ class MyPlayer : AppCompatActivity() {
             if (timeline.isEmpty) {
                 return@setOnClickListener
             }
+            Log.e("@@@@", "media  LIST" + dynamicConcatenatingMediaSource.size)
             currentWindow = player.currentWindowIndex
             if (currentWindow < timeline.getWindowCount() - 1) {
                 player.seekToDefaultPosition(currentWindow + 1);
-                myPlayerApi(LandingPage.playingVideos.get(currentWindow + 1).id)
+                myPlayerApi(LandingPage.playingVideos.get(currentWindow).id, "next")
                 Log.e("@@@@", "next1111" + currentWindow)
             } else if (timeline.getWindow(currentWindow, window, false).isDynamic) {
                 player.seekToDefaultPosition();
                 Log.e("@@@@", "next2222" + currentWindow)
-                myPlayerApi(LandingPage.playingVideos.get(currentWindow).id)
+                myPlayerApi(LandingPage.playingVideos.get(currentWindow).id, "next")
             }
 
         }
@@ -705,22 +749,22 @@ class MyPlayer : AppCompatActivity() {
             Log.e("@@@@@", " New Window id" + newcurrentWindow)
 
             //Log.e("&&&&&&", " video id" + LandingPage.videoCount)
-            if ( currentWindow !=newcurrentWindow) {
+            if (currentWindow != newcurrentWindow) {
                 currentWindow = player.currentWindowIndex
-                myPlayerApi(LandingPage.playingVideos.get(currentWindow).id)
+                myPlayerApi(LandingPage.playingVideos.get(currentWindow).id, "next")
                 Log.e("@@@@", "next3333" + currentWindow)
-               /* val timeline = player.currentTimeline
-                if (timeline.isEmpty) {
-                    return
-                }
-                currentWindow = player.currentWindowIndex
-                if (currentWindow < timeline.getWindowCount() - 1) {
-                    myPlayerApi(LandingPage.playingVideos.get(currentWindow + 1).id)
-                    Log.e("@@@@", "next3333" + currentWindow)
-                } else if (timeline.getWindow(currentWindow, window, false).isDynamic) {
-                    Log.e("@@@@", "next4444" + currentWindow)
-                    myPlayerApi(LandingPage.playingVideos.get(currentWindow).id)
-                }*/
+                /* val timeline = player.currentTimeline
+                 if (timeline.isEmpty) {
+                     return
+                 }
+                 currentWindow = player.currentWindowIndex
+                 if (currentWindow < timeline.getWindowCount() - 1) {
+                     myPlayerApi(LandingPage.playingVideos.get(currentWindow + 1).id)
+                     Log.e("@@@@", "next3333" + currentWindow)
+                 } else if (timeline.getWindow(currentWindow, window, false).isDynamic) {
+                     Log.e("@@@@", "next4444" + currentWindow)
+                     myPlayerApi(LandingPage.playingVideos.get(currentWindow).id)
+                 }*/
             }
             Log.e("@@@@", "next4444" + currentWindow)
             /*if (currentWindow != 0)
@@ -820,7 +864,7 @@ class MyPlayer : AppCompatActivity() {
     }
 
     //For N devices that support it, not "officially"
-    //https://medium.com/s23nyc-tech/drop-in-android-video-exoplayer2-with-picture-in-picture-e2d4f8c1eb30
+//https://medium.com/s23nyc-tech/drop-in-android-video-exoplayer2-with-picture-in-picture-e2d4f8c1eb30
     @Suppress("DEPRECATION")
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration?) {
         if (newConfig != null) {
@@ -837,12 +881,12 @@ class MyPlayer : AppCompatActivity() {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
     }
 
-    //Called when the user touches the Home or Recents button to leave the app.
-    /* override fun onUserLeaveHint() {
-         super.onUserLeaveHint()
-         enterPIPMode()
-         playerView.useController=true
-     }*/
+//Called when the user touches the Home or Recents button to leave the app.
+/* override fun onUserLeaveHint() {
+     super.onUserLeaveHint()
+     enterPIPMode()
+     playerView.useController=true
+ }*/
 
 
     @Suppress("DEPRECATION")
