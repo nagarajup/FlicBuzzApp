@@ -95,8 +95,6 @@ class MyPlayer : AppCompatActivity(), MyPlayerIns {
     private var mResumeWindow: Int = 0
     private var mResumePosition: Long = 0
     // https://github.com/GeoffLedak/ExoplayerFullscreen/blob/master/app/src/main/java/com/geoffledak/exoplayerfullscreen/MainActivity.java*/
-
-    var mediaSource: MediaSource? = null;
     /*https://medium.com/@mayur_solanki/adaptive-streaming-with-exoplayer-c77b0032acdd*/
     private val progressBar: ProgressBar by lazy { findViewById<ProgressBar>(R.id.progress_bar) }
     private val settings: ImageButton by lazy { findViewById<ImageButton>(R.id.icon_setting) }
@@ -117,19 +115,15 @@ class MyPlayer : AppCompatActivity(), MyPlayerIns {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.myplayer)
         playing_video = intent.getParcelableExtra("playingVideo")
 
         Log.e("####myPlayingvideo", playing_video.headline);
         Log.e("####myPlayingvideo", playing_video.description);
 
-        //LandingPage.playingVideos.add(playing_video)
-
         if (savedInstanceState != null) {
             mResumeWindow = savedInstanceState.getInt(STATE_RESUME_WINDOW);
             mResumePosition = savedInstanceState.getLong(STATE_RESUME_POSITION);
-            // mExoPlayerFullscreen = savedInstanceState.getBoolean(STATE_PLAYER_FULLSCREEN);
         }
 
         if (savedInstanceState != null) {
@@ -139,30 +133,320 @@ class MyPlayer : AppCompatActivity(), MyPlayerIns {
                 playbackPosition = getLong(KEY_POSITION)
             }
         }
-        shouldAutoPlay = true
-        mediaDataSourceFactory = DefaultDataSourceFactory(
-            this, getUserAgent(
-                this, applicationInfo.loadLabel(packageManager)
-                    .toString()
-            ), bandwidthMeter as TransferListener<in DataSource>
-        )
+
         dynamicConcatenatingMediaSource = DynamicConcatenatingMediaSource()
-        myPlayerApi(playing_video.id, "")
+        myPlayerApi(playing_video, "")
     }
 
-    fun initUi() {
+
+    override fun refresh(id: String, urs1: String, url2: String, from: String) {
+        Handler().postDelayed(Runnable {
+            preparePlayer(urs1)
+            //  myPlayerApi(id, from)
+        }, 500)
+
+        Log.e("@@@@", "ins in Class")
+    }
+
+    private fun myPlayerApi(myVideo: MyVideos, from: String) {
+
+        val params = HashMap<String, String>()
+        params["action"] = "get_similar_by_video_id"
+        params["video_id"] = myVideo.id
+        params["page_number"] = "1"
+        RetrofitClient.getInstance()
+            .doBackProcess(this@MyPlayer, params, "", object : APIResponse {
+                override fun onSuccess(res: String?) {
+                    try {
+                        val jobj = JSONObject(res)
+                        val status = jobj.getInt("status")
+                        val details = jobj.getString("details")
+                        myvideos = ArrayList()
+                        myvideos.clear()
+                        if (status == 1) {
+                            val jsonArray = jobj.getJSONArray("data")
+                            for (i in 0 until jsonArray.length()) {
+                                val lead = Gson().fromJson(
+                                    jsonArray.get(i).toString(),
+                                    MyVideos::class.java
+                                )
+                                myvideos.add(lead)
+                            }
+
+                            if (from.equals("next")) {
+                                currentWindow = LandingPage.playingVideos.size - 1;
+                                player.seekTo(currentWindow.toLong());
+                                Log.e("@@@@", "Adater1111" + currentWindow)
+                            } else if (from.equals("previous")) {
+                                currentWindow = player.currentWindowIndex
+                                player.seekTo((currentWindow - 1).toLong());
+                            }
+
+                            initUi(myVideo)
+                            my_recycler_view.adapter = null;
+                            my_recycler_view.setHasFixedSize(true)
+                            adapter = MainAdapter(this@MyPlayer, myvideos, "player")
+                            layoutManager = LinearLayoutManager(applicationContext)
+                            my_recycler_view.setLayoutManager(layoutManager)
+                            my_recycler_view.setNestedScrollingEnabled(false)
+                            my_recycler_view.adapter = adapter
+                        }
+
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+
+                }
+
+                override fun onFailure(res: String?) {
+                    Toast.makeText(this@MyPlayer, "status" + res, Toast.LENGTH_LONG).show()
+                }
+            })
+    }
+
+
+    private fun impressionTracker(from: String, myVideo: MyVideos) {
+        val params = HashMap<String, String>()
+        params["action"] = "video_impression_tracker"
+        params["video_id"] = myVideo.id
+        RetrofitClient.getInstance()
+            .doBackProcess(this@MyPlayer, params, "", object : APIResponse {
+                override fun onSuccess(res: String?) {
+                    try {
+                        val jobj = JSONObject(res)
+                        val status = jobj.getInt("status")
+                        val details = jobj.getString("details")
+                        if (status == 1) {
+                            if (!from.equals("previous")) {
+                                LandingPage.playingVideos.add(myVideo)
+                                preparePlayer(myVideo.video_filename)
+                                val jsonArray = jobj.getJSONArray("next")
+                                for (i in 0 until jsonArray.length()) {
+                                    var lead = Gson().fromJson(
+                                        jsonArray.get(i).toString(),
+                                        MyVideos::class.java
+                                    )
+                                    LandingPage.playingVideos.add(lead)
+                                    preparePlayer(lead.video_filename)
+                                }
+                            }
+                            myPlayerApi(myVideo, from)
+                        } else {
+                            Toast.makeText(this@MyPlayer, "status" + details, Toast.LENGTH_LONG).show()
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+
+                override fun onFailure(res: String?) {
+                    Toast.makeText(this@MyPlayer, "status" + res, Toast.LENGTH_LONG).show()
+
+                }
+            })
+    }
+
+
+    @SuppressLint("SwitchIntDef")
+    private fun initializePlayer() {
+        shouldAutoPlay = true
+        playerView.requestFocus()
+        window = Timeline.Window();
+        val videoTrackSelectionFactory = AdaptiveTrackSelection.Factory(bandwidthMeter)
+        trackSelector = DefaultTrackSelector(videoTrackSelectionFactory)
+        lastSeenTrackGroupArray = null
+        player = ExoPlayerFactory.newSimpleInstance(this, trackSelector)
+        player.addAnalyticsListener(EventLogger(trackSelector));
+        playerView.player = player
+        playerView.useController = true
+        with(player) {
+            addListener(PlayerEventListener())
+            playWhenReady = shouldAutoPlay
+        }
+        preparePlayer(LandingPage.playingVideos.get(0).video_filename)
+        preparePlayer(LandingPage.playingVideos.get(1).video_filename)
+        updateButtonVisibilities()
+    }
+
+    fun preparePlayer(url: String) {
+        Log.e("@@@@", "media  LIST" + dynamicConcatenatingMediaSource.size)
+        bandwidthMeter = DefaultBandwidthMeter()
+        dataFactory = DefaultDataSourceFactory(this@MyPlayer, "ua")
+        val uriList = mutableListOf<MediaSource>()
+        uriList.clear();
+        Log.e("@@@@", "Player Size" + LandingPage.playingVideos.size);
+        var mymediasourc = HlsMediaSource.Factory(dataFactory)
+            .setAllowChunklessPreparation(true)
+            .createMediaSource(Uri.parse(url))
+        if (dynamicConcatenatingMediaSource.getSize() == 0) {
+            dynamicConcatenatingMediaSource.addMediaSource(mymediasourc)
+            player.prepare(dynamicConcatenatingMediaSource);
+            player.setPlayWhenReady(true);
+        } else {
+            dynamicConcatenatingMediaSource.addMediaSource(mymediasourc);
+        }
+
+
+        /* for (i in 0 until LandingPage.playingVideos.size) {
+              Log.e("@@@@", "Player List" + i + LandingPage.playingVideos.get(i).id);
+              uriList.add(
+                  HlsMediaSource.Factory(dataFactory)
+                      .setAllowChunklessPreparation(true)
+                      .createMediaSource(Uri.parse(LandingPage.playingVideos.get(i).video_filename))
+              )
+          }
+          val mediaSource = ConcatenatingMediaSource(*uriList.toTypedArray())
+          val haveStartPosition = currentWindow != C.INDEX_UNSET
+          if (haveStartPosition) {
+              player.seekTo(currentWindow, playbackPosition)
+          }
+          player.setPlayWhenReady(true);
+          player.prepare(mediaSource, !haveStartPosition, false)*/
+
+
+//https://medium.com/androiddevelopers/building-a-video-player-app-in-android-part-3-5-19543ea9d416
+        //  https://stackoverflow.com/questions/40284772/exoplayer-2-playlist-listener
+        //https://stackoverflow.com/questions/tagged/exoplayer
+        //https://stackoverflow.com/questions/40555405/how-to-pause-exoplayer-2-playback-and-resume-playercontrol-was-removed
+        // Log.e("MyList", "@@@" + LandingPage.playingVideos);
+
+
+        /*val hashset = HashSet<MyVideos>();
+        hashset.addAll(LandingPage.playingVideos)
+        LandingPage.playingVideos.clear()
+        LandingPage.playingVideos.addAll(hashset)*/
+
+    }
+
+
+    private fun releasePlayer() {
+        updateStartPosition()
+        shouldAutoPlay = player.playWhenReady
+        player.release()
+        trackSelector = null
+
+    }
+
+    private fun updateStartPosition() {
+
+        with(player) {
+            playbackPosition = currentPosition
+            currentWindow = currentWindowIndex
+            playWhenReady = playWhenReady
+        }
+    }
+
+    private fun updateButtonVisibilities() {
+
+        val mappedTrackInfo = trackSelector!!.currentMappedTrackInfo ?: return
+
+        for (i in 0 until mappedTrackInfo.rendererCount) {
+            val trackGroups = mappedTrackInfo.getTrackGroups(i)
+            if (trackGroups.length != 0) {
+                if (player.getRendererType(i) == C.TRACK_TYPE_VIDEO) {
+                    settings.visibility = View.VISIBLE
+                    settings.setOnClickListener {
+                        myTracker()
+                    }
+                    settings.tag = i
+                }
+            }
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            icon_pip.visibility = View.VISIBLE
+            icon_pip.setOnClickListener {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
+                    && isPIPModeeEnabled
+                ) {
+                    enterPIPMode()
+                }
+            }
+        } else {
+            icon_pip.visibility = View.GONE
+        }
+
+        share.setOnClickListener {
+            if (setupPermissions()) {
+                DownloadTask(this@MyPlayer, LandingPage.playingVideos.get(currentWindow).short_video_filename)
+            } else {
+                Toast.makeText(this@MyPlayer, "Please allow storage permission to share video", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+        }
+
+        previous_video.setOnClickListener {
+            // LandingPage.videoCount--
+            //https://github.com/google/ExoPlayer/blob/3ada4e178dc320abb73c01ec7bdf4535334e0a3d/library/ui/src/main/java/com/google/android/exoplayer2/ui/PlaybackControlView.java#L944
+
+            for (i in 0 until LandingPage.playingVideos.size) {
+                impressionTracker("previous", LandingPage.playingVideos.get(currentWindow - 1))
+            }
+
+            /* val timeline = player.currentTimeline
+             if (timeline.isEmpty) {
+                 return@setOnClickListener
+             }
+             currentWindow = player.currentWindowIndex
+             timeline.getWindow(currentWindow, window)
+             if (currentWindow > 0 && (player.getCurrentPosition() <= 3000
+                         || (window.isDynamic && !window.isSeekable))
+             ) {
+                 player.seekToDefaultPosition(currentWindow - 1);
+                 myPlayerApi(LandingPage.playingVideos.get(currentWindow).id, "previous")
+                 Log.e("@@@@", "prev1111111" + currentWindow)
+             } else {
+                 Log.e("@@@@", "prev222222" + currentWindow)
+                 player.seekTo(0);
+             }*/
+        }
+
+
+
+
+
+
+
+        next_video.setOnClickListener {
+
+            for (i in 0 until LandingPage.playingVideos.size) {
+                impressionTracker("next", LandingPage.playingVideos.get(currentWindow + 1))
+            }
+
+
+            /* val timeline = player.currentTimeline
+             if (timeline.isEmpty) {
+                 return@setOnClickListener
+             }
+             Log.e("@@@@", "media  LIST" + dynamicConcatenatingMediaSource.size)
+             currentWindow = player.currentWindowIndex
+             if (currentWindow < timeline.getWindowCount() - 1) {
+                 player.seekToDefaultPosition(currentWindow + 1);
+                 myPlayerApi(LandingPage.playingVideos.get(currentWindow).id, "next")
+                 Log.e("@@@@", "next1111" + currentWindow)
+             } else if (timeline.getWindow(currentWindow, window, false).isDynamic) {
+                 player.seekToDefaultPosition();
+                 Log.e("@@@@", "next2222" + currentWindow)
+                 myPlayerApi(LandingPage.playingVideos.get(currentWindow).id, "next")
+             }*/
+
+        }
+    }
+
+
+    fun initUi(myVideo: MyVideos) {
         initFullscreenButton()
         my_recycler_view = findViewById<RecyclerView>(R.id.rc_list)
         my_recycler_view.setNestedScrollingEnabled(false)
-        tv_play_title.setText(LandingPage.playingVideos.get(currentWindow).headline)
-        tv_play_description.setText(LandingPage.playingVideos.get(currentWindow).description)
+        tv_play_title.setText(myVideo.headline)
+        tv_play_description.setText(myVideo.description)
         makeTextViewResizable(tv_play_description, 2, "View More", true)
         lay_fav = findViewById(R.id.lay_fav)
         img_fav = findViewById(R.id.img_fav)
         img_fav_done = findViewById(R.id.img_fav_done)
         img_share = findViewById(R.id.img_share)
 
-        if (LandingPage.playingVideos.get(currentWindow).fav_video.equals("y")) {
+        if (myVideo.fav_video.equals("y")) {
             img_fav_done.visibility = View.VISIBLE
             img_fav.visibility = View.GONE
         } else {
@@ -172,7 +456,7 @@ class MyPlayer : AppCompatActivity(), MyPlayerIns {
 
         img_share.setOnClickListener {
             if (setupPermissions()) {
-                DownloadTask(this@MyPlayer, LandingPage.playingVideos.get(currentWindow).short_video_filename)
+                DownloadTask(this@MyPlayer, myVideo.short_video_filename)
             } else {
                 Toast.makeText(this@MyPlayer, "Please allow storage permission to share video", Toast.LENGTH_SHORT)
                     .show()
@@ -405,316 +689,6 @@ class MyPlayer : AppCompatActivity(), MyPlayerIns {
 
     }
 
-    override fun refresh(id: String, urs1: String, url2: String, from: String) {
-        Handler().postDelayed(Runnable {
-            preparePlayer(urs1)
-            myPlayerApi(id, from)
-        }, 500)
-
-        Log.e("@@@@", "ins in Class")
-    }
-
-    private fun myPlayerApi(id: String, from: String) {
-        val params = HashMap<String, String>()
-        params["action"] = "get_similar_by_video_id"
-        params["video_id"] = id
-        params["page_number"] = "1"
-
-        /*  Log.e("@@@@", "current position" + currentWindow)
-          Log.e("@@@@", "Suggested id" + LandingPage.playingVideos.get(currentWindow).id)
-          Log.e("@@@@", "Passing id" + id)*/
-        Log.e("@@@@", "From" + from)
-
-        RetrofitClient.getInstance()
-            .doBackProcess(this@MyPlayer, params, "", object : APIResponse {
-                override fun onSuccess(res: String?) {
-                    try {
-                        val jobj = JSONObject(res)
-                        val status = jobj.getInt("status")
-                        val details = jobj.getString("details")
-                        myvideos = ArrayList()
-                        myvideos.clear()
-                        if (status == 1) {
-
-                            val jsonArray = jobj.getJSONArray("data")
-                            for (i in 0 until jsonArray.length()) {
-                                var lead = Gson().fromJson(
-                                    jsonArray.get(i).toString(),
-                                    MyVideos::class.java
-                                )
-                                myvideos.add(lead)
-                                //  LandingPage.playingVideos.add(lead)
-                            }
-
-                            preparePlayer(myvideos.get(0).video_filename)
-                            Log.e("@@@@", "@API@" + dynamicConcatenatingMediaSource.size)
-                            /*if (from.equals("next")) {
-                                LandingPage.playingVideos.add(myvideos.get(0))
-                            } else */
-
-                            if (from.equals("adapter")) {
-                                val timeline = player.currentTimeline
-                                if (timeline.isEmpty) {
-                                    return
-                                }
-                                currentWindow = player.currentWindowIndex
-                                if (currentWindow < timeline.getWindowCount() - 1) {
-                                    player.seekToDefaultPosition(currentWindow + 1);
-                                    Log.e("@@@@", "Adater1111" + currentWindow)
-                                } else if (timeline.getWindow(currentWindow, window, false).isDynamic) {
-                                    player.seekToDefaultPosition();
-                                    Log.e("@@@@", "Adater2222" + currentWindow)
-                                }
-                            }
-
-                            initUi()
-                            my_recycler_view.adapter = null;
-                            my_recycler_view.setHasFixedSize(true)
-                            adapter = MainAdapter(this@MyPlayer, myvideos, "player")
-                            layoutManager = LinearLayoutManager(applicationContext)
-                            my_recycler_view.setLayoutManager(layoutManager)
-                            my_recycler_view.setNestedScrollingEnabled(false)
-                            my_recycler_view.adapter = adapter
-
-
-                            // if (SDK_INT > 23) initializePlayer()
-                            // initializePlayer()
-                        }
-
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-
-                }
-
-                override fun onFailure(res: String?) {
-                    Toast.makeText(this@MyPlayer, "status" + res, Toast.LENGTH_LONG).show()
-                }
-            })
-    }
-
-
-    public override fun onStart() {
-        super.onStart()
-
-        if (SDK_INT > 23) initializePlayer()
-    }
-
-    public override fun onResume() {
-        super.onResume()
-
-        if (SDK_INT <= 23 || player == null) initializePlayer()
-    }
-
-    public override fun onPause() {
-        super.onPause()
-
-        if (SDK_INT <= 23) releasePlayer()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    public override fun onStop() {
-        super.onStop()
-
-        if (SDK_INT > 23) releasePlayer()
-
-        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
-        ) {
-            finishAndRemoveTask()
-        }
-    }
-
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        updateStartPosition()
-
-        with(outState) {
-            putBoolean(KEY_PLAY_WHEN_READY, playWhenReady)
-            putInt(KEY_WINDOW, currentWindow)
-            putLong(KEY_POSITION, playbackPosition)
-        }
-
-        super.onSaveInstanceState(outState)
-    }
-
-
-    @SuppressLint("SwitchIntDef")
-    private fun initializePlayer() {
-        playerView.requestFocus()
-        window = Timeline.Window();
-        val videoTrackSelectionFactory = AdaptiveTrackSelection.Factory(bandwidthMeter)
-        trackSelector = DefaultTrackSelector(videoTrackSelectionFactory)
-        lastSeenTrackGroupArray = null
-        player = ExoPlayerFactory.newSimpleInstance(this, trackSelector)
-        player.addAnalyticsListener(EventLogger(trackSelector));
-        playerView.player = player
-        playerView.useController = true
-        with(player) {
-            addListener(PlayerEventListener())
-            playWhenReady = shouldAutoPlay
-        }
-        preparePlayer(LandingPage.playingVideos.get(0).video_filename)
-        preparePlayer(LandingPage.playingVideos.get(1).video_filename)
-        updateButtonVisibilities()
-    }
-
-    fun preparePlayer(url: String) {
-        Log.e("@@@@", "media  LIST" + dynamicConcatenatingMediaSource.size)
-        bandwidthMeter = DefaultBandwidthMeter()
-        dataFactory = DefaultDataSourceFactory(this@MyPlayer, "ua")
-        val uriList = mutableListOf<MediaSource>()
-        uriList.clear();
-        Log.e("@@@@", "Player Size" + LandingPage.playingVideos.size);
-        var mymediasourc = HlsMediaSource.Factory(dataFactory)
-            .setAllowChunklessPreparation(true)
-            .createMediaSource(Uri.parse(url))
-        if (dynamicConcatenatingMediaSource.getSize() == 0) {
-            dynamicConcatenatingMediaSource.addMediaSource(mymediasourc)
-            player.prepare(dynamicConcatenatingMediaSource);
-            player.setPlayWhenReady(true);
-        } else {
-            dynamicConcatenatingMediaSource.addMediaSource(mymediasourc);
-        }
-
-
-        /* for (i in 0 until LandingPage.playingVideos.size) {
-              Log.e("@@@@", "Player List" + i + LandingPage.playingVideos.get(i).id);
-              uriList.add(
-                  HlsMediaSource.Factory(dataFactory)
-                      .setAllowChunklessPreparation(true)
-                      .createMediaSource(Uri.parse(LandingPage.playingVideos.get(i).video_filename))
-              )
-          }
-          val mediaSource = ConcatenatingMediaSource(*uriList.toTypedArray())
-          val haveStartPosition = currentWindow != C.INDEX_UNSET
-          if (haveStartPosition) {
-              player.seekTo(currentWindow, playbackPosition)
-          }
-          player.setPlayWhenReady(true);
-          player.prepare(mediaSource, !haveStartPosition, false)*/
-
-
-//https://medium.com/androiddevelopers/building-a-video-player-app-in-android-part-3-5-19543ea9d416
-        //  https://stackoverflow.com/questions/40284772/exoplayer-2-playlist-listener
-        //https://stackoverflow.com/questions/tagged/exoplayer
-        //https://stackoverflow.com/questions/40555405/how-to-pause-exoplayer-2-playback-and-resume-playercontrol-was-removed
-        // Log.e("MyList", "@@@" + LandingPage.playingVideos);
-
-
-        /*val hashset = HashSet<MyVideos>();
-        hashset.addAll(LandingPage.playingVideos)
-        LandingPage.playingVideos.clear()
-        LandingPage.playingVideos.addAll(hashset)*/
-
-    }
-
-
-    private fun releasePlayer() {
-        updateStartPosition()
-        shouldAutoPlay = player.playWhenReady
-        player.release()
-        trackSelector = null
-
-    }
-
-    private fun updateStartPosition() {
-
-        with(player) {
-            playbackPosition = currentPosition
-            currentWindow = currentWindowIndex
-            playWhenReady = playWhenReady
-        }
-    }
-
-    private fun updateButtonVisibilities() {
-
-        val mappedTrackInfo = trackSelector!!.currentMappedTrackInfo ?: return
-
-        for (i in 0 until mappedTrackInfo.rendererCount) {
-            val trackGroups = mappedTrackInfo.getTrackGroups(i)
-            if (trackGroups.length != 0) {
-                if (player.getRendererType(i) == C.TRACK_TYPE_VIDEO) {
-                    settings.visibility = View.VISIBLE
-                    settings.setOnClickListener {
-                        myTracker()
-                    }
-                    settings.tag = i
-                }
-            }
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            icon_pip.visibility = View.VISIBLE
-            icon_pip.setOnClickListener {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
-                    && isPIPModeeEnabled
-                ) {
-                    enterPIPMode()
-                }
-            }
-        } else {
-            icon_pip.visibility = View.GONE
-        }
-
-        share.setOnClickListener {
-            if (setupPermissions()) {
-                DownloadTask(this@MyPlayer, LandingPage.playingVideos.get(currentWindow).short_video_filename)
-            } else {
-                Toast.makeText(this@MyPlayer, "Please allow storage permission to share video", Toast.LENGTH_SHORT)
-                    .show()
-            }
-
-        }
-
-        previous_video.setOnClickListener {
-            // LandingPage.videoCount--
-            //https://github.com/google/ExoPlayer/blob/3ada4e178dc320abb73c01ec7bdf4535334e0a3d/library/ui/src/main/java/com/google/android/exoplayer2/ui/PlaybackControlView.java#L944
-            val timeline = player.currentTimeline
-            if (timeline.isEmpty) {
-                return@setOnClickListener
-            }
-            currentWindow = player.currentWindowIndex
-            timeline.getWindow(currentWindow, window)
-            if (currentWindow > 0 && (player.getCurrentPosition() <= 3000
-                        || (window.isDynamic && !window.isSeekable))
-            ) {
-                player.seekToDefaultPosition(currentWindow - 1);
-                myPlayerApi(LandingPage.playingVideos.get(currentWindow).id, "previous")
-                Log.e("@@@@", "prev1111111" + currentWindow)
-            } else {
-                Log.e("@@@@", "prev222222" + currentWindow)
-                player.seekTo(0);
-            }
-        }
-
-
-
-
-
-
-
-        next_video.setOnClickListener {
-
-            val timeline = player.currentTimeline
-            if (timeline.isEmpty) {
-                return@setOnClickListener
-            }
-            Log.e("@@@@", "media  LIST" + dynamicConcatenatingMediaSource.size)
-            currentWindow = player.currentWindowIndex
-            if (currentWindow < timeline.getWindowCount() - 1) {
-                player.seekToDefaultPosition(currentWindow + 1);
-                myPlayerApi(LandingPage.playingVideos.get(currentWindow).id, "next")
-                Log.e("@@@@", "next1111" + currentWindow)
-            } else if (timeline.getWindow(currentWindow, window, false).isDynamic) {
-                player.seekToDefaultPosition();
-                Log.e("@@@@", "next2222" + currentWindow)
-                myPlayerApi(LandingPage.playingVideos.get(currentWindow).id, "next")
-            }
-
-        }
-    }
-
-
     private inner class PlayerEventListener : Player.DefaultEventListener() {
 
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -750,8 +724,9 @@ class MyPlayer : AppCompatActivity(), MyPlayerIns {
 
             //Log.e("&&&&&&", " video id" + LandingPage.videoCount)
             if (currentWindow != newcurrentWindow) {
-                currentWindow = player.currentWindowIndex
-                myPlayerApi(LandingPage.playingVideos.get(currentWindow).id, "next")
+               // currentWindow = player.currentWindowIndex
+                impressionTracker("next",LandingPage.playingVideos.get(currentWindow))
+               // myPlayerApi(LandingPage.playingVideos.get(currentWindow).id, "next")
                 Log.e("@@@@", "next3333" + currentWindow)
                 /* val timeline = player.currentTimeline
                  if (timeline.isEmpty) {
@@ -918,6 +893,49 @@ class MyPlayer : AppCompatActivity(), MyPlayerIns {
             icon_pip.performClick()
 
             // onBackPressed()
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        updateStartPosition()
+
+        with(outState) {
+            putBoolean(KEY_PLAY_WHEN_READY, playWhenReady)
+            putInt(KEY_WINDOW, currentWindow)
+            putLong(KEY_POSITION, playbackPosition)
+        }
+
+        super.onSaveInstanceState(outState)
+    }
+
+    public override fun onStart() {
+        super.onStart()
+
+        if (SDK_INT > 23) initializePlayer()
+    }
+
+    public override fun onResume() {
+        super.onResume()
+
+        if (SDK_INT <= 23 || player == null) initializePlayer()
+    }
+
+    public override fun onPause() {
+        super.onPause()
+
+        if (SDK_INT <= 23) releasePlayer()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    public override fun onStop() {
+        super.onStop()
+
+        if (SDK_INT > 23) releasePlayer()
+
+        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
+        ) {
+            finishAndRemoveTask()
         }
     }
 
