@@ -262,7 +262,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
             alertDialog(this@LandingPage, "Alert", "Your plan is expired, Please purchase subscription.", 1)
         }*/
 
-        //if(PrefManager.getIn().getPayment_mode().equals("3")){
+        if(PrefManager.getIn().getPayment_mode().equals("3")){
             mHelper?.startSetup(IabHelper.OnIabSetupFinishedListener { result ->
                 if (!result.isSuccess) {
                     Log.e("limited", "In-app Billing is not set up OK")
@@ -276,12 +276,183 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                     }
                 }
             })
-       // }
+        }
 
         super.onResume()
 
     }
     internal var mGotInventoryListener: IabHelper.QueryInventoryFinishedListener =
+        IabHelper.QueryInventoryFinishedListener { result, inventory ->
+            if (result.isFailure) {
+                // handle error here
+
+                Log.v(TAG, "failure in checking if user has purchases")
+            } else {
+                PrefManager.getIn().setPackage(false)
+                // does the user have the premium upgrade?
+                val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                val calender = Calendar.getInstance()
+                val calenderend = Calendar.getInstance()
+                var start_date: Date? = null
+                var end_date: Date? = null
+                var trailFlag = false
+                try {
+                    start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date())
+                    end_date = sdf.parse(PrefManager.getIn().getSubscription_end_date())
+                    calender.time = start_date!!
+                    calender.add(Calendar.DATE, 7)
+                    calenderend.time = end_date!!
+                    if (calender.timeInMillis == calenderend.timeInMillis) {
+                        trailFlag = true
+                    }
+
+                } catch (e: Exception) {
+
+                }
+
+                if (PrefManager.getIn().getPlan() == "3") {
+                    if (inventory.hasPurchase(Utility.threemonths)) {
+
+                        if (PrefManager.getIn().getPayment_mode() == "3") {
+
+                            try {
+                                start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date())
+                                subDate = sdf.format(start_date)
+                                val c = Calendar.getInstance()
+                                c.time = start_date!!
+                                val c1 = Calendar.getInstance()
+                                if (!trailFlag) {
+                                    c.add(Calendar.MONTH, 3)
+                                    c1.time = start_date
+                                    c1.add(Calendar.MONTH, 6)
+                                } else {
+                                    c1.time = start_date
+                                    c1.add(Calendar.MONTH, 3)
+                                }
+                                val endDate1 = sdf.format(c.time)
+                                val endDate2 = sdf.format(c1.time)
+                                planUpdate(
+                                    inventory.getPurchase(Utility.threemonths).sku,
+                                    endDate1,
+                                    endDate2,
+                                    inventory.getPurchase(Utility.threemonths).toString(),
+                                    1
+                                )
+
+                            } catch (e: ParseException) {
+                                e.printStackTrace()
+                            }
+
+                        }
+                    } else {
+                        planUpdate(
+                            "expired",
+                            PrefManager.getIn().getSubscription_start_date(),
+                            PrefManager.getIn().getSubscription_end_date(),
+                            PrefManager.getIn().getPayment_data(),
+                            1
+                        )
+                    }
+                } else if (PrefManager.getIn().getPlan() == "6") {
+                    if (inventory.hasPurchase(Utility.six_months)) {
+                        // if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) < calender.getTimeInMillis()) {
+                        if (PrefManager.getIn().getPayment_mode() == "3") {
+                            try {
+                                start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date())
+                                subDate = sdf.format(start_date)
+                                val c = Calendar.getInstance()
+                                c.time = start_date!!
+                                val c1 = Calendar.getInstance()
+                                if (!trailFlag) {
+                                    c.add(Calendar.MONTH, 6)
+                                    c1.time = start_date
+                                    c1.add(Calendar.MONTH, 12)
+                                } else {
+                                    c1.time = start_date
+                                    c1.add(Calendar.MONTH, 6)
+                                }
+
+                                /* c.add(Calendar.MONTH, 6);
+                                     Calendar c1 = Calendar.getInstance();
+                                     c1.setTime(start_date);
+                                     c1.add(Calendar.MONTH, 12);*/
+                                val endDate1 = sdf.format(c.time)
+                                val endDate2 = sdf.format(c1.time)
+                                planUpdate(
+                                    inventory.getPurchase(Utility.threemonths).sku,
+                                    endDate1,
+                                    endDate2,
+                                    inventory.getPurchase(Utility.threemonths).toString(),
+                                    1
+                                )
+
+                            } catch (e: ParseException) {
+                                e.printStackTrace()
+                            }
+
+                        }
+                    } else {
+                        planUpdate(
+                            "expired",
+                            PrefManager.getIn().getSubscription_start_date(),
+                            PrefManager.getIn().getSubscription_end_date(),
+                            PrefManager.getIn().getPayment_data(),
+                            1
+                        )
+                    }
+                } else if (PrefManager.getIn().getPlan() == "12") {
+                    if (inventory.hasPurchase(Utility.one_year)) {
+                        //  if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) < calender.getTimeInMillis()) {
+                        if (PrefManager.getIn().getPayment_mode() == "3") {
+                            try {
+                                start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date())
+                                subDate = sdf.format(start_date)
+                                val c = Calendar.getInstance()
+                                c.time = start_date!!
+
+                                val c1 = Calendar.getInstance()
+                                if (!trailFlag) {
+                                    c.add(Calendar.MONTH, 12)
+                                    c1.time = start_date
+                                    c1.add(Calendar.MONTH, 24)
+                                } else {
+                                    c1.time = start_date
+                                    c1.add(Calendar.MONTH, 12)
+                                }
+
+
+                                /*c.add(Calendar.MONTH, 12);
+                                     Calendar c1 = Calendar.getInstance();
+                                     c1.setTime(start_date);
+                                     c1.add(Calendar.MONTH, 24);*/
+                                val endDate1 = sdf.format(c.time)
+                                val endDate2 = sdf.format(c1.time)
+                                planUpdate(
+                                    inventory.getPurchase(Utility.threemonths).sku,
+                                    endDate1,
+                                    endDate2,
+                                    inventory.getPurchase(Utility.threemonths).toString(),
+                                    1
+                                )
+
+                            } catch (e: ParseException) {
+                                e.printStackTrace()
+                            }
+
+                        }
+                    } else {
+                        planUpdate(
+                            "expired",
+                            PrefManager.getIn().getSubscription_start_date(),
+                            PrefManager.getIn().getSubscription_end_date(),
+                            PrefManager.getIn().getPayment_data(),
+                            1
+                        )
+                    }
+                }
+            }
+        }
+   /* internal var mGotInventoryListener: IabHelper.QueryInventoryFinishedListener =
         IabHelper.QueryInventoryFinishedListener { result, inventory ->
             if (result.isFailure) {
                 // handle error here
@@ -429,7 +600,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                     }
                 }
             }
-        }
+        }*/
     fun planUpdate(
         package_data: String,
         sub_start_date: String,

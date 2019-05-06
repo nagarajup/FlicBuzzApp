@@ -207,12 +207,30 @@ public class PaymentScreen_New extends AppCompatActivity {
                 consumeItem();
                 PrefManager.getIn().setPackage(false);
                 // does the user have the premium upgrade?
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Calendar calender = Calendar.getInstance();
+                Calendar calenderend = Calendar.getInstance();
+                Date start_date = null;
+                Date end_date = null;
+                boolean trailFlag=false;
+                try {
+                    start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date());
+                    end_date = sdf.parse(PrefManager.getIn().getSubscription_end_date());
+                    calender.setTime(start_date);
+                    calender.add(Calendar.DATE, 7);
+                    calenderend.setTime(end_date);
+                    if(calender.getTimeInMillis()==calenderend.getTimeInMillis()){
+                        trailFlag=true;
+                    }
+
+                }catch (Exception e){
+
+                }
                 if (PrefManager.getIn().getPlan().equals("3")) {
                     if (inventory.hasPurchase(Utility.threemonths)) {
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        Calendar calender = Calendar.getInstance();
+
                         if (PrefManager.getIn().getPayment_mode().equals("3")) {
-                            Date start_date = null;
+
                             try {
                                 start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date());
                                 subDate = sdf.format(start_date);
@@ -220,7 +238,7 @@ public class PaymentScreen_New extends AppCompatActivity {
                                 Calendar c = Calendar.getInstance();
                                 c.setTime(start_date);
                                 Calendar c1 = Calendar.getInstance();
-                                if (!PrefManager.getIn().getPlan().equalsIgnoreCase("trail")) {
+                                if (!trailFlag) {
                                     c.add(Calendar.MONTH, 3);
                                     c1.setTime(start_date);
                                     c1.add(Calendar.MONTH, 6);
@@ -244,11 +262,8 @@ public class PaymentScreen_New extends AppCompatActivity {
                     }
                 } else if (PrefManager.getIn().getPlan().equals("6")) {
                     if (inventory.hasPurchase(Utility.six_months)) {
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        Calendar calender = Calendar.getInstance();
                         // if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) < calender.getTimeInMillis()) {
                         if (PrefManager.getIn().getPayment_mode().equals("3")) {
-                            Date start_date = null;
                             try {
                                 start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date());
                                 subDate = sdf.format(start_date);
@@ -256,7 +271,7 @@ public class PaymentScreen_New extends AppCompatActivity {
                                 Calendar c = Calendar.getInstance();
                                 c.setTime(start_date);
                                 Calendar c1 = Calendar.getInstance();
-                                if (!PrefManager.getIn().getPlan().equalsIgnoreCase("trail")) {
+                                if (!trailFlag) {
                                     c.add(Calendar.MONTH, 6);
                                     c1.setTime(start_date);
                                     c1.add(Calendar.MONTH, 12);
@@ -284,11 +299,8 @@ public class PaymentScreen_New extends AppCompatActivity {
                     }
                 } else if (PrefManager.getIn().getPlan().equals("12")) {
                     if (inventory.hasPurchase(Utility.one_year)) {
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        Calendar calender = Calendar.getInstance();
                         //  if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) < calender.getTimeInMillis()) {
                         if (PrefManager.getIn().getPayment_mode().equals("3")) {
-                            Date start_date = null;
                             try {
                                 start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date());
                                 subDate = sdf.format(start_date);
@@ -297,7 +309,7 @@ public class PaymentScreen_New extends AppCompatActivity {
                                 c.setTime(start_date);
 
                                 Calendar c1 = Calendar.getInstance();
-                                if (!PrefManager.getIn().getPlan().equalsIgnoreCase("trail")) {
+                                if (!trailFlag) {
                                     c.add(Calendar.MONTH, 12);
                                     c1.setTime(start_date);
                                     c1.add(Calendar.MONTH, 24);
