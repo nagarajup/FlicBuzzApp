@@ -32,8 +32,6 @@ import org.json.JSONObject
 class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var from: String) :
     RecyclerView.Adapter<MainAdapter.SingleItemRowHolder>() {
 
-    internal var imageheight = 0f
-    // var listener: MyPlayerIns=(context(MyPlayerIns))
     internal var imageItem_height_calculation = 0
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): SingleItemRowHolder {
@@ -54,60 +52,19 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
         } else {
             holder.tvDesc.setTextColor(ContextCompat.getColor(context, R.color.white))
         }
-        /* holder.itemImage.requestLayout()
-         holder.itemImage.layoutParams.height=200;*/
-
         AppApplication.myImgeRes(imageItem_height_calculation, context, holder.itemImage)
-        /* if (imageItem_height_calculation == 0) {
-             imageItem_height_calculation = 1
-             holder.itemImage.getLayoutParams().height = (((context
-                 .resources.displayMetrics.widthPixels -
-                 dpToPx(10, context)) / 2) as Float / 1.33).toFloat().toInt()
-             imageheight = (((context
-                 .resources.displayMetrics.widthPixels-
-                 dpToPx(10, context)) / 2) as Float / 1.33).toInt().toFloat()
-         } else {
-             holder.itemImage.getLayoutParams().height = imageheight.toInt()
-         }*/
-
-
-        /* if (imageItem_height_calculation == 0) {
-            imageItem_height_calculation = 1;
-            holder.image_car.getLayoutParams().height = (int) ((float) ((context
-                    .getResources().getDisplayMetrics().widthPixels - AppConstants
-                    .dpToPx(10, context)) / 2) / 1.33);
-            imageheight = (int) ((float) ((context
-                    .getResources().getDisplayMetrics().widthPixels - AppConstants
-                    .dpToPx(10, context)) / 2) / 1.33);
-        } else {
-            holder.image_car.getLayoutParams().height = (int) imageheight;
-        }*/
-
-        /*if (imageItem_height_calculation == 0) {
-            imageItem_height_calculation = 1
-            holder.itemImage.getLayoutParams().height = (((context
-                .resources.displayMetrics.widthPixels - dpToPx(10, context)) / 2)  / 1.33).toInt().toFloat()
-            imageheight = (((context
-                .resources.displayMetrics.widthPixels - dpToPx(10, context)) / 2)  / 1.33).toInt().toFloat()
-        } else {
-            holder.itemImage.getLayoutParams().height = imageheight.toInt()
-        }*/
-
-
         Picasso.with(context)
             .load(singleItem.thumb)
             .error(R.mipmap.launcher_icon)
             .into(holder.itemImage);
-
         holder.lay_card.setOnClickListener({
-
-            impressionTracker(from, singleItem)
+            impressionTracker(from, singleItem, i)
         })
 
 
     }
 
-    private fun impressionTracker(from: String, myVideo: MyVideos) {
+    private fun impressionTracker(from: String, myVideo: MyVideos, pos: Int) {
         val params = HashMap<String, String>()
         params["action"] = "video_impression_tracker"
         params["video_id"] = myVideo.id
@@ -120,7 +77,7 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
                         val details = jobj.getString("details")
                         if (status == 1) {
                             LandingPage.playingVideos.add(myVideo)
-                            var myurl2="";
+                            var myurl2 = "";
                             val jsonArray = jobj.getJSONArray("next")
                             for (i in 0 until jsonArray.length()) {
                                 var lead = Gson().fromJson(
@@ -128,28 +85,30 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
                                     MyVideos::class.java
                                 )
                                 LandingPage.playingVideos.add(lead)
-                                myurl2=lead.video_filename
                             }
                             if (from.equals("main") || from.equals("fav")) {
                                 val player_in = Intent(context, MyPlayer::class.java)
                                 player_in.putExtra("playingVideo", myVideo)
+                                player_in.putExtra("sequence", itemsList)
+                                player_in.putExtra("pos", pos)
                                 player_in.putExtra("from", from)
                                 context.startActivity(player_in)
                                 context.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
                             } else {
-
-                                try {
-                                    (context as MyPlayer).refresh(myVideo.id,myVideo.video_filename,myurl2,"adapter")
-                                    Log.e("@@@@","ins in adapter")
+                               /* try {
+                                    //  (context as MyPlayer).refresh(myVideo.id, myVideo.video_filename, myurl2, "adapter")
+                                    Log.e("@@@@", "ins in adapter")
                                 } catch (exception: ClassCastException) {
                                     // do something
-                                }
-                             /*   val player_in = Intent(context, MyPlayer::class.java)
+                                }*/
+                                val player_in = Intent(context, MyPlayer::class.java)
                                 player_in.putExtra("playingVideo", myVideo)
                                 player_in.putExtra("from", from)
+                                player_in.putExtra("sequence", itemsList)
+                                player_in.putExtra("pos", pos)
                                 context.finish()
                                 context.startActivity(player_in)
-                                context.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);*/
+                                context.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
                             }
                         } else {
                             Toast.makeText(context, "status" + details, Toast.LENGTH_LONG).show()

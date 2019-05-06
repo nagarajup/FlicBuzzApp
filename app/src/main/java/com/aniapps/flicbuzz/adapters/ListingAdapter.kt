@@ -48,8 +48,7 @@ class ListingAdapter(var mContext: Activity, var dataList: ArrayList<SectionData
                   Toast.LENGTH_SHORT
               ).show()
 
-           /* val i = Intent(v.context, MyPlayer::class.java)
-            v.context.startActivity(i)*/
+
         })
 
 
