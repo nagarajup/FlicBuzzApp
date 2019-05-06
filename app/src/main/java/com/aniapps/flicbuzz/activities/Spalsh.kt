@@ -1,5 +1,8 @@
 package com.aniapps.flicbuzz.activities
 
+import android.app.AlertDialog
+import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -77,6 +80,8 @@ class Spalsh : AppCompatActivity() {
                             overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
                         }
                         finish()
+                    }else if(status == 90){
+                        alertDialog(this@Spalsh)
                     }
 
                 } catch (e: Exception) {
@@ -88,5 +93,20 @@ class Spalsh : AppCompatActivity() {
             override fun onFailure(res: String) {
             }
         })
+    }
+    fun alertDialog(context: Context) {
+        val builder = AlertDialog.Builder(context)
+        builder.setMessage("This Account is activated in another device, Please logout and try again.")
+        builder.setTitle("Notice")
+        builder.setCancelable(false)
+        builder.setPositiveButton("OK") { dialog, which ->
+            PrefManager.getIn().clearLogins();
+            val i = Intent(this@Spalsh, SignIn::class.java)
+            startActivity(i)
+            overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+            finish()
+        }
+        //builder.setNegativeButton("NO", null);
+        builder.show()
     }
 }

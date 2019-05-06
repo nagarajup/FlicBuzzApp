@@ -58,7 +58,7 @@
                     android:layout_width="match_parent"
                     android:text="Please enter OTP"
                     android:layout_height="wrap_content"
-                    android:visibility="visible"
+                    android:visibility="invisible"
                     android:textColor="@color/red"
                     android:textSize="@dimen/error_text_size"/>
             <Button android:textSize="14sp"
@@ -69,7 +69,7 @@
                     android:layout_alignParentBottom="true"
                     android:layout_height="wrap_content"
                     android:text="VALIDATE MOBILE NUMBER"
-                    android:fontFamily="@font/cera_gr_medium" android:layout_marginBottom="456dp"
+                    android:fontFamily="@font/cera_gr_medium"
                     android:layout_centerVertical="true"/>
         </LinearLayout>
     </RelativeLayout>
