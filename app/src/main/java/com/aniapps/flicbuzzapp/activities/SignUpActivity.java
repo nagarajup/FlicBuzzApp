@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -36,7 +36,7 @@ public class SignUpActivity extends AppCompatActivity {
     RadioButton male, female;
     RelativeLayout registerLL, otpLL;
     String user_id = "";
-    CountDownTimer timer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,8 +52,9 @@ public class SignUpActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(timer!=null){
-            timer.cancel();
+        if (handler != null) {
+            if (runnable != null)
+                handler.removeCallbacks(runnable);
         }
         if (registerLL.getVisibility() == View.VISIBLE) {
             finish();
@@ -67,8 +68,9 @@ public class SignUpActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(timer!=null){
-            timer.cancel();
+        if(handler!=null){
+            if(runnable!=null)
+                handler.removeCallbacks(runnable);
         }
         if (registerLL.getVisibility() == View.VISIBLE) {
             finish();
@@ -133,7 +135,7 @@ public class SignUpActivity extends AppCompatActivity {
         resendOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(resendOTP.getText().toString().equalsIgnoreCase("Resend OTP")) {
+                if (resendOTP.getText().toString().equalsIgnoreCase("Resend OTP")) {
                     HashMap<String, String> params = new HashMap<>();
                     params.put("mobile", mobileEditText.getText().toString());
                     params.put("from_source", "android");
@@ -149,6 +151,12 @@ public class SignUpActivity extends AppCompatActivity {
                 if (otpEditText.getText().toString().length() < 4) {
                     otpErro.setVisibility(View.VISIBLE);
                 } else {
+                    if (handler != null) {
+                        if (runnable != null) {
+                            handler.removeCallbacks(runnable);
+                        }
+                        resendOTP.setText("Resend OTP");
+                    }
                     otpErro.setVisibility(View.GONE);
                     HashMap<String, String> params = new HashMap<>();
                     params.put("mobile", mobileEditText.getText().toString());
@@ -240,16 +248,16 @@ public class SignUpActivity extends AppCompatActivity {
                         if (status == 1 || status == 14) {
                             user_id = jsonObject.getString("user_id");
                             PrefManager.getIn().saveUserId(jsonObject.getString("user_id"));
-                            if(status==14) {
+                            if (status == 14) {
                                 Toast.makeText(SignUpActivity.this, "Otp sent succussfully", Toast.LENGTH_SHORT).show();
-                            }else{
+                            } else {
                                 Toast.makeText(SignUpActivity.this, jsonObject.getString("sms_details"), Toast.LENGTH_SHORT).show();
                             }
                             otpLL.setVisibility(View.VISIBLE);
                             registerLL.setVisibility(View.GONE);
                             countDown(resendOTP);
                         } else {
-                                Utility.alertDialog(SignUpActivity.this, "Alert", jsonObject.getString("message"));
+                            Utility.alertDialog(SignUpActivity.this, "Alert", jsonObject.getString("message"));
                         }
                     } else if (from == 1) {
                         if (status == 1) {
@@ -269,14 +277,14 @@ public class SignUpActivity extends AppCompatActivity {
                             PrefManager.getIn().setPincode(userObject.getString("pincode"));
                             PrefManager.getIn().setDob(userObject.getString("dob"));
                             PrefManager.getIn().setProfile_pic(userObject.getString("profile_pic"));
-                            if(PrefManager.getIn().getPayment_mode().equals("1")) {
+                            if (PrefManager.getIn().getPayment_mode().equals("1")) {
                                 Intent intent = new Intent(SignUpActivity.this, LandingPage.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
-                            }else{
+                            } else {
                                 Intent intent = new Intent(SignUpActivity.this, PaymentScreen_New.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -288,9 +296,9 @@ public class SignUpActivity extends AppCompatActivity {
                             Utility.alertDialog(SignUpActivity.this, "Alert", jsonObject.getString("message"));
                         }
 
-                    }else{
-                        Toast.makeText(SignUpActivity.this,jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-                       // Utility.alertDialog(SignUpActivity.this, "Alert", jsonObject.getString("message"));
+                    } else {
+                        Toast.makeText(SignUpActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                        // Utility.alertDialog(SignUpActivity.this, "Alert", jsonObject.getString("message"));
                     }
 
                 } catch (Exception e) {
@@ -306,11 +314,34 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    int tot_interval = 15000; // 10 secs
+    int interval = 1000; // 10 secs
+    Runnable runnable;
+    Handler handler;
+
     public void countDown(final TextView mTextField) {
-        validateMobile.setBackground(getDrawable(R.drawable.rounded_corners_grey));
-        validateMobile.setEnabled(false);
-        timer = new CountDownTimer(30000, 1000) {
+        // validateMobile.setBackground(getDrawable(R.drawable.rounded_corners_grey));
+        // validateMobile.setEnabled(false);
+
+
+        handler = new Handler();
+        runnable = new Runnable() {
+            public void run() {
+
+                if (tot_interval != 0) {
+                    mTextField.setText(tot_interval / 1000 + " Sec");
+                    tot_interval = tot_interval - interval;
+                } else {
+                    mTextField.setText("Resend OTP");
+                    handler.removeCallbacks(runnable);
+                }
+                handler.postDelayed(runnable, interval);
+                // your code here
+            }
+        };
+        handler.postDelayed(runnable, interval);
+
+       /* timer = new CountDownTimer(15000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 mTextField.setText(millisUntilFinished / 1000 + " Sec");
@@ -319,12 +350,12 @@ public class SignUpActivity extends AppCompatActivity {
 
             public void onFinish() {
                 mTextField.setText("Resend OTP");
-                validateMobile.setBackground(getDrawable(R.drawable.rounded_corners_signup));
-                validateMobile.setEnabled(true);
+               // validateMobile.setBackground(getDrawable(R.drawable.rounded_corners_signup));
+              //  validateMobile.setEnabled(true);
             }
 
         };
-        timer.start();
+        timer.start();*/
     }
 
     public static void datePickerDialog(Context context, final EditText editText, final Calendar myCalendar) {
