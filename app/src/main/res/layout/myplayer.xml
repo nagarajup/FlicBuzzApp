@@ -42,7 +42,7 @@
 
     </FrameLayout>
 
-    <com.aniapps.flicbuzz.utils.StickyNestedScrollView
+    <com.aniapps.flicbuzzapp.utils.StickyNestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/playerview"
@@ -140,7 +140,7 @@
             </RelativeLayout>
 
         </LinearLayout>
-    </com.aniapps.flicbuzz.utils.StickyNestedScrollView>
+    </com.aniapps.flicbuzzapp.utils.StickyNestedScrollView>
     <ProgressBar
             android:id="@+id/load_progress"
             style="?android:attr/progressBarStyleSmall"

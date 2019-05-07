@@ -11,7 +11,7 @@
         android:orientation="vertical"
         android:gravity="center">
 
-    <com.aniapps.flicbuzz.utils.CircleImageView
+    <com.aniapps.flicbuzzapp.utils.CircleImageView
             android:layout_width="74sp"
             android:layout_gravity="center"
             android:layout_height="74sp"

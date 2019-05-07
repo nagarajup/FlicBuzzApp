@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
-          package="com.aniapps.flicbuzz">
+          package="com.aniapps.flicbuzzapp">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.CAMERA" />
@@ -17,11 +17,11 @@
             android:label="@string/app_name"
             android:supportsRtl="true"
             android:hardwareAccelerated="true"
-            android:name=".AppApplication"
+            android:name="com.aniapps.flicbuzzapp.AppApplication"
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
 
-        <activity android:name=".activities.Spalsh"
+        <activity android:name="com.aniapps.flicbuzzapp.activities.Spalsh"
                   android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -31,26 +31,26 @@
         </activity>
 
 
-        <activity android:name=".activities.SignIn"
+        <activity android:name="com.aniapps.flicbuzzapp.activities.SignIn"
                   android:label="@string/app_name"
                   android:screenOrientation="portrait"/>
 
-        <activity android:name=".activities.AboutUs"
+        <activity android:name="com.aniapps.flicbuzzapp.activities.AboutUs"
                   android:label="@string/app_name"
                   android:screenOrientation="portrait"/>
         <activity
-                android:name=".player.LandingPage"
+                android:name="com.aniapps.flicbuzzapp.player.LandingPage"
                 android:label="@string/title_activity_landing_page"
                 android:screenOrientation="portrait"
                 android:theme="@style/AppTheme.NoActionBar"
                 android:windowSoftInputMode="adjustPan|adjustResize"/>
 
         <activity
-                android:name=".player.FavoriteAct"
+                android:name="com.aniapps.flicbuzzapp.player.FavoriteAct"
                 android:screenOrientation="portrait"
                 android:windowSoftInputMode="adjustPan|adjustResize"/>
         <activity
-                android:name=".player.MyPlayer"
+                android:name="com.aniapps.flicbuzzapp.player.MyPlayer"
                 android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|uiMode|keyboardHidden"
                 android:exported="false"
                 android:supportsPictureInPicture="true"
@@ -66,43 +66,43 @@
 
 
         <activity
-                android:name=".activities.IntroductionScreen"
+                android:name="com.aniapps.flicbuzzapp.activities.IntroductionScreen"
                 android:label="@string/app_name"
                 android:screenOrientation="portrait"/>
         <activity
-                android:name=".activities.SettingsActivity"
+                android:name="com.aniapps.flicbuzzapp.activities.SettingsActivity"
                 android:label="@string/app_name"
                 android:screenOrientation="portrait"/>
         <activity
-                android:name=".activities.UpdatePasswordActivity"
+                android:name="com.aniapps.flicbuzzapp.activities.UpdatePasswordActivity"
                 android:label="@string/app_name"
                 android:screenOrientation="portrait"/>
         <activity
-                android:name=".activities.ForgotPasswordActivity"
+                android:name="com.aniapps.flicbuzzapp.activities.ForgotPasswordActivity"
                 android:label="@string/app_name"
                 android:screenOrientation="portrait"/>
-        <activity android:name=".activities.LoginActivity"
+        <activity android:name="com.aniapps.flicbuzzapp.activities.LoginActivity"
                   android:label="@string/app_name"
                   android:screenOrientation="portrait"/>
-        <activity android:name=".activities.SignUpActivity"
+        <activity android:name="com.aniapps.flicbuzzapp.activities.SignUpActivity"
                   android:label="@string/app_name"
                   android:screenOrientation="portrait"/>
-        <activity android:name=".activities.UpdateProfileActivity"
+        <activity android:name="com.aniapps.flicbuzzapp.activities.UpdateProfileActivity"
                   android:label="@string/app_name"
                   android:screenOrientation="portrait"/>
         <activity
-                android:name=".activities.PaymentScreen"
+                android:name="com.aniapps.flicbuzzapp.activities.PaymentScreen"
                 android:label="@string/app_name"
                 android:screenOrientation="portrait"/>
         <activity
-                android:name=".activities.PaymentScreen_New"
+                android:name="com.aniapps.flicbuzzapp.activities.PaymentScreen_New"
                 android:label="@string/app_name"
                 android:screenOrientation="portrait"/>
 
-        <activity android:name=".activities.PaymentScreenLimitedAccess"
+        <activity android:name="com.aniapps.flicbuzzapp.activities.PaymentScreenLimitedAccess"
                   android:label="@string/app_name"
                   android:screenOrientation="portrait"/>
-        <activity android:name=".activities.PaymentScreenFullAccess"
+        <activity android:name="com.aniapps.flicbuzzapp.activities.PaymentScreenFullAccess"
                   android:label="@string/app_name"
                   android:screenOrientation="portrait"/>
 

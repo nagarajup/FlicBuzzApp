@@ -28,7 +28,7 @@
                               android:layout_centerInParent="true"
                               android:layout_height="wrap_content">
 
-                    <com.aniapps.flicbuzz.utils.CircleImageView
+                    <com.aniapps.flicbuzzapp.utils.CircleImageView
                             android:layout_width="120dp"
                             android:layout_gravity="left|center_vertical"
                             android:layout_height="120dp"
