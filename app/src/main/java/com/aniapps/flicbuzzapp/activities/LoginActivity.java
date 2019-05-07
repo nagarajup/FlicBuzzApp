@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -28,7 +29,6 @@ public class LoginActivity extends AppCompatActivity {
     JSONObject jsonObject;
     RelativeLayout loginLL, otpLL;
     String user_id = "", mobile_num = "";
-    CountDownTimer timer;
     String reqString = "";
 
     @Override
@@ -43,8 +43,9 @@ public class LoginActivity extends AppCompatActivity {
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (timer != null) {
-                    timer.cancel();
+                if(handler!=null){
+                    if(runnable!=null)
+                        handler.removeCallbacks(runnable);
                 }
                 if (loginLL.getVisibility() == View.VISIBLE) {
                     finish();
@@ -265,32 +266,40 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+    int tot_interval = 15000; // 10 secs
+    int interval = 1000; // 10 secs
+    Runnable runnable;
+    Handler handler;
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void countDown(final TextView mTextField) {
-        validateMobile.setBackground(getDrawable(R.drawable.rounded_corners_grey));
-        validateMobile.setEnabled(false);
-        timer = new CountDownTimer(30000, 1000) {
+        // validateMobile.setBackground(getDrawable(R.drawable.rounded_corners_grey));
+        // validateMobile.setEnabled(false);
 
-            public void onTick(long millisUntilFinished) {
-                mTextField.setText(millisUntilFinished / 1000 + " Sec");
-                //here you can have your logic to set text to edittext
+
+        handler = new Handler();
+        runnable = new Runnable() {
+            public void run() {
+
+                if (tot_interval != 0) {
+                    mTextField.setText(tot_interval / 1000 + " Sec");
+                    tot_interval = tot_interval - interval;
+                } else {
+                    mTextField.setText("Resend OTP");
+                    handler.removeCallbacks(runnable);
+                }
+                handler.postDelayed(runnable, interval);
+                // your code here
             }
-
-            public void onFinish() {
-                mTextField.setText("Resend OTP");
-                validateMobile.setBackground(getDrawable(R.drawable.rounded_corners_signup));
-                validateMobile.setEnabled(true);
-            }
-
         };
-        timer.start();
-    }
+        handler.postDelayed(runnable, interval);
 
+
+    }
     @Override
     public void onBackPressed() {
-        if (timer != null) {
-            timer.cancel();
+        if(handler!=null){
+            if(runnable!=null)
+                handler.removeCallbacks(runnable);
         }
         if (loginLL.getVisibility() == View.VISIBLE) {
             finish();
@@ -304,8 +313,9 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (timer != null) {
-            timer.cancel();
+        if(handler!=null){
+            if(runnable!=null)
+                handler.removeCallbacks(runnable);
         }
         if (loginLL.getVisibility() == View.VISIBLE) {
             finish();
