@@ -750,9 +750,6 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
 
 
             }
-
-
-
             updateButtonVisibilities()
         }
 
@@ -793,7 +790,7 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
 
 
         override fun onTracksChanged(trackGroups: TrackGroupArray?, trackSelections: TrackSelectionArray?) {
-            updateButtonVisibilities()
+           updateButtonVisibilities()
             // The video tracks are no supported in this device.
             if (trackGroups !== lastSeenTrackGroupArray) {
                 val mappedTrackInfo = trackSelector!!.currentMappedTrackInfo
@@ -962,6 +959,7 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
         super.onResume()
 
         if (SDK_INT <= 23 || player == null) initializePlayer()
+        //resumePlayer()
     }
 
     public override fun onPause() {
@@ -983,8 +981,12 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
             if (!share_flag) {
                 finishAndRemoveTask()
             } else {
-                resumePlayer()
                 share_flag = false
+               /* Handler().postDelayed(Runnable {
+                    resumePlayer()
+                },300)
+*/
+
             }
         }
     }
@@ -1000,8 +1002,10 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
 
     }
 
-    fun resumePlayer(){
+   /* fun resumePlayer(){
+        if (SDK_INT <= 23 || player == null) initializePlayer()
         player.playWhenReady=true
         player.playbackState
-    }
+        updateButtonVisibilities()
+    }*/
 }
