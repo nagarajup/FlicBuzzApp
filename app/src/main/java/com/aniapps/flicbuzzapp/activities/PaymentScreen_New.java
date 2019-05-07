@@ -153,7 +153,7 @@ public class PaymentScreen_New extends AppCompatActivity {
         mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
             public void onIabSetupFinished(IabResult result) {
                 if (!result.isSuccess()) {
-                    Log.e("limited", "In-app Billing is not set up OK");
+                   // Log.e("limited", "In-app Billing is not set up OK");
                 } else {
                     Log.v("Limites", "YAY, in app billing set up! " + result);
                     if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) > Utility.getMilliSeconds(PrefManager.getIn().getServer_date_time())) {
@@ -376,7 +376,7 @@ public class PaymentScreen_New extends AppCompatActivity {
             Log.d(TAG, "Purchase successful.");
 
             // Toast.makeText(PaymentScreen_New.this, purchase.toString() + "::" + purchase.getPurchaseTime(), Toast.LENGTH_SHORT).show();
-            Log.e("", "" + purchase);
+           // Log.e("", "" + purchase);
             //2019-04-20 21:54:06
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date(purchase.getPurchaseTime());
@@ -409,7 +409,7 @@ public class PaymentScreen_New extends AppCompatActivity {
 
     boolean verifyDeveloperPayload(Purchase p) {
         String payload = p.getDeveloperPayload();
-        Log.e("", "" + payload);
+       // Log.e("", "" + payload);
         return true;
     }
 

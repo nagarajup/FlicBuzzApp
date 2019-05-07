@@ -115,8 +115,8 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
         mySequence = intent.getParcelableArrayListExtra("sequence")
         currentWindow = intent.getIntExtra("pos", 0)
 
-        Log.e("####myPlayingvideo", playing_video.headline);
-        Log.e("####myPlayingvideo", playing_video.description);
+        //Log.e("####myPlayingvideo", playing_video.headline);
+        //Log.e("####myPlayingvideo", playing_video.description);
 
         if (savedInstanceState != null) {
             mResumeWindow = savedInstanceState.getInt(STATE_RESUME_WINDOW);
@@ -150,9 +150,9 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
         params["action"] = "get_similar_by_video_id"
         params["video_id"] = myVideo.id
         params["page_number"] = "1"
-        Log.e("###", "playerapi Vidoe ID" + myVideo.id)
-        Log.e("###", "playerapi title" + myVideo.headline)
-        Log.e("###", "playerapi window ID" + currentWindow)
+       // Log.e("&&&&&&", " video id 4" +mySequence.get(currentWindow).id)
+       // Log.e("&&&&&&", " video id 4A" +myVideo.id)
+
         /* for (i in 0 until LandingPage.playingVideos.size) {
              Log.e("###", "MYIDS" + LandingPage.playingVideos.get(i).id)
          }*/
@@ -175,20 +175,8 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
                                 myvideos.add(lead)
                             }
 
+
                             // preparePlayer(myvideos.get(0).video_filename)
-
-                            /*if (from.equals("next")) {
-                               // player.prepare(dynamicConcatenatingMediaSource);
-                               // player.seekToDefaultPosition(currentWindow+1);
-
-                               // player.setPlayWhenReady(true);
-                                // player.seekTo(currentWindow.toLong() + 1);
-                                Log.e("@@@@", "playing vidoe id" + currentWindow)
-                            } else if (from.equals("previous")) {
-                                currentWindow = player.currentWindowIndex
-                                player.seekTo((currentWindow - 1).toLong());
-                            }*/
-
                             initUi(myVideo)
                             my_recycler_view.adapter = null;
                             my_recycler_view.setHasFixedSize(true)
@@ -197,6 +185,7 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
                             my_recycler_view.setLayoutManager(layoutManager)
                             my_recycler_view.setNestedScrollingEnabled(false)
                             my_recycler_view.adapter = adapter
+                            adapter.notifyDataSetChanged()
                         }
 
                     } catch (e: Exception) {
@@ -217,10 +206,11 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
         val params = HashMap<String, String>()
         params["action"] = "video_impression_tracker"
         params["video_id"] = myVideo.id
-
-        Log.e("###", "Impression Vidoe ID" + myVideo.id)
-        Log.e("###", "Impression title" + myVideo.headline)
-        Log.e("###", "Impression window ID" + currentWindow)
+        //Log.e("&&&&&&", " video id 3" +mySequence.get(currentWindow).id)
+        //Log.e("&&&&&&", " video id 3A" +myVideo.id)
+        //Log.e("###", "Impression Vidoe ID" + myVideo.id)
+       // Log.e("###", "Impression title" + myVideo.headline)
+       // Log.e("###", "Impression window ID" + currentWindow)
 
         RetrofitClient.getInstance()
             .doBackProcess(this@MyPlayer, params, "", object : APIResponse {
@@ -284,7 +274,7 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
         val uriList = mutableListOf<MediaSource>()
         dataFactory = DefaultDataSourceFactory(this@MyPlayer, "ua")
         for (i in 0 until mySequence.size) {
-            Log.e("@@@@", "Player List" + i + mySequence.get(i).id);
+           // Log.e("@@@@", "Player List" + i + mySequence.get(i).id);
             uriList.add(
                 HlsMediaSource.Factory(dataFactory)
                     .setAllowChunklessPreparation(true)
@@ -478,7 +468,7 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
         initFullscreenButton()
         my_recycler_view = findViewById<RecyclerView>(R.id.rc_list)
         my_recycler_view.setNestedScrollingEnabled(false)
-        Log.e("###", "ui title" + myVideo.headline)
+      //  Log.e("###", "ui title" + myVideo.headline)
         tv_play_title.setText(myVideo.headline)
         tv_play_description.setText(myVideo.description)
         makeTextViewResizable(tv_play_description, 2, "View More", true)
@@ -759,15 +749,17 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
 
             val newcurrentWindow = player.currentWindowIndex;
 
-            Log.e("@@@@@", " Window id" + currentWindow)
-            Log.e("@@@@@", " New Window id" + newcurrentWindow)
+           // Log.e("@@@@@", " Window id" + currentWindow)
+           // Log.e("@@@@@", " New Window id" + newcurrentWindow)
 
-            //Log.e("&&&&&&", " video id" + LandingPage.videoCount)
+           // Log.e("&&&&&&", " video id 1" +mySequence.get(currentWindow).id)
+
             if (currentWindow != newcurrentWindow) {
                 currentWindow = player.currentWindowIndex
                 impressionTracker("next", mySequence.get(currentWindow))
+                mySequence.get(currentWindow).id
                 // myPlayerApi(LandingPage.playingVideos.get(currentWindow).id, "next")
-                Log.e("@@@@", "next3333" + currentWindow)
+               // Log.e("&&&&&&", " video id 2" +mySequence.get(currentWindow).id)
                 /* val timeline = player.currentTimeline
                  if (timeline.isEmpty) {
                      return

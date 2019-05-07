@@ -89,8 +89,8 @@ public class DownloadTask {
                 c.setRequestMethod("GET");//Set Request Method to "GET" since we are grtting data
                 c.connect();//connect the URL Connection
                 if (c.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    Log.e(TAG, "Server returned HTTP " + c.getResponseCode()
-                            + " " + c.getResponseMessage());
+                   // Log.e(TAG, "Server returned HTTP " + c.getResponseCode()
+                       //     + " " + c.getResponseMessage());
 
                 }
 
@@ -103,7 +103,7 @@ public class DownloadTask {
                     Toast.makeText(context, "Oops!! There is no SD Card.", Toast.LENGTH_SHORT).show();
                 if (!apkStorage.exists()) {
                     apkStorage.mkdir();
-                    Log.e(TAG, "Directory Created.");
+                   // Log.e(TAG, "Directory Created.");
                 }
 
                 outputFile = new File(apkStorage, downloadFileName);//Create Output file in Main File
@@ -111,7 +111,7 @@ public class DownloadTask {
                 //Create New File if not present
                 if (!outputFile.exists()) {
                     outputFile.createNewFile();
-                    Log.e(TAG, "File Created");
+                   // Log.e(TAG, "File Created");
                 }
 
                 FileOutputStream fos = new FileOutputStream(outputFile);//Get OutputStream for NewFile Location
@@ -126,7 +126,7 @@ public class DownloadTask {
             } catch (Exception e) {
                 e.printStackTrace();
                 outputFile = null;
-                Log.e(TAG, "Download Error Exception " + e.getMessage());
+               // Log.e(TAG, "Download Error Exception " + e.getMessage());
             }
 
             return null;

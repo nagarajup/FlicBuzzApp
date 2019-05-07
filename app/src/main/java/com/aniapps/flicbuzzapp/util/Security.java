@@ -55,7 +55,7 @@ public class Security {
     public static boolean verifyPurchase(String base64PublicKey, String signedData, String signature) {
         if (TextUtils.isEmpty(signedData) || TextUtils.isEmpty(base64PublicKey) ||
                 TextUtils.isEmpty(signature)) {
-            Log.e(TAG, "Purchase verification failed: missing data.");
+           // Log.e(TAG, "Purchase verification failed: missing data.");
             return false;
         }
 
@@ -78,10 +78,10 @@ public class Security {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         } catch (InvalidKeySpecException e) {
-            Log.e(TAG, "Invalid key specification.");
+          //  Log.e(TAG, "Invalid key specification.");
             throw new IllegalArgumentException(e);
         } catch (Base64DecoderException e) {
-            Log.e(TAG, "Base64 decoding failed.");
+           // Log.e(TAG, "Base64 decoding failed.");
             throw new IllegalArgumentException(e);
         }
     }
@@ -102,7 +102,7 @@ public class Security {
             sig.initVerify(publicKey);
             sig.update(signedData.getBytes());
             if (!sig.verify(Base64.decode(signature))) {
-                Log.e(TAG, "Signature verification failed.");
+               // Log.e(TAG, "Signature verification failed.");
                 return false;
             }
             return true;

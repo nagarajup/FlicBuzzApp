@@ -56,7 +56,6 @@ public class RetrofitClient extends AppCompatActivity {
                     .addConverterFactory(new RetrofitConverter())
                     .client(okHttpClient)
                     .build();
-            //  Log.e("##Retrofit##", "WITHOUT CRT");
 
         }
         return retrofit;
@@ -102,11 +101,11 @@ public class RetrofitClient extends AppCompatActivity {
             postParams.put("user_id", PrefManager.getIn().getUserId());
         }
         postParams.put("language", PrefManager.getIn().getLanguage().toLowerCase());
-        Log.e("#API#", "Post Params" + postParams);
+       // Log.e("#API#", "Post Params" + postParams);
         apiService.coreApiResult(context.getResources().getString(R.string.core_live) + postParams.get("action"), postParams).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, final Response<String> res) {
-                Log.e("RES", "res" + res.body());
+                //Log.e("RES", "res" + res.body());
                 if (from.length() == 0) {
                     try {
                         runOnUiThread(new Runnable() {
@@ -162,7 +161,7 @@ public class RetrofitClient extends AppCompatActivity {
        // postParams.put("device_id", PrefManager.getIn().getDeviceId());
         postParams.put("device_id", Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID));
         postParams.put("user_id", PrefManager.getIn().getUserId());
-        Log.e(TAG, "post params" + postParams);
+        //Log.e(TAG, "post params" + postParams);
         if (body != null) {
             apiService.uploadImage(context.getResources().getString(R.string.core_live)+ postParams.get("action"), body, postParams).enqueue(new Callback<String>() {
                 @Override

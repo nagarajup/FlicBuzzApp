@@ -265,7 +265,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 if (!result.isSuccess) {
                     Log.e("limited", "In-app Billing is not set up OK")
                 } else {
-                    Log.v("Limites", "YAY, in app billing set up! $result")
+                   Log.v("Limites", "YAY, in app billing set up! $result")
                     if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) > Utility.getMilliSeconds(
                             PrefManager.getIn().getServer_date_time()
                         )
