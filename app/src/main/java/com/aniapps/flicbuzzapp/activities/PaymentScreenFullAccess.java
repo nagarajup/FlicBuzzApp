@@ -27,7 +27,7 @@ public class PaymentScreenFullAccess extends Activity {
         public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
             if (result.isFailure()) {
                 // Handle error
-                Log.e("failure", "failure");
+               // Log.e("failure", "failure");
 
             } else {
                 PrefManager.getIn().setPackage(true);

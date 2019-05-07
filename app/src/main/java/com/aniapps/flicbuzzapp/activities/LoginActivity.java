@@ -29,6 +29,7 @@ public class LoginActivity extends AppCompatActivity {
     RelativeLayout loginLL, otpLL;
     String user_id = "", mobile_num = "";
     CountDownTimer timer;
+    String reqString = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     void initViews() {
+         reqString = Build.MANUFACTURER
+                + " " + Build.MODEL + " " + Build.VERSION.RELEASE
+                + " " + Build.VERSION_CODES.class.getFields()[android.os.Build.VERSION.SDK_INT].getName();
         otpErro = (TextView) findViewById(R.id.otp_error);
         resendOTP = (TextView) findViewById(R.id.resendOTP);
         otpEditText = (EditText) findViewById(R.id.ot_et);
@@ -147,14 +151,15 @@ public class LoginActivity extends AppCompatActivity {
                 params.put("email", emailEditText.getText().toString());
                 params.put("from_source", "android");
                 params.put("action", "login");
+                params.put("system_info", reqString);
                 ApiCall(params, 2);
             }
-
 
         }
 
 
     }
+
 
     public void ApiCall(Map<String, String> params, final int from) {
 
