@@ -150,18 +150,20 @@ public class PaymentScreen_New extends AppCompatActivity {
                 }
             }
         });
-        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-            public void onIabSetupFinished(IabResult result) {
-                if (!result.isSuccess()) {
-                   // Log.e("limited", "In-app Billing is not set up OK");
-                } else {
-                    Log.v("Limites", "YAY, in app billing set up! " + result);
-                    if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) > Utility.getMilliSeconds(PrefManager.getIn().getServer_date_time())) {
-                        mHelper.queryInventoryAsync(mGotInventoryListener); //Getting inventory of purchases and assigning listener
+        if (PrefManager.getIn().getPayment_mode().equals("3")) {
+            mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+                public void onIabSetupFinished(IabResult result) {
+                    if (!result.isSuccess()) {
+                        Log.e("limited", "In-app Billing is not set up OK");
+                    } else {
+                        Log.v("Limites", "YAY, in app billing set up! " + result);
+                        if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) > Utility.getMilliSeconds(PrefManager.getIn().getServer_date_time())) {
+                            mHelper.queryInventoryAsync(mGotInventoryListener); //Getting inventory of purchases and assigning listener
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
 
     }
 
@@ -226,7 +228,7 @@ public class PaymentScreen_New extends AppCompatActivity {
                 }catch (Exception e){
 
                 }
-                if (PrefManager.getIn().getPlan().equals("3")) {
+               // if (PrefManager.getIn().getPlan().equals("3")) {
                     if (inventory.hasPurchase(Utility.threemonths)) {
 
                         if (PrefManager.getIn().getPayment_mode().equals("3")) {
@@ -254,14 +256,14 @@ public class PaymentScreen_New extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         }
-                    } else {
+                    } /*else {
                         plan_text.setText("Plan Expired");
                         plan_expiry_date.setVisibility(View.GONE);
                         expirylabel.setVisibility(View.GONE);
                         planUpdate("expired", PrefManager.getIn().getSubscription_start_date(), PrefManager.getIn().getSubscription_end_date(), PrefManager.getIn().getPayment_data(), 1);
-                    }
-                } else if (PrefManager.getIn().getPlan().equals("6")) {
-                    if (inventory.hasPurchase(Utility.six_months)) {
+                    }*/
+              //  } else if (PrefManager.getIn().getPlan().equals("6")) {
+                    else if (inventory.hasPurchase(Utility.six_months)) {
                         // if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) < calender.getTimeInMillis()) {
                         if (PrefManager.getIn().getPayment_mode().equals("3")) {
                             try {
@@ -292,13 +294,13 @@ public class PaymentScreen_New extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         }
-                    } else {
+                    } /*else {
                         plan_text.setText("Plan Expired");
                         plan_expiry_date.setVisibility(View.GONE);
                         planUpdate("expired", PrefManager.getIn().getSubscription_start_date(), PrefManager.getIn().getSubscription_end_date(), PrefManager.getIn().getPayment_data(), 1);
-                    }
-                } else if (PrefManager.getIn().getPlan().equals("12")) {
-                    if (inventory.hasPurchase(Utility.one_year)) {
+                    }*/
+               // } else if (PrefManager.getIn().getPlan().equals("12")) {
+                    else if (inventory.hasPurchase(Utility.one_year)) {
                         //  if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) < calender.getTimeInMillis()) {
                         if (PrefManager.getIn().getPayment_mode().equals("3")) {
                             try {
@@ -336,7 +338,7 @@ public class PaymentScreen_New extends AppCompatActivity {
                         plan_expiry_date.setVisibility(View.GONE);
                         planUpdate("expired", PrefManager.getIn().getSubscription_start_date(), PrefManager.getIn().getSubscription_end_date(), PrefManager.getIn().getPayment_data(), 1);
                     }
-                }
+                //}
             }
         }
     };
@@ -376,7 +378,7 @@ public class PaymentScreen_New extends AppCompatActivity {
             Log.d(TAG, "Purchase successful.");
 
             // Toast.makeText(PaymentScreen_New.this, purchase.toString() + "::" + purchase.getPurchaseTime(), Toast.LENGTH_SHORT).show();
-           // Log.e("", "" + purchase);
+            Log.e("", "" + purchase);
             //2019-04-20 21:54:06
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date(purchase.getPurchaseTime());
@@ -409,7 +411,7 @@ public class PaymentScreen_New extends AppCompatActivity {
 
     boolean verifyDeveloperPayload(Purchase p) {
         String payload = p.getDeveloperPayload();
-       // Log.e("", "" + payload);
+        Log.e("", "" + payload);
         return true;
     }
 

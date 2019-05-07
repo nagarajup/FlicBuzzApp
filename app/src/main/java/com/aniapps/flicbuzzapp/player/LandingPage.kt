@@ -309,7 +309,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
 
                 }
 
-                if (PrefManager.getIn().getPlan() == "3") {
+               // if (PrefManager.getIn().getPlan() == "3") {
                     if (inventory.hasPurchase(Utility.threemonths)) {
 
                         if (PrefManager.getIn().getPayment_mode() == "3") {
@@ -343,7 +343,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                             }
 
                         }
-                    } else {
+                    }/* else {
                         planUpdate(
                             "expired",
                             PrefManager.getIn().getSubscription_start_date(),
@@ -351,9 +351,9 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                             PrefManager.getIn().getPayment_data(),
                             1
                         )
-                    }
-                } else if (PrefManager.getIn().getPlan() == "6") {
-                    if (inventory.hasPurchase(Utility.six_months)) {
+                    }*/
+               // } else if (PrefManager.getIn().getPlan() == "6") {
+                    else if (inventory.hasPurchase(Utility.six_months)) {
                         // if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) < calender.getTimeInMillis()) {
                         if (PrefManager.getIn().getPayment_mode() == "3") {
                             try {
@@ -390,7 +390,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                             }
 
                         }
-                    } else {
+                    } /*else {
                         planUpdate(
                             "expired",
                             PrefManager.getIn().getSubscription_start_date(),
@@ -398,9 +398,9 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                             PrefManager.getIn().getPayment_data(),
                             1
                         )
-                    }
-                } else if (PrefManager.getIn().getPlan() == "12") {
-                    if (inventory.hasPurchase(Utility.one_year)) {
+                    }*/
+               // } else if (PrefManager.getIn().getPlan() == "12") {
+                   else if (inventory.hasPurchase(Utility.one_year)) {
                         //  if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) < calender.getTimeInMillis()) {
                         if (PrefManager.getIn().getPayment_mode() == "3") {
                             try {
@@ -448,7 +448,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                             1
                         )
                     }
-                }
+                //}
             }
         }
 
