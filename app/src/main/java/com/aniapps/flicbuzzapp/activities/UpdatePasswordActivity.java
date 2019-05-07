@@ -11,6 +11,7 @@ import android.widget.*;
 import com.aniapps.flicbuzzapp.R;
 import com.aniapps.flicbuzzapp.networkcall.APIResponse;
 import com.aniapps.flicbuzzapp.networkcall.RetrofitClient;
+import com.aniapps.flicbuzzapp.utils.PrefManager;
 import com.aniapps.flicbuzzapp.utils.Utility;
 import org.json.JSONObject;
 
@@ -87,6 +88,7 @@ public class UpdatePasswordActivity extends AppCompatActivity {
                 params.put("new_password", passwordEditText.getText().toString());
                 params.put("from_source", "android");
                 params.put("action", "change_password");
+                params.put("user_id", PrefManager.getIn().getUserId());
                 ApiCall(params, 2);
             }
 
