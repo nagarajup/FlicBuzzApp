@@ -1,22 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
-              android:background="@android:color/transparent"
+              android:background="@mipmap/signin_plainbg"
               android:layout_width="fill_parent"
+
               android:layout_height="fill_parent">
-    <LinearLayout android:layout_width="fill_parent"
+    <!--<LinearLayout android:layout_width="fill_parent"
                   android:layout_height="fill_parent"
                   android:layout_weight="0.6">
         <ImageView android:layout_width="fill_parent"
                    android:layout_height="wrap_content"
                    android:src="@mipmap/signup_login_top"
                    android:scaleType="fitXY"
-                   android:adjustViewBounds="true"/>
-    </LinearLayout>
+                   android:adjustViewBounds="true"/>-->
+   <!-- </LinearLayout>-->
     <LinearLayout android:layout_width="fill_parent"
                   android:layout_height="fill_parent"
+                  android:layout_gravity="center_vertical"
+                  android:gravity="center"
                   android:layout_weight="0.5">
         <ScrollView android:layout_width="fill_parent"
+                    android:layout_gravity="center"
+
                     android:layout_height="fill_parent">
             <LinearLayout android:orientation="vertical"
                           android:layout_width="fill_parent"
@@ -24,6 +29,7 @@
                           android:layout_gravity="center"
                           android:layout_marginLeft="15dp"
                           android:layout_marginRight="15dp"
+                          android:layout_marginTop="50sp"
                           android:layout_marginBottom="15dp">
                 <TextView android:textSize="20sp"
                           android:textColor="#ff2f2f2f"

@@ -72,7 +72,7 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
                         val status = jobj.getInt("status")
                         val details = jobj.getString("details")
                         if (status == 1) {
-                            LandingPage.playingVideos.add(myVideo)
+                           // LandingPage.playingVideos.add(myVideo)
                             var myurl2 = "";
                             val jsonArray = jobj.getJSONArray("next")
                             for (i in 0 until jsonArray.length()) {
@@ -80,7 +80,7 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
                                     jsonArray.get(i).toString(),
                                     MyVideos::class.java
                                 )
-                                LandingPage.playingVideos.add(lead)
+                              //  LandingPage.playingVideos.add(lead)
                             }
                             if (from.equals("main") || from.equals("fav")) {
                                 val player_in = Intent(context, MyPlayer::class.java)

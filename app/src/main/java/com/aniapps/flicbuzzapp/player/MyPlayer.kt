@@ -507,7 +507,7 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
     fun favAddApi() {
         val params = HashMap<String, String>()
         params["action"] = "add_favorite"
-        params["video_id"] = LandingPage.playingVideos.get(currentWindow).id
+        params["video_id"] = mySequence.get(currentWindow).id
         // var flag = false
         RetrofitClient.getInstance()
             .doBackProcess(this@MyPlayer, params, "online", object : APIResponse {
@@ -552,7 +552,7 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
     fun favRemoveApi() {
         val params = HashMap<String, String>()
         params["action"] = "remove_favorite"
-        params["video_id"] = LandingPage.playingVideos.get(currentWindow).id
+        params["video_id"] = mySequence.get(currentWindow).id
         RetrofitClient.getInstance()
             .doBackProcess(this@MyPlayer, params, "online", object : APIResponse {
                 override fun onSuccess(res: String?) {
