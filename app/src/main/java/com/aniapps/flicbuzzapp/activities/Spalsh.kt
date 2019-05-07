@@ -23,7 +23,7 @@ class Spalsh : AppCompatActivity() {
         if (!PrefManager.getIn().login) {
             Handler().postDelayed({
 
-                val i = Intent(this@Spalsh, SignIn::class.java)
+                val i = Intent(this@Spalsh, IntroductionScreen::class.java)
                 startActivity(i)
                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
 
