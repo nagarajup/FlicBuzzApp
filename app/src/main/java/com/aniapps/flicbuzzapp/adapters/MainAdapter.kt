@@ -82,6 +82,8 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
                                 )
                               //  LandingPage.playingVideos.add(lead)
                             }
+
+
                             if (from.equals("main") || from.equals("fav")) {
                                 val player_in = Intent(context, MyPlayer::class.java)
                                 player_in.putExtra("playingVideo", myVideo)

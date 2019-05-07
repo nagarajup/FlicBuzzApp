@@ -1236,6 +1236,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
 
                             var mylist=ArrayList<MyVideos>()
                             mylist.add(lead)
+
                             val player_in = Intent(this@LandingPage, MyPlayer::class.java)
                             player_in.putExtra("playingVideo", lead)
                             player_in.putExtra("sequence", mylist)
