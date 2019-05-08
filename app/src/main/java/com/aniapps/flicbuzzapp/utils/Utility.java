@@ -12,7 +12,7 @@ import java.util.Date;
 
 public class Utility {
 
-    public static String sharedKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzr+a6xv9poxx25sfgIhmC4i1Msg7uOenQC6Bb6RieL0NXQV5g9voJef1GtrjLxfLIJXDFmqRBxEePM3UzceCjSq3MLvlCnhmOTYWP7EXRzb8A0fnn8jHM2KO17N7yl/Go1801CbsMQ7f0u5UR02LNdQfy7xfdZ2wGDkiusuZcHNrGUitL5EJib97FMxg8fbEGrsTAwXMabueS4V955i3Lony2b4MmJuztfLinW+8HK/M5IB8HC+GCZJ6UztCClY4Z/6Ir3sxEj8z4vYInVKsVhSZs7GvPGEorz3rbFkX4tXkyUzwM7tl6/dVrXTgN3fhV/++cJBGXNv944kVeoKVHwIDAQAB";
+    public static String sharedKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAp2nqxrzrQ1TtlUZVkxlJ6EbwHLHJovAE8POca7aH/Thum9aLQpGOteHd5H5C6nd8cekVz8Q4AB0hqouPp1wWo67FhdZJtrxAMMH5NAAFcFBjsib/OztFe2smjLVLytHRaG1mNxg9wu8zEYkB4XyBlo/7URKTruR041RB00rTfsfDbqQ8IcwAgjnzXF3cz38wc5Pr59/QEXXZEy+XQt/RgGrm+x7xwbws2Uw1qoctGsFWRxWGQHF9g3s+6IvtFGfZK4r9h+aazDqFQDCwALwzwtDYF60vqx01aZJkMLFlLFsi6PzCdbJ4PYFi1ViYZsl2JtEkXCluo3CWDEmSbaxbuwIDAQAB";
     public static boolean purchaseFlag;
     public static final String tendaysubs = "10days";
     public static final String six_months = "sixmonths_sub";

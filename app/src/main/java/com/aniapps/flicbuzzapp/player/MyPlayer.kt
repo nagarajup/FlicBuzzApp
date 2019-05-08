@@ -390,6 +390,11 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
             icon_pip.visibility = View.GONE
         }
 
+        if(mySequence.get(currentWindow).short_video_filename.equals("")){
+            share.visibility=View.GONE
+        }else{
+            share.visibility=View.VISIBLE
+        }
         share.setOnClickListener {
 
             /*f (setupPermissions()) {*/
@@ -468,13 +473,12 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
     }
 
     fun DownloadTask(context: Activity, myVideos: MyVideos) {
-        val firstLine = myVideos.description.split('.');
+       // val firstLine = myVideos.description.split('.');
         val i = Intent(Intent.ACTION_SEND)
         i.type = "text/plain"
         i.putExtra(Intent.EXTRA_TEXT, "text")
-        i.putExtra(
-            Intent.EXTRA_TEXT, myVideos.headline +
-                    "\n\n" + firstLine[0] +"..."+ "\n\n" + myVideos.short_video_filename
+        i.putExtra(Intent.EXTRA_TEXT, myVideos.headline +"\n\n" + myVideos.short_desc+ "\n\n" +
+                myVideos.short_video_filename
         )
         context.startActivity(Intent.createChooser(i, "Share to"))
 
@@ -569,6 +573,12 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
         } else {
             img_fav.visibility = View.VISIBLE
             img_fav_done.visibility = View.GONE
+        }
+
+        if(mySequence.get(currentWindow).short_video_filename.equals("")){
+            img_share.visibility=View.GONE
+        }else{
+            img_share.visibility=View.VISIBLE
         }
 
         img_share.setOnClickListener {
