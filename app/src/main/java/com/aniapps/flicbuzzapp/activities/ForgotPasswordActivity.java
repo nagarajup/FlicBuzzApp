@@ -125,6 +125,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                             text_header.setText("Set your password");
                             email_ll.setVisibility(View.GONE);
                             change_psd_ll.setVisibility(View.VISIBLE);
+                            PrefManager.getIn().saveUserId(jsonObject.getString("user_id"));
 
                         }else {
                             Toast.makeText(ForgotPasswordActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();

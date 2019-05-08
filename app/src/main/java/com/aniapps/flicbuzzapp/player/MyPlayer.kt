@@ -2,7 +2,10 @@ package com.aniapps.flicbuzzapp.player
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.PictureInPictureParams
+import android.content.DialogInterface
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -11,6 +14,7 @@ import android.os.*
 import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -150,8 +154,8 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
         params["action"] = "get_similar_by_video_id"
         params["video_id"] = myVideo.id
         params["page_number"] = "1"
-       // Log.e("&&&&&&", " video id 4" +mySequence.get(currentWindow).id)
-       // Log.e("&&&&&&", " video id 4A" +myVideo.id)
+        // Log.e("&&&&&&", " video id 4" +mySequence.get(currentWindow).id)
+        // Log.e("&&&&&&", " video id 4A" +myVideo.id)
 
         /* for (i in 0 until LandingPage.playingVideos.size) {
              Log.e("###", "MYIDS" + LandingPage.playingVideos.get(i).id)
@@ -209,8 +213,8 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
         //Log.e("&&&&&&", " video id 3" +mySequence.get(currentWindow).id)
         //Log.e("&&&&&&", " video id 3A" +myVideo.id)
         //Log.e("###", "Impression Vidoe ID" + myVideo.id)
-       // Log.e("###", "Impression title" + myVideo.headline)
-       // Log.e("###", "Impression window ID" + currentWindow)
+        // Log.e("###", "Impression title" + myVideo.headline)
+        // Log.e("###", "Impression window ID" + currentWindow)
 
         RetrofitClient.getInstance()
             .doBackProcess(this@MyPlayer, params, "", object : APIResponse {
@@ -274,7 +278,7 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
         val uriList = mutableListOf<MediaSource>()
         dataFactory = DefaultDataSourceFactory(this@MyPlayer, "ua")
         for (i in 0 until mySequence.size) {
-           // Log.e("@@@@", "Player List" + i + mySequence.get(i).id);
+            // Log.e("@@@@", "Player List" + i + mySequence.get(i).id);
             uriList.add(
                 HlsMediaSource.Factory(dataFactory)
                     .setAllowChunklessPreparation(true)
@@ -388,14 +392,14 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
 
         share.setOnClickListener {
 
-            if (setupPermissions()) {
-                share_flag = true;
-                pausePlayer()
-                DownloadTask(this@MyPlayer, mySequence.get(currentWindow).short_video_filename)
-            } else {
+            /*f (setupPermissions()) {*/
+            share_flag = true;
+            pausePlayer()
+            DownloadTask(this@MyPlayer, mySequence.get(currentWindow))
+            /*} else {
                 Toast.makeText(this@MyPlayer, "Please allow storage permission to share video", Toast.LENGTH_SHORT)
                     .show()
-            }
+            }*/
 
         }
 
@@ -463,12 +467,94 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
         }*/
     }
 
+    fun DownloadTask(context: Activity, myVideos: MyVideos) {
+        val firstLine = myVideos.description.split('.');
+        val i = Intent(Intent.ACTION_SEND)
+        i.type = "text/plain"
+        i.putExtra(Intent.EXTRA_TEXT, "text")
+        i.putExtra(
+            Intent.EXTRA_TEXT, myVideos.headline +
+                    "\n\n" + firstLine[0] +"..."+ "\n\n" + myVideos.short_video_filename
+        )
+        context.startActivity(Intent.createChooser(i, "Share to"))
+
+
+        /* val activities = context.packageManager.queryIntentActivities(i, 0)
+         val appNames = ArrayList<String>()
+         for (info in activities) {
+             appNames.add(info.loadLabel(context.packageManager).toString())
+         }
+
+         val builder = AlertDialog.Builder(context)
+         builder.setTitle("Complete Action using...")
+         builder.setItems(appNames.toTypedArray<CharSequence>()) { dialog, item ->
+             val info = activities[item]
+             if (info.activityInfo.packageName == "com.twitter.android") {
+                 i.putExtra(
+                     Intent.EXTRA_TEXT,
+                     myVideos.headline + "\n" + myVideos.short_video_filename
+                 )
+                 //Twitter was chosen
+             } else {
+                 i.putExtra(Intent.EXTRA_TEXT, myVideos.headline  + "\n" + myVideos.description+ "\n" + myVideos.short_video_filename)
+             }
+        */     // start the selected activity
+
+        // i.setPackage(info.activityInfo.packageName)
+        //  context.startActivity(i)
+        /* }
+         val alert = builder.create()
+         alert.show()*/
+    }
+
+
+    /*fun sharePop() {
+        val share = Intent(Intent.ACTION_SEND);
+        share.setType("text/plain");
+        share.putExtra(Intent.EXTRA_SUBJECT, "FlickBuzz App");
+        val activities = getPackageManager().queryIntentActivities(share, 0);
+        val appNames = ArrayList<String>()
+        for (i in activities) {
+            appNames.add(i.loadLabel(packageManager).toString())
+        }
+
+        var builder = AlertDialog.Builder(this);
+        builder.setTitle("Complete Action using...");
+        var charsequence: CharSequence=CharSequence[0]
+
+        builder.setItems(appNames.toArray(charsequence[appNames.size]), object : DialogInterface.OnClickListener {
+            override fun onClick(dialog: DialogInterface?, which: Int) {
+                var info = activities.get(which);
+                if (info.activityInfo.packageName.equals("com.twitter.android")) {
+                    share.putExtra(
+                        Intent.EXTRA_TEXT,
+                        mySequence.get(currentWindow).headline +
+                                "\n" + mySequence.get(currentWindow).short_video_filename
+                    );
+                } else {
+                    share.putExtra(
+                        Intent.EXTRA_TEXT,
+                        mySequence.get(currentWindow).headline + "\n" + mySequence.get(currentWindow).description + "\n" + mySequence.get(
+                            currentWindow
+                        ).short_video_filename
+                    );
+                }
+                share.setPackage(info.activityInfo.packageName);
+                startActivity(share);
+            }
+
+
+        })
+        val alert = builder.create();
+        alert.show();
+
+    }*/
 
     fun initUi(myVideo: MyVideos) {
         initFullscreenButton()
         my_recycler_view = findViewById<RecyclerView>(R.id.rc_list)
         my_recycler_view.setNestedScrollingEnabled(false)
-      //  Log.e("###", "ui title" + myVideo.headline)
+        //  Log.e("###", "ui title" + myVideo.headline)
         tv_play_title.setText(myVideo.headline)
         tv_play_description.setText(myVideo.description)
         makeTextViewResizable(tv_play_description, 2, "View More", true)
@@ -486,14 +572,14 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
         }
 
         img_share.setOnClickListener {
-            if (setupPermissions()) {
-                share_flag = true;
-                pausePlayer()
-                DownloadTask(this@MyPlayer, myVideo.short_video_filename)
-            } else {
+            /* if (setupPermissions()) {*/
+            share_flag = true;
+            pausePlayer()
+            DownloadTask(this@MyPlayer, mySequence.get(currentWindow))
+            /*} else {
                 Toast.makeText(this@MyPlayer, "Please allow storage permission to share video", Toast.LENGTH_SHORT)
                     .show()
-            }
+            }*/
         }
         lay_fav.setOnClickListener {
             if (img_fav.getVisibility() == View.VISIBLE) {
@@ -738,7 +824,6 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
                     Toast.makeText(this@MyPlayer, "My Player Ending" + currentWindow, Toast.LENGTH_SHORT).show()
                 }
 
-
             }
             updateButtonVisibilities()
         }
@@ -749,17 +834,17 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
 
             val newcurrentWindow = player.currentWindowIndex;
 
-           // Log.e("@@@@@", " Window id" + currentWindow)
-           // Log.e("@@@@@", " New Window id" + newcurrentWindow)
+            // Log.e("@@@@@", " Window id" + currentWindow)
+            // Log.e("@@@@@", " New Window id" + newcurrentWindow)
 
-           // Log.e("&&&&&&", " video id 1" +mySequence.get(currentWindow).id)
+            // Log.e("&&&&&&", " video id 1" +mySequence.get(currentWindow).id)
 
             if (currentWindow != newcurrentWindow) {
                 currentWindow = player.currentWindowIndex
                 impressionTracker("next", mySequence.get(currentWindow))
                 mySequence.get(currentWindow).id
                 // myPlayerApi(LandingPage.playingVideos.get(currentWindow).id, "next")
-               // Log.e("&&&&&&", " video id 2" +mySequence.get(currentWindow).id)
+                // Log.e("&&&&&&", " video id 2" +mySequence.get(currentWindow).id)
                 /* val timeline = player.currentTimeline
                  if (timeline.isEmpty) {
                      return
@@ -782,7 +867,7 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
 
 
         override fun onTracksChanged(trackGroups: TrackGroupArray?, trackSelections: TrackSelectionArray?) {
-           updateButtonVisibilities()
+            updateButtonVisibilities()
             // The video tracks are no supported in this device.
             if (trackGroups !== lastSeenTrackGroupArray) {
                 val mappedTrackInfo = trackSelector!!.currentMappedTrackInfo
@@ -857,19 +942,19 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
         )
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        when (requestCode) {
-            123 -> {
-                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
-                } else {
-                    share_flag = true;
-                    pausePlayer()
-                    DownloadTask(this@MyPlayer, mySequence.get(currentWindow).short_video_filename)
-                }
-            }
-        }
-    }
+    /* override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+         when (requestCode) {
+             123 -> {
+                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                     Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
+                 } else {
+                     share_flag = true;
+                     pausePlayer()
+                     DownloadTask(this@MyPlayer, mySequence.get(currentWindow).short_video_filename)
+                 }
+             }
+         }
+     }*/
 
     //For N devices that support it, not "officially"
 //https://medium.com/s23nyc-tech/drop-in-android-video-exoplayer2-with-picture-in-picture-e2d4f8c1eb30
@@ -974,10 +1059,10 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
                 finishAndRemoveTask()
             } else {
                 share_flag = false
-               /* Handler().postDelayed(Runnable {
-                    resumePlayer()
-                },300)
-*/
+                /* Handler().postDelayed(Runnable {
+                     resumePlayer()
+                 },300)
+ */
 
             }
         }
@@ -988,16 +1073,16 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
         if (SDK_INT > 23) releasePlayer()
     }
 
-   fun pausePlayer(){
-       player.playWhenReady=false
-       player.playbackState
+    fun pausePlayer() {
+        player.playWhenReady = false
+        player.playbackState
 
     }
 
-   /* fun resumePlayer(){
-        if (SDK_INT <= 23 || player == null) initializePlayer()
-        player.playWhenReady=true
-        player.playbackState
-        updateButtonVisibilities()
-    }*/
+    /* fun resumePlayer(){
+         if (SDK_INT <= 23 || player == null) initializePlayer()
+         player.playWhenReady=true
+         player.playbackState
+         updateButtonVisibilities()
+     }*/
 }
