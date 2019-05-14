@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="280sp"
               android:layout_height="match_parent"
               android:orientation="vertical">
@@ -145,17 +144,49 @@
                   android:background="@color/gray"/>
 
 
-           <!-- <android.support.v7.widget.SwitchCompat
-                    android:id="@+id/nav_language"
-                    android:layout_width="match_parent"
-                    android:text="Language:  Hindi"
-                    android:padding="10sp"
-                    android:visibility="gone"
-                    android:layout_marginLeft="30sp"
-                    android:textColor="@color/darkgray"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/cera_gr_medium"
-                    android:layout_height="wrap_content"/>-->
+            <!-- <android.support.v7.widget.SwitchCompat
+                     android:id="@+id/nav_language"
+                     android:layout_width="match_parent"
+                     android:text="Language:  Hindi"
+                     android:padding="10sp"
+                     android:visibility="gone"
+                     android:layout_marginLeft="30sp"
+                     android:textColor="@color/darkgray"
+                     android:textSize="16sp"
+                     android:fontFamily="@font/cera_gr_medium"
+                     android:layout_height="wrap_content"/>-->
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:orientation="horizontal"
+                          android:layout_height="wrap_content">
+                <TextView
+                        android:id="@+id/nav_lang_hindi"
+                        android:textColor="@color/darkgray"
+                        android:gravity="center_vertical"
+                        android:layout_marginLeft="32sp"
+                        android:layout_gravity="center_vertical"
+                        android:padding="10sp"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/cera_gr_medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hindi"/>
+                <View android:layout_width="1dp" android:layout_height="16dp"
+                      android:layout_gravity="center"
+                      android:background="@color/darkgray"/>
+
+                <TextView
+                        android:id="@+id/nav_lang_eng"
+                        android:textColor="@color/darkgray"
+                        android:gravity="center_vertical"
+                        android:layout_gravity="center_vertical"
+                        android:padding="10sp"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/cera_gr_medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="English"/>
+            </LinearLayout>
 
             <TextView
                     android:id="@+id/nav_lang"
@@ -164,6 +195,7 @@
                     android:layout_marginLeft="32sp"
                     android:layout_gravity="center_vertical"
                     android:padding="10sp"
+                    android:visibility="gone"
                     android:textSize="16sp"
                     android:fontFamily="@font/cera_gr_medium"
                     android:layout_width="match_parent"

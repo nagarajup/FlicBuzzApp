@@ -92,11 +92,17 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
     internal var my_recycler_view: RecyclerView? = null
     internal lateinit var search_list: ListView
     internal lateinit var header_title: TextView
+    internal lateinit var header_hindi: TextView
+    internal lateinit var header_english: TextView
+    internal lateinit var nav_hindi: TextView
+    internal lateinit var nav_english: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val mToolbar = findViewById<View>(R.id.toolbar) as Toolbar
         header_title = findViewById<View>(R.id.title) as TextView
+        header_hindi = findViewById<View>(R.id.header_lang_hindi) as TextView
+        header_english = findViewById<View>(R.id.header_lang_eng) as TextView
 
         setSupportActionBar(mToolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -167,7 +173,10 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         nav_logout.setOnClickListener(this@LandingPage)
         //   switchCompat = findViewById<SwitchCompat>(R.id.nav_language)
         nav_lang = findViewById<TextView>(R.id.nav_lang)
+        nav_english = findViewById<TextView>(R.id.nav_lang_eng)
+        nav_hindi = findViewById<TextView>(R.id.nav_lang_hindi)
         setColor(nav_lang, 2)
+        setLangSelection()
         tv_profile_name.setText(PrefManager.getIn().getName())
         tv_profile_email.setText(PrefManager.getIn().getEmail())
         if (PrefManager.getIn().getPlan().equals("3")) {
@@ -189,12 +198,43 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
             setColor(nav_lang, 2)
             apiCall(tag_id);
             drawer_layout.closeDrawer(GravityCompat.START)
+            setLangSelection()
+        })
+        header_english.setOnClickListener(View.OnClickListener {
+            PrefManager.getIn().language = "English"
+            pageNo = 1
+            setLangSelection()
+            apiCall(tag_id);
+            drawer_layout.closeDrawer(GravityCompat.START)
+        })
+        header_hindi.setOnClickListener(View.OnClickListener {
+            PrefManager.getIn().language =  "Hindi"
+            pageNo = 1
+            setLangSelection()
+            apiCall(tag_id);
+            drawer_layout.closeDrawer(GravityCompat.START)
         })
         nav_lang.setOnClickListener(View.OnClickListener {
             PrefManager.getIn().language = if (PrefManager.getIn().language.equals("Hindi")) "English" else "Hindi"
             pageNo = 1
             setColor(header_title, 1)
             setColor(nav_lang, 2)
+            apiCall(tag_id);
+            setLangSelection()
+            drawer_layout.closeDrawer(GravityCompat.START)
+        })
+
+        nav_hindi.setOnClickListener(View.OnClickListener {
+            PrefManager.getIn().language =  "Hindi"
+            pageNo = 1
+            setLangSelection()
+            apiCall(tag_id);
+            drawer_layout.closeDrawer(GravityCompat.START)
+        })
+        nav_english.setOnClickListener(View.OnClickListener {
+            PrefManager.getIn().language =  "English"
+            pageNo = 1
+            setLangSelection()
             apiCall(tag_id);
             drawer_layout.closeDrawer(GravityCompat.START)
         })
@@ -707,7 +747,19 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         return true
     }
 
-
+    private fun setLangSelection( ) {
+        if (PrefManager.getIn().language.equals("Hindi",true)) {
+            nav_hindi.setTypeface(nav_hindi.getTypeface(), Typeface.BOLD)
+            nav_english.setTypeface(null, Typeface.NORMAL)
+            header_hindi.setTypeface(header_hindi.getTypeface(), Typeface.BOLD)
+            header_english.setTypeface(null, Typeface.NORMAL)
+        }else {
+            nav_hindi.setTypeface(null, Typeface.NORMAL)
+            nav_english.setTypeface(nav_english.getTypeface(), Typeface.BOLD)
+            header_hindi.setTypeface(null, Typeface.NORMAL)
+            header_english.setTypeface(header_english.getTypeface(), Typeface.BOLD)
+        }
+    }
     private fun setColor(view: TextView, from: Int) {
         view.setText("Hindi | English")
         val spannable = SpannableString(view.text)
