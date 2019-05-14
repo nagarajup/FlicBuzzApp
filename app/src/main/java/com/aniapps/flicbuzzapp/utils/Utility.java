@@ -20,7 +20,7 @@ public class Utility {
     public static final String one_year = "oneyear_subs";
     public static final String one_year_trail = "oneyear_subs_trail";
     public static final String threemonths = "threemonthsub";
-    public static final String threemonths_trail = "threemonthsubs_trail";
+    public static final String threemonths_threedaytrail = "threemonths_threedaytrail";
 
     public static boolean hasMobileNumber(EditText editText) {
         String text = editText.getText().toString().trim();

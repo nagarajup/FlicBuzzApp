@@ -88,8 +88,40 @@ public class PrefManager {
     public String plan_type = "";
     public String payment_data = "";
 
+    public String getShow_splash_message() {
+        return pref.getString("show_splash_message", "");
+    }
+
+    public void setShow_splash_message(String show_splash_message) {
+        editor.putString("show_splash_message", show_splash_message);
+        editor.commit();
+    }
+
+    public String getSplash_message() {
+        return pref.getString("splash_message", "");
+    }
+
+    public void setSplash_message(String splash_message) {
+        editor.putString("splash_message", splash_message);
+        editor.commit();
+    }
+
+    public String show_splash_message = "";
+    public String splash_message = "";
+
+    public String getDeveloper_mode() {
+        return pref.getString("developer_mode", "");
+    }
+
+    public void setDeveloper_mode(String developer_mode) {
+        editor.putString("developer_mode", developer_mode);
+        editor.commit();
+    }
+
+    public String developer_mode;
+
     public String getPayment_mode() {
-        return pref.getString("payment_mode", "");
+        return pref.getString("payment_mode", "0");
     }
 
     public void setPayment_mode(String payment_mode) {

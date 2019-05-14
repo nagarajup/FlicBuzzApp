@@ -58,9 +58,17 @@ public class PaymentScreen_New extends AppCompatActivity {
         plan_expiry_date = (TextView) findViewById(R.id.plan_expiry_text);
         expirylabel = (TextView) findViewById(R.id.expirylabel);
         plan_text = (TextView) findViewById(R.id.plan_text);
-
+        plan_expiry_date.setVisibility(View.GONE);
+        expirylabel.setVisibility(View.GONE);
+        plan_details.setVisibility(View.VISIBLE);
+        if (PrefManager.getIn().getShow_splash_message().equalsIgnoreCase("yes")) {
+            plan_text.setText(PrefManager.getIn().getSplash_message());
+            plan_expiry_date.setVisibility(View.GONE);
+            expirylabel.setVisibility(View.GONE);
+        }
         if (!PrefManager.getIn().getPlan().equals("") && !PrefManager.getIn().getPlan().equalsIgnoreCase("expired")) {
-            plan_details.setVisibility(View.VISIBLE);
+            plan_expiry_date.setVisibility(View.VISIBLE);
+            expirylabel.setVisibility(View.VISIBLE);
             if (PrefManager.getIn().getPlan().equals("3")) {
                 plan_text.setText("Three Months Subscription");
             } else if (PrefManager.getIn().getPlan().equals("6")) {
@@ -106,8 +114,13 @@ public class PaymentScreen_New extends AppCompatActivity {
                             if (sixmonthsflag) {
                                 alertDialog("Subscription", "You already subscribed for Six Months Plan.");
                             } else {
-                                mHelper.flagEndAsync();
-                                mHelper.launchSubscriptionPurchaseFlow(PaymentScreen_New.this, Utility.threemonths, PURCHSE_REQUEST, mPurchaseFinishedListener, null);
+                                if (PrefManager.getIn().getDeveloper_mode().equalsIgnoreCase("0")) {
+                                    mHelper.flagEndAsync();
+                                    mHelper.launchSubscriptionPurchaseFlow(PaymentScreen_New.this, Utility.threemonths, PURCHSE_REQUEST, mPurchaseFinishedListener, null);
+                                }else{
+                                    mHelper.flagEndAsync();
+                                    mHelper.launchSubscriptionPurchaseFlow(PaymentScreen_New.this, Utility.threemonths_threedaytrail, PURCHSE_REQUEST, mPurchaseFinishedListener, null);
+                                }
                             }
                         }
                     } else {
@@ -233,7 +246,11 @@ public class PaymentScreen_New extends AppCompatActivity {
                     start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date());
                     end_date = sdf.parse(PrefManager.getIn().getSubscription_end_date());
                     calender.setTime(start_date);
-                    calender.add(Calendar.DATE, 7);
+                    if (PrefManager.getIn().getDeveloper_mode().equalsIgnoreCase("0")) {
+                        calender.add(Calendar.DATE, 7);
+                    } else {
+                        calender.add(Calendar.DATE, 3);
+                    }
                     calenderend.setTime(end_date);
                     if (calender.getTimeInMillis() == calenderend.getTimeInMillis()) {
                         trailFlag = true;
@@ -243,7 +260,34 @@ public class PaymentScreen_New extends AppCompatActivity {
 
                 }
                 // if (PrefManager.getIn().getPlan().equals("3")) {
-                if (inventory.hasPurchase(Utility.threemonths)) {
+                if (inventory.hasPurchase(Utility.threemonths_threedaytrail)) {
+
+                    if (PrefManager.getIn().getPayment_mode().equals("3")) {
+
+                        try {
+                            start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date());
+                            subDate = sdf.format(start_date);
+                            threemonthsflag = true;
+                            Calendar c = Calendar.getInstance();
+                            c.setTime(start_date);
+                            Calendar c1 = Calendar.getInstance();
+                            if (!trailFlag) {
+                                c.add(Calendar.MONTH, 3);
+                                c1.setTime(start_date);
+                                c1.add(Calendar.MONTH, 6);
+                            } else {
+                                c1.setTime(start_date);
+                                c1.add(Calendar.MONTH, 3);
+                            }
+                            String endDate1 = sdf.format(c.getTime());
+                            String endDate2 = sdf.format(c1.getTime());
+                            planUpdate(inventory.getPurchase(Utility.threemonths_threedaytrail).getSku(), endDate1, endDate2, inventory.getPurchase(Utility.threemonths_threedaytrail).toString(), 1);
+
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }else  if (inventory.hasPurchase(Utility.threemonths)) {
 
                     if (PrefManager.getIn().getPayment_mode().equals("3")) {
 
@@ -302,7 +346,7 @@ public class PaymentScreen_New extends AppCompatActivity {
                                 c1.add(Calendar.MONTH, 12);*/
                             String endDate1 = sdf.format(c.getTime());
                             String endDate2 = sdf.format(c1.getTime());
-                            planUpdate(inventory.getPurchase(Utility.threemonths).getSku(), endDate1, endDate2, inventory.getPurchase(Utility.threemonths).toString(), 1);
+                            planUpdate(inventory.getPurchase(Utility.six_months).getSku(), endDate1, endDate2, inventory.getPurchase(Utility.six_months).toString(), 1);
 
                         } catch (ParseException e) {
                             e.printStackTrace();
@@ -341,7 +385,7 @@ public class PaymentScreen_New extends AppCompatActivity {
                                 c1.add(Calendar.MONTH, 24);*/
                             String endDate1 = sdf.format(c.getTime());
                             String endDate2 = sdf.format(c1.getTime());
-                            planUpdate(inventory.getPurchase(Utility.threemonths).getSku(), endDate1, endDate2, inventory.getPurchase(Utility.threemonths).toString(), 1);
+                            planUpdate(inventory.getPurchase(Utility.one_year).getSku(), endDate1, endDate2, inventory.getPurchase(Utility.one_year).toString(), 1);
 
                         } catch (ParseException e) {
                             e.printStackTrace();
@@ -403,12 +447,18 @@ public class PaymentScreen_New extends AppCompatActivity {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            if (PrefManager.getIn().getSubscription_start_date().contains("00:00:00")) {
-                c.add(Calendar.DATE, 7);
+            if (PrefManager.getIn().getSubscription_start_date().equals("0000-00-00 00:00:00")) {
+                if (PrefManager.getIn().getDeveloper_mode().equalsIgnoreCase("0")) {
+                    c.add(Calendar.DATE, 7);
+                } else {
+                    c.add(Calendar.DATE, 3);
+                }
                 String endDate = sdf.format(c.getTime());
                 planUpdate("trail", startdate, endDate, purchase.toString(), 0);
             } else {
-                if (purchase.getSku().equals(Utility.threemonths)) {
+                if (purchase.getSku().equals(Utility.threemonths_threedaytrail)) {
+                    c.add(Calendar.MONTH, 3);
+                }else if (purchase.getSku().equals(Utility.threemonths)) {
                     c.add(Calendar.MONTH, 3);
                 } else if (purchase.getSku().equals(Utility.six_months)) {
                     c.add(Calendar.MONTH, 6);
@@ -450,7 +500,9 @@ public class PaymentScreen_New extends AppCompatActivity {
         params.put("subscription_end_date", sub_end_date);
         params.put("payment_data", payment_data);
         params.put("action", "update_package");
-        if (package_data.equals(Utility.threemonths)) {
+        if (package_data.equals(Utility.threemonths_threedaytrail)) {
+            params.put("package", "3");
+        }else if (package_data.equals(Utility.threemonths)) {
             params.put("package", "3");
         } else if (package_data.equals(Utility.six_months)) {
             params.put("package", "6");
@@ -481,7 +533,7 @@ public class PaymentScreen_New extends AppCompatActivity {
                             threemonthsflag = false;
                             sixmonthsflag = false;
                             oneyearflag = false;
-                            trailFlag= false;
+                            trailFlag = false;
                         }
                         PrefManager.getIn().setPayment_data(params.get("payment_data"));
                         PrefManager.getIn().setSubscription_start_date(params.get("subscription_start_date"));
@@ -489,24 +541,34 @@ public class PaymentScreen_New extends AppCompatActivity {
                         PrefManager.getIn().setSubscription_end_date(params.get("subscription_end_date"));
                         PrefManager.getIn().setPlan(params.get("package"));
                         if (PrefManager.getIn().getPlan().equals("3")) {
-                            threemonthsflag=true;
+                            threemonthsflag = true;
                             PrefManager.getIn().setPayment_mode("1");
                             plan_text.setText("Three Months Subscription");
+                            plan_expiry_date.setVisibility(View.VISIBLE);
+                            expirylabel.setVisibility(View.VISIBLE);
                         } else if (PrefManager.getIn().getPlan().equals("6")) {
                             PrefManager.getIn().setPayment_mode("1");
                             plan_text.setText("Six Months Subscription");
-                            sixmonthsflag=true;
+                            plan_expiry_date.setVisibility(View.VISIBLE);
+                            expirylabel.setVisibility(View.VISIBLE);
+                            sixmonthsflag = true;
                         } else if (PrefManager.getIn().getPlan().equals("12")) {
                             PrefManager.getIn().setPayment_mode("1");
                             plan_text.setText("One Year Subscription");
                             oneyearflag = true;
+                            plan_expiry_date.setVisibility(View.VISIBLE);
+                            expirylabel.setVisibility(View.VISIBLE);
                         } else if (PrefManager.getIn().getPlan().equals("expired")) {
                             PrefManager.getIn().setPayment_mode("3");
                             plan_text.setText("Plan Expired");
+                            plan_expiry_date.setVisibility(View.GONE);
+                            expirylabel.setVisibility(View.GONE);
                         } else if (PrefManager.getIn().getPlan().equals("trail")) {
                             PrefManager.getIn().setPayment_mode("1");
                             plan_text.setText("Trail");
-                            trailFlag=true;
+                            plan_expiry_date.setVisibility(View.VISIBLE);
+                            expirylabel.setVisibility(View.VISIBLE);
+                            trailFlag = true;
                         }
                         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         try {

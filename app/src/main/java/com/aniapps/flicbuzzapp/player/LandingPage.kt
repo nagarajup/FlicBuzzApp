@@ -312,7 +312,40 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 }
 
                // if (PrefManager.getIn().getPlan() == "3") {
-                    if (inventory.hasPurchase(Utility.threemonths)) {
+                if (inventory.hasPurchase(Utility.threemonths_threedaytrail)) run {
+
+                    if (PrefManager.getIn().getPayment_mode() == "3") {
+
+                        try {
+                            start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date())
+                            subDate = sdf.format(start_date)
+                            val c = Calendar.getInstance()
+                            c.time = start_date
+                            val c1 = Calendar.getInstance()
+                            if (!trailFlag) {
+                                c.add(Calendar.MONTH, 3)
+                                c1.time = start_date
+                                c1.add(Calendar.MONTH, 6)
+                            } else {
+                                c1.time = start_date
+                                c1.add(Calendar.MONTH, 3)
+                            }
+                            val endDate1 = sdf.format(c.time)
+                            val endDate2 = sdf.format(c1.time)
+                            planUpdate(
+                                inventory.getPurchase(Utility.threemonths_threedaytrail).sku,
+                                endDate1,
+                                endDate2,
+                                inventory.getPurchase(Utility.threemonths_threedaytrail).toString(),
+                                1
+                            )
+
+                        } catch (e: ParseException) {
+                            e.printStackTrace()
+                        }
+
+                    }
+                } else if (inventory.hasPurchase(Utility.threemonths)) {
 
                         if (PrefManager.getIn().getPayment_mode() == "3") {
 
@@ -345,16 +378,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                             }
 
                         }
-                    }/* else {
-                        planUpdate(
-                            "expired",
-                            PrefManager.getIn().getSubscription_start_date(),
-                            PrefManager.getIn().getSubscription_end_date(),
-                            PrefManager.getIn().getPayment_data(),
-                            1
-                        )
-                    }*/
-               // } else if (PrefManager.getIn().getPlan() == "6") {
+                    }
                     else if (inventory.hasPurchase(Utility.six_months)) {
                         // if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) < calender.getTimeInMillis()) {
                         if (PrefManager.getIn().getPayment_mode() == "3") {
@@ -380,10 +404,10 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                                 val endDate1 = sdf.format(c.time)
                                 val endDate2 = sdf.format(c1.time)
                                 planUpdate(
-                                    inventory.getPurchase(Utility.threemonths).sku,
+                                    inventory.getPurchase(Utility.six_months).sku,
                                     endDate1,
                                     endDate2,
-                                    inventory.getPurchase(Utility.threemonths).toString(),
+                                    inventory.getPurchase(Utility.six_months).toString(),
                                     1
                                 )
 
@@ -392,17 +416,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                             }
 
                         }
-                    } /*else {
-                        planUpdate(
-                            "expired",
-                            PrefManager.getIn().getSubscription_start_date(),
-                            PrefManager.getIn().getSubscription_end_date(),
-                            PrefManager.getIn().getPayment_data(),
-                            1
-                        )
-                    }*/
-               // } else if (PrefManager.getIn().getPlan() == "12") {
-                   else if (inventory.hasPurchase(Utility.one_year)) {
+                    }  else if (inventory.hasPurchase(Utility.one_year)) {
                         //  if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) < calender.getTimeInMillis()) {
                         if (PrefManager.getIn().getPayment_mode() == "3") {
                             try {
@@ -429,10 +443,10 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                                 val endDate1 = sdf.format(c.time)
                                 val endDate2 = sdf.format(c1.time)
                                 planUpdate(
-                                    inventory.getPurchase(Utility.threemonths).sku,
+                                    inventory.getPurchase(Utility.one_year).sku,
                                     endDate1,
                                     endDate2,
-                                    inventory.getPurchase(Utility.threemonths).toString(),
+                                    inventory.getPurchase(Utility.one_year).toString(),
                                     1
                                 )
 
@@ -466,7 +480,9 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         params["subscription_end_date"] = sub_end_date
         params["payment_data"] = payment_data
         params["action"] = "update_package"
-        if (package_data == Utility.threemonths) {
+        if (package_data == Utility.threemonths_threedaytrail) {
+            params["package"] = "3"
+        }else if (package_data == Utility.threemonths) {
             params["package"] = "3"
         } else if (package_data == Utility.six_months) {
             params["package"] = "6"
