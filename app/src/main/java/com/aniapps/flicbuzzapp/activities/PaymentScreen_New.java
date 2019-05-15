@@ -23,6 +23,9 @@ import com.aniapps.flicbuzzapp.util.Inventory;
 import com.aniapps.flicbuzzapp.util.Purchase;
 import com.aniapps.flicbuzzapp.utils.PrefManager;
 import com.aniapps.flicbuzzapp.utils.Utility;
+import com.appsflyer.AFInAppEventParameterName;
+import com.appsflyer.AFInAppEventType;
+import com.appsflyer.AppsFlyerLib;
 import org.json.JSONObject;
 
 import java.text.ParseException;
@@ -30,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 public class PaymentScreen_New extends AppCompatActivity {
 
@@ -114,6 +118,13 @@ public class PaymentScreen_New extends AppCompatActivity {
                             if (sixmonthsflag) {
                                 alertDialog("Subscription", "You already subscribed for Six Months Plan.");
                             } else {
+                                Map<String, Object> eventValue = new HashMap<String, Object>();
+                                eventValue.put(AFInAppEventParameterName.REVENUE, 190);
+                                eventValue.put(AFInAppEventParameterName.CONTENT_TYPE, "Three Months Subscription");
+                                eventValue.put(AFInAppEventParameterName.CONTENT_ID, "Package 1");
+                                eventValue.put(AFInAppEventParameterName.CURRENCY, "INR");
+                                AppsFlyerLib.getInstance().trackEvent(getApplicationContext(), AFInAppEventType.PURCHASE, eventValue);
+
                                 if (PrefManager.getIn().getDeveloper_mode().equalsIgnoreCase("0")) {
                                     mHelper.flagEndAsync();
                                     mHelper.launchSubscriptionPurchaseFlow(PaymentScreen_New.this, Utility.threemonths, PURCHSE_REQUEST, mPurchaseFinishedListener, null);
@@ -142,6 +153,12 @@ public class PaymentScreen_New extends AppCompatActivity {
                             if (threemonthsflag) {
                                 alertDialog("Subscription", "You already subscribed for Three Months Plan.");
                             } else {
+                                Map<String, Object> eventValue = new HashMap<String, Object>();
+                                eventValue.put(AFInAppEventParameterName.REVENUE, 280);
+                                eventValue.put(AFInAppEventParameterName.CONTENT_TYPE, "Six Months Subscription");
+                                eventValue.put(AFInAppEventParameterName.CONTENT_ID, "Package 2");
+                                eventValue.put(AFInAppEventParameterName.CURRENCY, "INR");
+                                AppsFlyerLib.getInstance().trackEvent(getApplicationContext(), AFInAppEventType.PURCHASE, eventValue);
                                 mHelper.flagEndAsync();
                                 mHelper.launchSubscriptionPurchaseFlow(PaymentScreen_New.this, Utility.six_months, PURCHSE_REQUEST, mPurchaseFinishedListener, null);
                             }
@@ -165,6 +182,12 @@ public class PaymentScreen_New extends AppCompatActivity {
                             if (threemonthsflag) {
                                 alertDialog("Subscription", "You already subscribed for Three Months Plan.");
                             } else {
+                                Map<String, Object> eventValue = new HashMap<String, Object>();
+                                eventValue.put(AFInAppEventParameterName.REVENUE, 460);
+                                eventValue.put(AFInAppEventParameterName.CONTENT_TYPE, "One Year Subscription");
+                                eventValue.put(AFInAppEventParameterName.CONTENT_ID, "Package 3");
+                                eventValue.put(AFInAppEventParameterName.CURRENCY, "INR");
+                                AppsFlyerLib.getInstance().trackEvent(getApplicationContext(), AFInAppEventType.PURCHASE, eventValue);
                                 mHelper.flagEndAsync();
                                 mHelper.launchSubscriptionPurchaseFlow(PaymentScreen_New.this, Utility.one_year, PURCHSE_REQUEST, mPurchaseFinishedListener, null);
                             }

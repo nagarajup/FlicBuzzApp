@@ -6,10 +6,11 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import com.aniapps.flicbuzzapp.AppConstants
 import com.aniapps.flicbuzzapp.R
 
 
-class SignIn : AppCompatActivity() {
+class SignIn : AppConstants() {
     internal lateinit var btn_login: TextView
     internal lateinit var btn_signup: Button
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,6 +19,7 @@ class SignIn : AppCompatActivity() {
         btn_login = findViewById<View>(R.id.loginTV) as TextView
         btn_signup = findViewById<View>(R.id.btn_signup) as Button
         btn_login.setOnClickListener {
+            trackEvent(this@SignIn, "SignIn", "Login")
              val i = Intent(this@SignIn, LoginActivity::class.java)
               startActivity(i)
             overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
@@ -25,6 +27,7 @@ class SignIn : AppCompatActivity() {
         }
 
         btn_signup.setOnClickListener {
+            trackEvent(this@SignIn, "SignIn", "SignUp")
             val i = Intent(this@SignIn, SignUpActivity::class.java)
             startActivity(i)
             overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)

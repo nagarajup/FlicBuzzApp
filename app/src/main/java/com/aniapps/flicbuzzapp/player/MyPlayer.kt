@@ -27,6 +27,7 @@ import android.util.Rational
 import android.view.*
 import android.view.animation.AnimationUtils
 import android.widget.*
+import com.aniapps.flicbuzzapp.AppConstants
 import com.aniapps.flicbuzzapp.R
 import com.aniapps.flicbuzzapp.utils.MySpannable
 import com.aniapps.flicbuzzapp.adapters.MainAdapter
@@ -49,7 +50,7 @@ import kotlinx.android.synthetic.main.myplayer.*
 import org.json.JSONObject
 import java.util.ArrayList
 
-class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
+class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
 
     companion object {
         private const val KEY_PLAY_WHEN_READY = "play_when_ready"
@@ -372,6 +373,7 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
                     settings.visibility = View.VISIBLE
                     settings.setOnClickListener {
                         myTracker()
+                        trackEvent(this@MyPlayer, "Player", "Player|Settings")
                     }
                     settings.tag = i
                 }
@@ -380,9 +382,11 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             icon_pip.visibility = View.VISIBLE
             icon_pip.setOnClickListener {
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
                     && isPIPModeeEnabled
                 ) {
+                    trackEvent(this@MyPlayer, "Player", "Player|PIP")
                     enterPIPMode()
                 }
             }
@@ -396,7 +400,7 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
             share.visibility=View.VISIBLE
         }
         share.setOnClickListener {
-
+            trackEvent(this@MyPlayer, "Player", "Player|Share")
             /*f (setupPermissions()) {*/
             share_flag = true;
             pausePlayer()
@@ -583,6 +587,7 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
 
         img_share.setOnClickListener {
             /* if (setupPermissions()) {*/
+            trackEvent(this@MyPlayer, "Player", "Share")
             share_flag = true;
             pausePlayer()
             DownloadTask(this@MyPlayer, mySequence.get(currentWindow))
@@ -593,8 +598,10 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
         }
         lay_fav.setOnClickListener {
             if (img_fav.getVisibility() == View.VISIBLE) {
+                trackEvent(this@MyPlayer, "Player", "Favorite Add")
                 favAddApi()
             } else {
+                trackEvent(this@MyPlayer, "Player", "Favorite Remove")
                 favRemoveApi()
             }
         }
@@ -692,8 +699,10 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
         mFullScreenIcon = findViewById(R.id.exo_fullscreen_icon);
         mFullScreenButton = findViewById(R.id.exo_fullscreen_button);
         mFullScreenButton.setOnClickListener {
+
             val orientation = this.resources.configuration.orientation
             if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                trackEvent(this@MyPlayer, "Player", "Player|Full Screen")
                 //  getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
                 mFullScreenIcon.setImageDrawable(
                     ContextCompat.getDrawable(
@@ -705,6 +714,7 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
                 playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
 
             } else {
+                trackEvent(this@MyPlayer, "Player", "Player|Shrink")
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 mFullScreenIcon.setImageDrawable(
                     ContextCompat.getDrawable(
@@ -806,8 +816,10 @@ class MyPlayer : AppCompatActivity()/*, MyPlayerIns*/ {
                     tv.setText(tv.tag.toString(), TextView.BufferType.SPANNABLE)
                     tv.invalidate()
                     if (viewMore) {
+                        trackEvent(this@MyPlayer, "Player", "View Less")
                         makeTextViewResizable(tv, -1, "View Less", false)
                     } else {
+                        trackEvent(this@MyPlayer, "Player", "View More")
                         makeTextViewResizable(tv, 3, "View More", true)
                     }
                 }

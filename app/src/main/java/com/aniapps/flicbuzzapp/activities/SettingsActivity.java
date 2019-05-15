@@ -11,10 +11,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import com.aniapps.flicbuzzapp.AppConstants;
 import com.aniapps.flicbuzzapp.R;
 import com.aniapps.flicbuzzapp.utils.PrefManager;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends AppConstants {
     TextView changePswd, cancelSubscription, logout;
     TextView header_title;
     @Override
@@ -26,17 +27,7 @@ public class SettingsActivity extends AppCompatActivity {
         header_title.setText("Settings");
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-       // getSupportActionBar().setTitle(getString(R.string.action_settings));
 
-    /*  mToolbar.setTitle(getString(R.string.action_settings));
-        *//* mToolbar.setNavigationIcon(R.drawable.arrow);
-
-         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });*/
         initViews();
     }
 
@@ -48,12 +39,14 @@ public class SettingsActivity extends AppCompatActivity {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                trackEvent(SettingsActivity.this,"MainPage","Settings|LogOut");
                 alertDialog(SettingsActivity.this, "Logout", "Are you sure to logout.");
             }
         });
         cancelSubscription.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                trackEvent(SettingsActivity.this,"MainPage","Settings|Cancel Subscription");
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW,
                         Uri.parse("https://play.google.com/store/account/subscriptions"));
                 startActivity(browserIntent);
@@ -64,7 +57,7 @@ public class SettingsActivity extends AppCompatActivity {
         changePswd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                trackEvent(SettingsActivity.this,"MainPage","Change Password");
                 Intent intent = new Intent(SettingsActivity.this,UpdatePasswordActivity.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
@@ -78,12 +71,14 @@ public class SettingsActivity extends AppCompatActivity {
         builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
+                trackEvent(SettingsActivity.this,"MainPage","Settings|LogOut|Cancel");
                 dialog.dismiss();
             }
         });
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                trackEvent(SettingsActivity.this,"MainPage","Settings|LogOut|Ok");
                 dialog.dismiss();
                 PrefManager.getIn().clearLogins();
                 //PrefManager.getIn().setLogin(false);
