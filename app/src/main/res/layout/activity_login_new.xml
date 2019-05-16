@@ -179,21 +179,45 @@
                                 android:layout_marginTop="10dp">
                             <EditText android:textSize="14.0sp"
                                       android:id="@+id/pwd_txt"
+                                      android:paddingRight="100dp"
                                       android:singleLine="true"
                                       android:layout_width="fill_parent"
                                       android:layout_height="wrap_content"
                                       android:hint="Password"
                                       android:inputType="textPassword"/>
                         </android.support.design.widget.TextInputLayout>
-                        <TextView android:textSize="14.0sp"
-                                  android:textColor="#ff53ba00"
-                                  android:id="@+id/forgotPsd"
-                                  android:layout_width="wrap_content"
-                                  android:layout_height="wrap_content"
-                                  android:text="Forgot ?"
-                                  android:layout_alignParentRight="true"
-                                  android:layout_centerVertical="true"
-                                  android:fontFamily="@font/cera_gr_medium"/>
+                        <LinearLayout
+                                android:id="@+id/icons_layout"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:gravity="center"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginRight="10dp"
+                                android:orientation="horizontal">
+
+                            <ImageView
+                                    android:id="@+id/img_eye"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:tint="#ff53ba00"
+                                    android:layout_gravity="center"
+                                    android:layout_marginTop="6dp"
+                                    android:padding="5dp"
+                                    android:src="@mipmap/password_invisible"
+                                    android:visibility="visible"/>
+
+                            <TextView android:textSize="14.0sp"
+                                      android:textColor="#ff53ba00"
+                                      android:id="@+id/forgotPsd"
+                                      android:layout_gravity="center"
+                                      android:layout_width="wrap_content"
+                                      android:layout_height="wrap_content"
+                                      android:text="Forgot ?"
+                                      android:fontFamily="@font/cera_gr_medium"/>
+                        </LinearLayout>
+
                     </RelativeLayout>
                     <TextView
                             android:id="@+id/req_customer_password_error"

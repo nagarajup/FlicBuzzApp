@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
@@ -37,7 +38,8 @@ public class SignUpActivity extends AppConstants {
     RadioButton male, female;
     RelativeLayout registerLL, otpLL;
     String user_id = "";
-
+    ImageView psw_confirm_img_eye,psw_img_eye;
+    boolean check_visibility=true,check_visibility_confirm=true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,12 +114,48 @@ public class SignUpActivity extends AppConstants {
         male = (RadioButton) findViewById(R.id.male_radio);
         female = (RadioButton) findViewById(R.id.female_radio);
         loginLL = (LinearLayout) findViewById(R.id.loginLL);
+        psw_img_eye = (ImageView)findViewById(R.id.psw_img_eye);
+        psw_confirm_img_eye = (ImageView)findViewById(R.id.psw_confirm_img_eye);
         dobEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 datePickerDialog(SignUpActivity.this, dobEditText, Calendar.getInstance());
             }
         });
+
+        psw_img_eye.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (check_visibility) {
+                    passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
+                    psw_img_eye.setImageResource(R.mipmap.password_visible);
+                    passwordEditText.setSelection(passwordEditText.getText().length());
+                    check_visibility = false;
+                } else {
+                    passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    psw_img_eye.setImageResource(R.mipmap.password_invisible);
+                    passwordEditText.setSelection(passwordEditText.getText().length());
+                    check_visibility = true;
+                }
+            }
+        });
+        psw_confirm_img_eye.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (check_visibility_confirm) {
+                    confirmPasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
+                    psw_confirm_img_eye.setImageResource(R.mipmap.password_visible);
+                    confirmPasswordEditText.setSelection(confirmPasswordEditText.getText().length());
+                    check_visibility_confirm = false;
+                } else {
+                    confirmPasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    psw_confirm_img_eye.setImageResource(R.mipmap.password_invisible);
+                    confirmPasswordEditText.setSelection(confirmPasswordEditText.getText().length());
+                    check_visibility_confirm = true;
+                }
+            }
+        });
+
         loginLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
