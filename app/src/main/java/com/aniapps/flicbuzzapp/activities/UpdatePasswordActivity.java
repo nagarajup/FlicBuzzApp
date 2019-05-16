@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
@@ -24,6 +25,8 @@ public class UpdatePasswordActivity extends AppConstants {
     TextView passwordError, confirmPasswordError, oldPasswordError;
     EditText passwordEditText, confirmPasswordEditText, oldPasswordEditText;
     JSONObject jsonObject;
+    ImageView psw_confirm_img_eye,psw_img_eye,psw_old_img_eye;
+    boolean check_visibility=true,check_visibility_confirm=true,check_old_visibility=true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +55,57 @@ public class UpdatePasswordActivity extends AppConstants {
         passwordEditText = (EditText) findViewById(R.id.pwd);
         oldPasswordEditText = (EditText) findViewById(R.id.old_pwd);
         update_btn = (Button) findViewById(R.id.update_btn);
+        psw_img_eye = (ImageView)findViewById(R.id.psw_new_img_eye);
+        psw_confirm_img_eye = (ImageView)findViewById(R.id.psw_confirm_img_eye);
+        psw_old_img_eye = (ImageView)findViewById(R.id.psw_old_img_eye);
+        psw_old_img_eye.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (check_old_visibility) {
+                    oldPasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
+                    psw_old_img_eye.setImageResource(R.mipmap.password_visible);
+                    oldPasswordEditText.setSelection(oldPasswordEditText.getText().length());
+                    check_old_visibility = false;
+                } else {
+                    oldPasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    psw_old_img_eye.setImageResource(R.mipmap.password_invisible);
+                    oldPasswordEditText.setSelection(oldPasswordEditText.getText().length());
+                    check_old_visibility = true;
+                }
+            }
+        });
+        psw_img_eye.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (check_visibility) {
+                    passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
+                    psw_img_eye.setImageResource(R.mipmap.password_visible);
+                    passwordEditText.setSelection(passwordEditText.getText().length());
+                    check_visibility = false;
+                } else {
+                    passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    psw_img_eye.setImageResource(R.mipmap.password_invisible);
+                    passwordEditText.setSelection(passwordEditText.getText().length());
+                    check_visibility = true;
+                }
+            }
+        });
+        psw_confirm_img_eye.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (check_visibility_confirm) {
+                    confirmPasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
+                    psw_confirm_img_eye.setImageResource(R.mipmap.password_visible);
+                    confirmPasswordEditText.setSelection(confirmPasswordEditText.getText().length());
+                    check_visibility_confirm = false;
+                } else {
+                    confirmPasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    psw_confirm_img_eye.setImageResource(R.mipmap.password_invisible);
+                    confirmPasswordEditText.setSelection(confirmPasswordEditText.getText().length());
+                    check_visibility_confirm = true;
+                }
+            }
+        });
 
         update_btn.setOnClickListener(new View.OnClickListener() {
             @Override
