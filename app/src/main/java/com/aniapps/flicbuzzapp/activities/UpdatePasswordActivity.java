@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+import com.aniapps.flicbuzzapp.AppConstants;
 import com.aniapps.flicbuzzapp.R;
 import com.aniapps.flicbuzzapp.networkcall.APIResponse;
 import com.aniapps.flicbuzzapp.networkcall.RetrofitClient;
@@ -18,7 +19,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UpdatePasswordActivity extends AppCompatActivity {
+public class UpdatePasswordActivity extends AppConstants {
     Button update_btn;
     TextView passwordError, confirmPasswordError, oldPasswordError;
     EditText passwordEditText, confirmPasswordEditText, oldPasswordEditText;
@@ -109,6 +110,7 @@ public class UpdatePasswordActivity extends AppCompatActivity {
                     jsonObject = new JSONObject(result);
                     int status = jsonObject.getInt("status");
                     if (status == 1) {
+                        trackEvent(UpdatePasswordActivity.this,"MainPage","Change Password|Update Password");
                         Toast.makeText(UpdatePasswordActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                     } else {
 

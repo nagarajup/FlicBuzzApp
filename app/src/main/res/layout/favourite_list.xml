@@ -62,6 +62,15 @@
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/fload_progress"/>
 
+    <com.aniapps.flicbuzzapp.player.ExoPlayerRecyclerView
+            android:id="@+id/recyclerViewFeed"
+            android:layout_marginTop="60sp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/fload_progress"/>
+
 
     <ProgressBar
             android:id="@+id/fload_progress"

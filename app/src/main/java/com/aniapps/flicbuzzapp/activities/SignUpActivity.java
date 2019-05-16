@@ -13,6 +13,7 @@ import android.text.InputType;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+import com.aniapps.flicbuzzapp.AppConstants;
 import com.aniapps.flicbuzzapp.R;
 import com.aniapps.flicbuzzapp.networkcall.APIResponse;
 import com.aniapps.flicbuzzapp.networkcall.RetrofitClient;
@@ -27,7 +28,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class SignUpActivity extends AppCompatActivity {
+public class SignUpActivity extends AppConstants {
     Button signUp, validateMobile;
     TextView emailError, passwordError, confirmPasswordError, dobError, cityError, mobileError, genderError, nameError, pincodeError, otpErro, resendOTP;
     EditText otpEditText, nameEditText, emailEditText, passwordEditText, confirmPasswordEditText, cityEditText, mobileEditText, pincodeEditText, dobEditText;
@@ -284,6 +285,10 @@ public class SignUpActivity extends AppCompatActivity {
 
                     if (from == 2) {
                         if (status == 1 || status == 14) {
+
+                            trackEvent(SignUpActivity.this,"SignUp","SignUp");
+
+
                             user_id = jsonObject.getString("user_id");
                             PrefManager.getIn().saveUserId(jsonObject.getString("user_id"));
                             if (status == 14) {
@@ -315,6 +320,7 @@ public class SignUpActivity extends AppCompatActivity {
                             PrefManager.getIn().setPincode(userObject.getString("pincode"));
                             PrefManager.getIn().setDob(userObject.getString("dob"));
                             PrefManager.getIn().setProfile_pic(userObject.getString("profile_pic"));
+                            trackEvent(SignUpActivity.this,"OTP","Verify OTP");
                             if (PrefManager.getIn().getPayment_mode().equals("1")) {
                                 Intent intent = new Intent(SignUpActivity.this, LandingPage.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

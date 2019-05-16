@@ -22,6 +22,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+import com.aniapps.flicbuzzapp.AppConstants;
 import com.aniapps.flicbuzzapp.R;
 import com.aniapps.flicbuzzapp.networkcall.APIResponse;
 import com.aniapps.flicbuzzapp.networkcall.RetrofitClient;
@@ -40,7 +41,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class UpdateProfileActivity extends AppCompatActivity {
+public class UpdateProfileActivity extends AppConstants {
     Button signUp;
     TextView emailError, dobError, cityError, mobileError, genderError, nameError, pincodeError;
     EditText nameEditText, emailEditText, cityEditText, mobileEditText, pincodeEditText, dobEditText;
@@ -246,6 +247,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
                     jsonObject = new JSONObject(result);
                     int status = jsonObject.getInt("status");
                     if (status == 1) {
+                        trackEvent(UpdateProfileActivity.this,"MainPage","My Profile|Update Profile");
                         PrefManager.getIn().setName(nameEditText.getText().toString());
                         PrefManager.getIn().setEmail(emailEditText.getText().toString());
                         PrefManager.getIn().setMobile(mobileEditText.getText().toString());

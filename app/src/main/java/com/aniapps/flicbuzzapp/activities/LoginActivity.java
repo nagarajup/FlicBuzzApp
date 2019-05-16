@@ -12,6 +12,7 @@ import android.text.InputType;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+import com.aniapps.flicbuzzapp.AppConstants;
 import com.aniapps.flicbuzzapp.R;
 import com.aniapps.flicbuzzapp.networkcall.APIResponse;
 import com.aniapps.flicbuzzapp.networkcall.RetrofitClient;
@@ -23,7 +24,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppConstants {
     Button signIn, validateMobile;
     TextView emailError, passwordError, signUp, forgotPassword, otpErro, resendOTP;
     EditText otpEditText, emailEditText, passwordEditText;
@@ -98,6 +99,7 @@ public class LoginActivity extends AppCompatActivity {
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                trackEvent(LoginActivity.this,"Login","SignUp");
                 Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
@@ -107,6 +109,7 @@ public class LoginActivity extends AppCompatActivity {
         forgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                trackEvent(LoginActivity.this,"Login","Forgot Password");
                 Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
@@ -115,6 +118,7 @@ public class LoginActivity extends AppCompatActivity {
         resendOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                trackEvent(LoginActivity.this,"OTP","Resend OTP");
                 if (resendOTP.getText().toString().equalsIgnoreCase("Resend OTP")) {
                     HashMap<String, String> params = new HashMap<>();
                     params.put("mobile", mobile_num);
@@ -128,6 +132,7 @@ public class LoginActivity extends AppCompatActivity {
         validateMobile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                trackEvent(LoginActivity.this,"OTP","Verify OTP");
                 if (otpEditText.getText().toString().length() < 4) {
                     otpErro.setVisibility(View.VISIBLE);
                 } else {
@@ -166,6 +171,7 @@ public class LoginActivity extends AppCompatActivity {
                         "Please check your internet connectivity and try again!");
 
             } else {
+                trackEvent(LoginActivity.this,"Login","Login");
                 HashMap<String, String> params = new HashMap<>();
                 params.put("password", passwordEditText.getText().toString());
                 params.put("email", emailEditText.getText().toString());

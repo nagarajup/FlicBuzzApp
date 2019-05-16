@@ -7,11 +7,17 @@ import android.content.Context;
 import android.os.Build;
 import android.os.StrictMode;
 import android.provider.Settings;
+import android.util.Log;
 import android.widget.ImageView;
 import com.aniapps.flicbuzzapp.utils.PrefManager;
+import com.appsflyer.AppsFlyerConversionListener;
+import com.appsflyer.AppsFlyerLib;
+
+import java.util.Map;
 
 public class AppApplication extends Application {
     public static Context app_ctx;
+    private static final String AF_DEV_KEY = "airwMEJ3yKQD3aGFGBsc7D";
 
     @Override
     public void onCreate() {
@@ -22,7 +28,35 @@ public class AppApplication extends Application {
         if (PrefManager.getIn().getDeviceId().equals("")) {
             PrefManager.getIn().saveDeviceId(Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID));
         }
+        //Log.e("###Deviceid", "" + PrefManager.getIn().getDeviceId());
         initChannel();
+        AppsFlyerConversionListener conversionDataListener =
+                new AppsFlyerConversionListener() {
+
+                    @Override
+                    public void onInstallConversionDataLoaded(Map<String, String> map) {
+
+                    }
+
+                    @Override
+                    public void onInstallConversionFailure(String s) {
+
+                    }
+
+                    @Override
+                    public void onAppOpenAttribution(Map<String, String> map) {
+
+                    }
+
+                    @Override
+                    public void onAttributionFailure(String s) {
+
+                    }
+                };
+        AppsFlyerLib.getInstance().setDebugLog(true);
+        AppsFlyerLib.getInstance().init(AF_DEV_KEY, conversionDataListener, getApplicationContext());
+        AppsFlyerLib.getInstance().startTracking(this);
+
     }
 
     @Override
@@ -30,24 +64,27 @@ public class AppApplication extends Application {
         super.onLowMemory();
         Runtime.getRuntime().gc();
     }
+
     public void initChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             nm.createNotificationChannel(new NotificationChannel("CHID_CallDetector", "Caller Id Service", NotificationManager.IMPORTANCE_DEFAULT));
         }
     }
+
     static float imageheight = 0;
-    public static void myImgeRes(int cal,Context context,ImageView imageView){
+
+    public static void myImgeRes(int cal, Context context, ImageView imageView) {
         if (cal == 0) {
             cal = 1;
-        imageView.getLayoutParams().height = (int) ((float) ((context
-                    .getResources().getDisplayMetrics().widthPixels-
-                    dpToPx(10, context)) ) / 1.77);
+            imageView.getLayoutParams().height = (int) ((float) ((context
+                    .getResources().getDisplayMetrics().widthPixels -
+                    dpToPx(10, context))) / 1.77);
             imageheight = (int) ((float) ((context
-                    .getResources().getDisplayMetrics().widthPixels-
-                    dpToPx(10, context)) ) / 1.77);
+                    .getResources().getDisplayMetrics().widthPixels -
+                    dpToPx(10, context))) / 1.77);
         } else {
-        imageView.getLayoutParams().height = (int) imageheight;
+            imageView.getLayoutParams().height = (int) imageheight;
         }
     }
 

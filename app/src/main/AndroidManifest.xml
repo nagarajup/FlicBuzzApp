@@ -9,7 +9,11 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="com.android.vending.BILLING" />
+
+
+
 
     <application
             android:allowBackup="true"
@@ -47,6 +51,11 @@
 
         <activity
                 android:name="com.aniapps.flicbuzzapp.player.FavoriteAct"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="adjustPan|adjustResize"/>
+
+        <activity
+                android:name="com.aniapps.flicbuzzapp.player.MyFav"
                 android:screenOrientation="portrait"
                 android:windowSoftInputMode="adjustPan|adjustResize"/>
         <activity
@@ -106,6 +115,12 @@
                   android:label="@string/app_name"
                   android:screenOrientation="portrait"/>
 
+        <!--for appsyfyler-->
+        <receiver android:name="com.appsflyer.SingleInstallBroadcastReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

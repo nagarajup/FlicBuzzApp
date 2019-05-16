@@ -23,6 +23,7 @@ import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import com.aniapps.flicbuzzapp.AppConstants
 import com.aniapps.flicbuzzapp.R
 import com.aniapps.flicbuzzapp.activities.*
 import com.aniapps.flicbuzzapp.adapters.AutoSuggestAdapter
@@ -49,7 +50,7 @@ import kotlin.collections.HashMap
 import kotlin.collections.set
 import android.widget.SearchView.OnQueryTextListener as OnQueryTextListener1
 
-class LandingPage : AppCompatActivity(), View.OnClickListener {
+class LandingPage : AppConstants(), View.OnClickListener {
 
 
     internal lateinit var rc_list: RecyclerView
@@ -134,6 +135,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 searchEditText.setText(mySearchData.get(i).display)
                 val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(currentFocus.windowToken, 0)
+                trackEvent(this@LandingPage, "MainPage", "Search|Selection")
                 if (mySearchData.get(i).type.equals("tag")) {
                     tag_id = mySearchData.get(i).search_id
                     pageNo = 1
@@ -201,6 +203,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
             setLangSelection()
         })
         header_english.setOnClickListener(View.OnClickListener {
+            trackEvent(this@LandingPage, "MainPage", "Language|Header|English")
             PrefManager.getIn().language = "English"
             pageNo = 1
             setLangSelection()
@@ -208,7 +211,8 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
             drawer_layout.closeDrawer(GravityCompat.START)
         })
         header_hindi.setOnClickListener(View.OnClickListener {
-            PrefManager.getIn().language =  "Hindi"
+            trackEvent(this@LandingPage, "MainPage", "Language|Header|Hindi")
+            PrefManager.getIn().language = "Hindi"
             pageNo = 1
             setLangSelection()
             apiCall(tag_id);
@@ -225,14 +229,16 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         })
 
         nav_hindi.setOnClickListener(View.OnClickListener {
-            PrefManager.getIn().language =  "Hindi"
+            trackEvent(this@LandingPage, "MainPage", "Language|Menu|Hindi")
+            PrefManager.getIn().language = "Hindi"
             pageNo = 1
             setLangSelection()
             apiCall(tag_id);
             drawer_layout.closeDrawer(GravityCompat.START)
         })
         nav_english.setOnClickListener(View.OnClickListener {
-            PrefManager.getIn().language =  "English"
+            trackEvent(this@LandingPage, "MainPage", "Language|Menu|English")
+            PrefManager.getIn().language = "English"
             pageNo = 1
             setLangSelection()
             apiCall(tag_id);
@@ -307,7 +313,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 if (!result.isSuccess) {
                     Log.e("limited", "In-app Billing is not set up OK")
                 } else {
-                   Log.v("Limites", "YAY, in app billing set up! $result")
+                    Log.v("Limites", "YAY, in app billing set up! $result")
                     if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) > Utility.getMilliSeconds(
                             PrefManager.getIn().getServer_date_time()
                         )
@@ -351,7 +357,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
 
                 }
 
-               // if (PrefManager.getIn().getPlan() == "3") {
+                // if (PrefManager.getIn().getPlan() == "3") {
                 if (inventory.hasPurchase(Utility.threemonths_threedaytrail)) run {
 
                     if (PrefManager.getIn().getPayment_mode() == "3") {
@@ -387,123 +393,122 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                     }
                 } else if (inventory.hasPurchase(Utility.threemonths)) {
 
-                        if (PrefManager.getIn().getPayment_mode() == "3") {
+                    if (PrefManager.getIn().getPayment_mode() == "3") {
 
-                            try {
-                                start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date())
-                                subDate = sdf.format(start_date)
-                                val c = Calendar.getInstance()
-                                c.time = start_date!!
-                                val c1 = Calendar.getInstance()
-                                if (!trailFlag) {
-                                    c.add(Calendar.MONTH, 3)
-                                    c1.time = start_date
-                                    c1.add(Calendar.MONTH, 6)
-                                } else {
-                                    c1.time = start_date
-                                    c1.add(Calendar.MONTH, 3)
-                                }
-                                val endDate1 = sdf.format(c.time)
-                                val endDate2 = sdf.format(c1.time)
-                                planUpdate(
-                                    inventory.getPurchase(Utility.threemonths).sku,
-                                    endDate1,
-                                    endDate2,
-                                    inventory.getPurchase(Utility.threemonths).toString(),
-                                    1
-                                )
-
-                            } catch (e: ParseException) {
-                                e.printStackTrace()
+                        try {
+                            start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date())
+                            subDate = sdf.format(start_date)
+                            val c = Calendar.getInstance()
+                            c.time = start_date!!
+                            val c1 = Calendar.getInstance()
+                            if (!trailFlag) {
+                                c.add(Calendar.MONTH, 3)
+                                c1.time = start_date
+                                c1.add(Calendar.MONTH, 6)
+                            } else {
+                                c1.time = start_date
+                                c1.add(Calendar.MONTH, 3)
                             }
+                            val endDate1 = sdf.format(c.time)
+                            val endDate2 = sdf.format(c1.time)
+                            planUpdate(
+                                inventory.getPurchase(Utility.threemonths).sku,
+                                endDate1,
+                                endDate2,
+                                inventory.getPurchase(Utility.threemonths).toString(),
+                                1
+                            )
 
+                        } catch (e: ParseException) {
+                            e.printStackTrace()
                         }
+
                     }
-                    else if (inventory.hasPurchase(Utility.six_months)) {
-                        // if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) < calender.getTimeInMillis()) {
-                        if (PrefManager.getIn().getPayment_mode() == "3") {
-                            try {
-                                start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date())
-                                subDate = sdf.format(start_date)
-                                val c = Calendar.getInstance()
-                                c.time = start_date!!
-                                val c1 = Calendar.getInstance()
-                                if (!trailFlag) {
-                                    c.add(Calendar.MONTH, 6)
-                                    c1.time = start_date
-                                    c1.add(Calendar.MONTH, 12)
-                                } else {
-                                    c1.time = start_date
-                                    c1.add(Calendar.MONTH, 6)
-                                }
-
-                                /* c.add(Calendar.MONTH, 6);
-                                     Calendar c1 = Calendar.getInstance();
-                                     c1.setTime(start_date);
-                                     c1.add(Calendar.MONTH, 12);*/
-                                val endDate1 = sdf.format(c.time)
-                                val endDate2 = sdf.format(c1.time)
-                                planUpdate(
-                                    inventory.getPurchase(Utility.six_months).sku,
-                                    endDate1,
-                                    endDate2,
-                                    inventory.getPurchase(Utility.six_months).toString(),
-                                    1
-                                )
-
-                            } catch (e: ParseException) {
-                                e.printStackTrace()
+                } else if (inventory.hasPurchase(Utility.six_months)) {
+                    // if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) < calender.getTimeInMillis()) {
+                    if (PrefManager.getIn().getPayment_mode() == "3") {
+                        try {
+                            start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date())
+                            subDate = sdf.format(start_date)
+                            val c = Calendar.getInstance()
+                            c.time = start_date!!
+                            val c1 = Calendar.getInstance()
+                            if (!trailFlag) {
+                                c.add(Calendar.MONTH, 6)
+                                c1.time = start_date
+                                c1.add(Calendar.MONTH, 12)
+                            } else {
+                                c1.time = start_date
+                                c1.add(Calendar.MONTH, 6)
                             }
 
+                            /* c.add(Calendar.MONTH, 6);
+                                 Calendar c1 = Calendar.getInstance();
+                                 c1.setTime(start_date);
+                                 c1.add(Calendar.MONTH, 12);*/
+                            val endDate1 = sdf.format(c.time)
+                            val endDate2 = sdf.format(c1.time)
+                            planUpdate(
+                                inventory.getPurchase(Utility.six_months).sku,
+                                endDate1,
+                                endDate2,
+                                inventory.getPurchase(Utility.six_months).toString(),
+                                1
+                            )
+
+                        } catch (e: ParseException) {
+                            e.printStackTrace()
                         }
-                    }  else if (inventory.hasPurchase(Utility.one_year)) {
-                        //  if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) < calender.getTimeInMillis()) {
-                        if (PrefManager.getIn().getPayment_mode() == "3") {
-                            try {
-                                start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date())
-                                subDate = sdf.format(start_date)
-                                val c = Calendar.getInstance()
-                                c.time = start_date!!
 
-                                val c1 = Calendar.getInstance()
-                                if (!trailFlag) {
-                                    c.add(Calendar.MONTH, 12)
-                                    c1.time = start_date
-                                    c1.add(Calendar.MONTH, 24)
-                                } else {
-                                    c1.time = start_date
-                                    c1.add(Calendar.MONTH, 12)
-                                }
-
-
-                                /*c.add(Calendar.MONTH, 12);
-                                     Calendar c1 = Calendar.getInstance();
-                                     c1.setTime(start_date);
-                                     c1.add(Calendar.MONTH, 24);*/
-                                val endDate1 = sdf.format(c.time)
-                                val endDate2 = sdf.format(c1.time)
-                                planUpdate(
-                                    inventory.getPurchase(Utility.one_year).sku,
-                                    endDate1,
-                                    endDate2,
-                                    inventory.getPurchase(Utility.one_year).toString(),
-                                    1
-                                )
-
-                            } catch (e: ParseException) {
-                                e.printStackTrace()
-                            }
-
-                        }
-                    } else {
-                        planUpdate(
-                            "expired",
-                            PrefManager.getIn().getSubscription_start_date(),
-                            PrefManager.getIn().getSubscription_end_date(),
-                            PrefManager.getIn().getPayment_data(),
-                            1
-                        )
                     }
+                } else if (inventory.hasPurchase(Utility.one_year)) {
+                    //  if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) < calender.getTimeInMillis()) {
+                    if (PrefManager.getIn().getPayment_mode() == "3") {
+                        try {
+                            start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date())
+                            subDate = sdf.format(start_date)
+                            val c = Calendar.getInstance()
+                            c.time = start_date!!
+
+                            val c1 = Calendar.getInstance()
+                            if (!trailFlag) {
+                                c.add(Calendar.MONTH, 12)
+                                c1.time = start_date
+                                c1.add(Calendar.MONTH, 24)
+                            } else {
+                                c1.time = start_date
+                                c1.add(Calendar.MONTH, 12)
+                            }
+
+
+                            /*c.add(Calendar.MONTH, 12);
+                                 Calendar c1 = Calendar.getInstance();
+                                 c1.setTime(start_date);
+                                 c1.add(Calendar.MONTH, 24);*/
+                            val endDate1 = sdf.format(c.time)
+                            val endDate2 = sdf.format(c1.time)
+                            planUpdate(
+                                inventory.getPurchase(Utility.one_year).sku,
+                                endDate1,
+                                endDate2,
+                                inventory.getPurchase(Utility.one_year).toString(),
+                                1
+                            )
+
+                        } catch (e: ParseException) {
+                            e.printStackTrace()
+                        }
+
+                    }
+                } else {
+                    planUpdate(
+                        "expired",
+                        PrefManager.getIn().getSubscription_start_date(),
+                        PrefManager.getIn().getSubscription_end_date(),
+                        PrefManager.getIn().getPayment_data(),
+                        1
+                    )
+                }
                 //}
             }
         }
@@ -522,7 +527,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         params["action"] = "update_package"
         if (package_data == Utility.threemonths_threedaytrail) {
             params["package"] = "3"
-        }else if (package_data == Utility.threemonths) {
+        } else if (package_data == Utility.threemonths) {
             params["package"] = "3"
         } else if (package_data == Utility.six_months) {
             params["package"] = "6"
@@ -586,11 +591,14 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         builder.setCancelable(false)
         if (from == 2) {
             builder.setNegativeButton("CANCEL") { dialog, which ->
+                trackEvent(this@LandingPage, "MainPage", "LogOut|Cancel")
                 dialog.dismiss()
             }
         }
         builder.setPositiveButton("OK") { dialog, which ->
+
             if (from == 1) {
+                trackEvent(this@LandingPage, "MainPage", "Plan Expired|Ok")
                 val intent = Intent(this@LandingPage, PaymentScreen_New::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -599,6 +607,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
             } else {
                 PrefManager.getIn().clearLogins();
+                trackEvent(this@LandingPage, "MainPage", "LogOut|Ok")
                 // PrefManager.getIn().setLogin(false);
                 val intent = Intent(this@LandingPage, SignIn::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -722,6 +731,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         })
         menuItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(menuItem: MenuItem): Boolean {
+                trackEvent(this@LandingPage, "MainPage", "Search")
                 searchEditText.requestFocus()
                 if (searchEditText.requestFocus()) {
                     val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -732,6 +742,8 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
             }
 
             override fun onMenuItemActionCollapse(menuItem: MenuItem): Boolean {
+                trackEvent(this@LandingPage, "MainPage", "Search|Close")
+
                 val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(currentFocus.windowToken, 0)
                 searchEditText.setText("")
@@ -747,19 +759,20 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         return true
     }
 
-    private fun setLangSelection( ) {
-        if (PrefManager.getIn().language.equals("Hindi",true)) {
+    private fun setLangSelection() {
+        if (PrefManager.getIn().language.equals("Hindi", true)) {
             nav_hindi.setTypeface(nav_hindi.getTypeface(), Typeface.BOLD)
             nav_english.setTypeface(null, Typeface.NORMAL)
             header_hindi.setTypeface(header_hindi.getTypeface(), Typeface.BOLD)
             header_english.setTypeface(null, Typeface.NORMAL)
-        }else {
+        } else {
             nav_hindi.setTypeface(null, Typeface.NORMAL)
             nav_english.setTypeface(nav_english.getTypeface(), Typeface.BOLD)
             header_hindi.setTypeface(null, Typeface.NORMAL)
             header_english.setTypeface(header_english.getTypeface(), Typeface.BOLD)
         }
     }
+
     private fun setColor(view: TextView, from: Int) {
         view.setText("Hindi | English")
         val spannable = SpannableString(view.text)
@@ -864,6 +877,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
     override fun onClick(p0: View?) {
         when (p0!!.id) {
             R.id.nav_profile -> {
+                    trackEvent(this@LandingPage, "MainPage", "My Profile")
                 val myintent = Intent(this@LandingPage, UpdateProfileActivity::class.java)
                 myintent.putExtra("title", "My Profile")
                 myintent.putExtra("url", "")
@@ -873,6 +887,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
             }
 
             R.id.nav_about -> {
+                trackEvent(this@LandingPage, "MainPage", "About FlicBuzz")
                 val myintent = Intent(this@LandingPage, AboutUs::class.java)
                 // myintent.putExtra("title", "About FlicBuzz")
                 myintent.putExtra("title", "About FlicBuzz")
@@ -882,12 +897,14 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
 
             }
             R.id.nav_fav -> {
+                trackEvent(this@LandingPage, "MainPage", "Favorite Videos")
                 val myintent = Intent(this@LandingPage, FavoriteAct::class.java)
                 startActivity(myintent)
                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
 
             }
             R.id.nav_package -> {
+                trackEvent(this@LandingPage, "MainPage", "Packages")
                 val myintent = Intent(this@LandingPage, PaymentScreen_New::class.java)
                 myintent.putExtra("title", "Packages")
                 myintent.putExtra("url", "")
@@ -897,6 +914,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                 // Toast.makeText(this, "Clicked item fav", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_refund -> {
+                trackEvent(this@LandingPage, "MainPage", "Refund and Cancellation")
                 val myintent = Intent(this@LandingPage, AboutUs::class.java)
                 myintent.putExtra("url", "https://www.flicbuzz.com/refund-cancellation_text.html")
                 myintent.putExtra("title", "Refund and Cancellation")
@@ -907,6 +925,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
             }
 
             R.id.nav_privacy -> {
+                trackEvent(this@LandingPage, "MainPage", "Privacy Policy")
                 val myintent = Intent(this@LandingPage, AboutUs::class.java)
                 myintent.putExtra("url", "https://www.flicbuzz.com/privacy-policy_text.html")
                 myintent.putExtra("title", "Privacy Policy")
@@ -915,6 +934,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
 
             }
             R.id.nav_terms -> {
+                trackEvent(this@LandingPage, "MainPage", "Terms of Use")
                 val myintent = Intent(this@LandingPage, AboutUs::class.java)
                 myintent.putExtra("url", "https://www.flicbuzz.com/termsofuse_text.html")
                 myintent.putExtra("title", "Terms of Use")
@@ -923,27 +943,31 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
 
             }
             R.id.nav_contact -> {
+                trackEvent(this@LandingPage, "MainPage", "Contact Us")
                 MessageDialog_Feedback();
             }
 
             R.id.nav_settings -> {
+                trackEvent(this@LandingPage, "MainPage", "Settings")
                 val intent = Intent(this@LandingPage, SettingsActivity::class.java)
                 startActivity(intent)
                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
             }
 
             R.id.nav_logout -> {
+                trackEvent(this@LandingPage, "MainPage", "LogOut")
                 alertDialog(this@LandingPage, "Logout", "Are you sure to logout.", 2)
 
             }
             R.id.nav_share -> {
+                trackEvent(this@LandingPage, "MainPage", "App Share")
                 val appPackageName = packageName
                 val sendIntent = Intent()
                 sendIntent.action = Intent.ACTION_SEND
                 sendIntent.putExtra(Intent.EXTRA_SUBJECT, "FlickBuzz")
                 sendIntent.putExtra(
                     Intent.EXTRA_TEXT,
-                    "Hi, I Sharing FlicBuzz - A Complete Entertainment App download link from Google Play! \nhttp://bit.ly/2vH9vub"
+                    "Hi, I Sharing FlicBuzz - A Complete Entertainment App download link from Google Play! \nadgully.com/fbapp"
                 )
                 sendIntent.type = "text/plain"
                 startActivity(sendIntent)
@@ -988,11 +1012,14 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         val bt_submit_feedback = Feedback_Dialog.findViewById(R.id.btn_feedback_send) as TextView
         val bt_cancel_feedback = Feedback_Dialog.findViewById(R.id.btn_feedback_cancel) as TextView
         bt_submit_feedback.setOnClickListener {
+
             if (validateET(et_msg)) {
                 et_msg.setHint("")
                 et_msg.setError("Please enter your message")
             } else {
+
                 if (et_msg.getText().toString().length > 5) {
+                    trackEvent(this@LandingPage, "MainPage", "Contact Us|Submit")
                     Feedback_Dialog.dismiss()
                     val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(et_msg.getWindowToken(), 0)
@@ -1005,6 +1032,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
         }
 
         bt_cancel_feedback.setOnClickListener {
+            trackEvent(this@LandingPage, "MainPage", "Contact Us|Cancel")
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(et_msg.getWindowToken(), 0)
             Feedback_Dialog.dismiss()
@@ -1155,7 +1183,7 @@ class LandingPage : AppCompatActivity(), View.OnClickListener {
                                 MyVideos::class.java
                             )
 
-                            var mylist=ArrayList<MyVideos>()
+                            var mylist = ArrayList<MyVideos>()
                             mylist.add(lead)
 
                             val player_in = Intent(this@LandingPage, MyPlayer::class.java)
