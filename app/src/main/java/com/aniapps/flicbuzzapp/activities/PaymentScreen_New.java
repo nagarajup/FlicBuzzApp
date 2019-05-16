@@ -26,6 +26,7 @@ import com.aniapps.flicbuzzapp.utils.Utility;
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.appsflyer.AppsFlyerLib;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;
@@ -128,7 +129,7 @@ public class PaymentScreen_New extends AppCompatActivity {
                                 if (PrefManager.getIn().getDeveloper_mode().equalsIgnoreCase("0")) {
                                     mHelper.flagEndAsync();
                                     mHelper.launchSubscriptionPurchaseFlow(PaymentScreen_New.this, Utility.threemonths, PURCHSE_REQUEST, mPurchaseFinishedListener, null);
-                                }else{
+                                } else {
                                     mHelper.flagEndAsync();
                                     mHelper.launchSubscriptionPurchaseFlow(PaymentScreen_New.this, Utility.threemonths_threedaytrail, PURCHSE_REQUEST, mPurchaseFinishedListener, null);
                                 }
@@ -200,20 +201,21 @@ public class PaymentScreen_New extends AppCompatActivity {
                 }
             }
         });
-        if (PrefManager.getIn().getPayment_mode().equals("3")) {
-            mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-                public void onIabSetupFinished(IabResult result) {
-                    if (!result.isSuccess()) {
-                        Log.e("limited", "In-app Billing is not set up OK");
-                    } else {
-                        Log.v("Limites", "YAY, in app billing set up! " + result);
+
+        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+            public void onIabSetupFinished(IabResult result) {
+                if (!result.isSuccess()) {
+                    Log.e("limited", "In-app Billing is not set up OK");
+                } else {
+                    Log.v("Limites", "YAY, in app billing set up! " + result);
+                    if (PrefManager.getIn().getPayment_mode().equals("3")) {
                         if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) > Utility.getMilliSeconds(PrefManager.getIn().getServer_date_time())) {
                             mHelper.queryInventoryAsync(mGotInventoryListener); //Getting inventory of purchases and assigning listener
                         }
                     }
                 }
-            });
-        }
+            }
+        });
 
     }
 
@@ -310,7 +312,7 @@ public class PaymentScreen_New extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
-                }else  if (inventory.hasPurchase(Utility.threemonths)) {
+                } else if (inventory.hasPurchase(Utility.threemonths)) {
 
                     if (PrefManager.getIn().getPayment_mode().equals("3")) {
 
@@ -481,7 +483,7 @@ public class PaymentScreen_New extends AppCompatActivity {
             } else {
                 if (purchase.getSku().equals(Utility.threemonths_threedaytrail)) {
                     c.add(Calendar.MONTH, 3);
-                }else if (purchase.getSku().equals(Utility.threemonths)) {
+                } else if (purchase.getSku().equals(Utility.threemonths)) {
                     c.add(Calendar.MONTH, 3);
                 } else if (purchase.getSku().equals(Utility.six_months)) {
                     c.add(Calendar.MONTH, 6);
@@ -525,7 +527,7 @@ public class PaymentScreen_New extends AppCompatActivity {
         params.put("action", "update_package");
         if (package_data.equals(Utility.threemonths_threedaytrail)) {
             params.put("package", "3");
-        }else if (package_data.equals(Utility.threemonths)) {
+        } else if (package_data.equals(Utility.threemonths)) {
             params.put("package", "3");
         } else if (package_data.equals(Utility.six_months)) {
             params.put("package", "6");

@@ -71,6 +71,17 @@ public class PrefManager {
         editor.commit();
     }
 
+    public boolean getAutoRenewal() {
+        return pref.getBoolean("autoRenewal", false);
+    }
+
+    public void setAutoRenewal(boolean autoRenewal) {
+        editor.putBoolean("autoRenewal", autoRenewal);
+        editor.commit();
+    }
+
+    boolean autoRenewal;
+
     public boolean getLogin() {
         return pref.getBoolean("login", false);
     }
@@ -87,6 +98,7 @@ public class PrefManager {
     public String payment_status = "";
     public String plan_type = "";
     public String payment_data = "";
+
 
     public String getShow_splash_message() {
         return pref.getString("show_splash_message", "");
@@ -110,7 +122,7 @@ public class PrefManager {
     public String splash_message = "";
 
     public String getDeveloper_mode() {
-        return pref.getString("developer_mode", "");
+        return pref.getString("developer_mode", "0");
     }
 
     public void setDeveloper_mode(String developer_mode) {

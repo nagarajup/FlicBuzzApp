@@ -1,6 +1,6 @@
 package com.aniapps.flicbuzzapp.activities
 
-import android.app.AlertDialog
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -14,9 +14,18 @@ import com.aniapps.flicbuzzapp.networkcall.RetrofitClient
 import com.aniapps.flicbuzzapp.player.LandingPage
 import com.aniapps.flicbuzzapp.utils.PrefManager
 import org.json.JSONObject
+import android.support.v4.app.NotificationCompat
+import android.graphics.Bitmap
+import com.google.android.exoplayer2.util.NotificationUtil.createNotificationChannel
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.graphics.Color
+
 
 class Spalsh : AppCompatActivity() {
     private var t: Thread? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
@@ -54,6 +63,9 @@ class Spalsh : AppCompatActivity() {
                         PrefManager.getIn().setSubscription_end_date(jsonObject.getString("subscription_end_date"))
                         PrefManager.getIn().setPlan(jsonObject.getString("plan"))
                         PrefManager.getIn().setPayment_mode(jsonObject.getString("payment_mode"))
+                        PrefManager.getIn().setDeveloper_mode(jsonObject.getString("developer_mode"))
+                        PrefManager.getIn().setShow_splash_message(jsonObject.getString("show_splash_message"))
+                        PrefManager.getIn().setSplash_message(jsonObject.getString("splash_message"))
                         val userObject = jsonObject.getJSONObject("data")
                         PrefManager.getIn().setName(userObject.getString("name"))
                         PrefManager.getIn().setEmail(userObject.getString("email"))
@@ -63,7 +75,10 @@ class Spalsh : AppCompatActivity() {
                         PrefManager.getIn().setPincode(userObject.getString("pincode"))
                         PrefManager.getIn().setDob(userObject.getString("dob"))
                         PrefManager.getIn().setProfile_pic(userObject.getString("profile_pic"))
-                        if (PrefManager.getIn().getPayment_mode() == "1") {
+                        if (PrefManager.getIn().getPayment_mode() == "1" && !PrefManager.getIn().getPlan().equals(
+                                "expired",
+                                ignoreCase = true
+                            )) {
                             val intent = Intent(this@Spalsh, LandingPage::class.java)
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -108,4 +123,6 @@ class Spalsh : AppCompatActivity() {
         //builder.setNegativeButton("NO", null);
         builder.show()
     }
+
+
 }

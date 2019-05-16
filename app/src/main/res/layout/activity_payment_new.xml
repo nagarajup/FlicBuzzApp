@@ -25,7 +25,7 @@
                       android:textColor="@color/black"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
-                      android:text="Get Full"
+                      android:text=""
                       android:fontFamily="@font/cera_gr_bold"/>
             <LinearLayout android:layout_width="match_parent"
                           android:gravity="left"

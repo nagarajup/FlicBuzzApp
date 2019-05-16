@@ -206,6 +206,9 @@ public class LoginActivity extends AppConstants {
                             PrefManager.getIn().setSubscription_end_date(jsonObject.getString("subscription_end_date"));
                             PrefManager.getIn().setPlan(jsonObject.getString("plan"));
                             PrefManager.getIn().setPayment_mode(jsonObject.getString("payment_mode"));
+                            PrefManager.getIn().setDeveloper_mode(jsonObject.getString("developer_mode"));
+                            PrefManager.getIn().setShow_splash_message(jsonObject.getString("show_splash_message"));
+                            PrefManager.getIn().setSplash_message(jsonObject.getString("splash_message"));
                             JSONObject userObject = jsonObject.getJSONObject("data");
                             PrefManager.getIn().setName(userObject.getString("name"));
                             PrefManager.getIn().setEmail(userObject.getString("email"));
@@ -215,7 +218,7 @@ public class LoginActivity extends AppConstants {
                             PrefManager.getIn().setPincode(userObject.getString("pincode"));
                             PrefManager.getIn().setDob(userObject.getString("dob"));
                             PrefManager.getIn().setProfile_pic(userObject.getString("profile_pic"));
-                            if (PrefManager.getIn().getPayment_mode().equals("1")) {
+                            if (PrefManager.getIn().getPayment_mode().equals("1") && !PrefManager.getIn().getPlan().equalsIgnoreCase("expired")) {
                                 Intent intent = new Intent(LoginActivity.this, LandingPage.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -249,7 +252,10 @@ public class LoginActivity extends AppConstants {
                             PrefManager.getIn().setSubscription_start_date(jsonObject.getString("subscription_start_date"));
                             PrefManager.getIn().setSubscription_end_date(jsonObject.getString("subscription_end_date"));
                             PrefManager.getIn().setPlan(jsonObject.getString("plan"));
-                            PrefManager.getIn().setPayment_mode(jsonObject.getString("payment_mode"));
+                            PrefManager.getIn().setPlan(jsonObject.getString("plan"));
+                            PrefManager.getIn().setDeveloper_mode(jsonObject.getString("developer_mode"));
+                            PrefManager.getIn().setShow_splash_message(jsonObject.getString("show_splash_message"));
+                            PrefManager.getIn().setSplash_message(jsonObject.getString("splash_message"));
                             JSONObject userObject = jsonObject.getJSONObject("data");
                             PrefManager.getIn().setName(userObject.getString("name"));
                             PrefManager.getIn().setEmail(userObject.getString("email"));
@@ -259,7 +265,7 @@ public class LoginActivity extends AppConstants {
                             PrefManager.getIn().setPincode(userObject.getString("pincode"));
                             PrefManager.getIn().setDob(userObject.getString("dob"));
                             PrefManager.getIn().setProfile_pic(userObject.getString("profile_pic"));
-                            if (PrefManager.getIn().getPayment_mode().equals("1")) {
+                            if (PrefManager.getIn().getPayment_mode().equals("1") && !PrefManager.getIn().getPlan().equalsIgnoreCase("expired")) {
                                 Intent intent = new Intent(LoginActivity.this, LandingPage.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

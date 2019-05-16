@@ -1,13 +1,16 @@
 package com.aniapps.flicbuzzapp.player
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
-import android.app.Dialog
+import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
+import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.MenuItemCompat
@@ -41,6 +44,7 @@ import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -97,14 +101,18 @@ class LandingPage : AppConstants(), View.OnClickListener {
     internal lateinit var header_english: TextView
     internal lateinit var nav_hindi: TextView
     internal lateinit var nav_english: TextView
+    private var mContext: Context? = null
+    private var mNotificationManager: NotificationManager? = null
+    private var mBuilder: NotificationCompat.Builder? = null
+    val NOTIFICATION_CHANNEL_ID = "10001"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        mContext=this
         val mToolbar = findViewById<View>(R.id.toolbar) as Toolbar
         header_title = findViewById<View>(R.id.title) as TextView
         header_hindi = findViewById<View>(R.id.header_lang_hindi) as TextView
         header_english = findViewById<View>(R.id.header_lang_eng) as TextView
-
         setSupportActionBar(mToolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         mHelper = IabHelper(this@LandingPage, Utility.sharedKey)
@@ -280,7 +288,21 @@ class LandingPage : AppConstants(), View.OnClickListener {
                 }
             }
         })
-
+        // if (PrefManager.getIn().getPayment_mode().equals("3")) {
+        mHelper?.startSetup(IabHelper.OnIabSetupFinishedListener { result ->
+            if (!result.isSuccess) {
+                Log.e("limited", "In-app Billing is not set up OK")
+            } else {
+                Log.v("Limites", "YAY, in app billing set up! $result")
+                /*if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) > Utility.getMilliSeconds(
+                        PrefManager.getIn().getServer_date_time()
+                    )
+                ) {*/
+                mHelper?.queryInventoryAsync(mGotInventoryListener) //Getting inventory of purchases and assigning listener
+                //}
+            }
+        })
+        // }
     }
 
     override fun onResume() {
@@ -308,21 +330,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
              alertDialog(this@LandingPage, "Alert", "Your plan is expired, Please purchase subscription.", 1)
          }*/
 
-        if (PrefManager.getIn().getPayment_mode().equals("3")) {
-            mHelper?.startSetup(IabHelper.OnIabSetupFinishedListener { result ->
-                if (!result.isSuccess) {
-                    Log.e("limited", "In-app Billing is not set up OK")
-                } else {
-                    Log.v("Limites", "YAY, in app billing set up! $result")
-                    if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) > Utility.getMilliSeconds(
-                            PrefManager.getIn().getServer_date_time()
-                        )
-                    ) {
-                        mHelper?.queryInventoryAsync(mGotInventoryListener) //Getting inventory of purchases and assigning listener
-                    }
-                }
-            })
-        }
+
 
         super.onResume()
 
@@ -359,8 +367,23 @@ class LandingPage : AppConstants(), View.OnClickListener {
 
                 // if (PrefManager.getIn().getPlan() == "3") {
                 if (inventory.hasPurchase(Utility.threemonths_threedaytrail)) run {
+                    val purchase = inventory.getPurchase(Utility.threemonths_threedaytrail)
+                    try {
+                        val jsonObject = JSONObject(purchase.toString())
+                        if (!PrefManager.getIn().autoRenewal) {
+                            if (!jsonObject.getBoolean("autoRenewing")) {
+                                PrefManager.getIn().autoRenewal = true
+                                createNotification(this.getString(R.string.app_name),"Your FLicBuzz three months subscription has been cancelled, so your next subscription will not be charged")
+                            }
+                        }
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
+                    }
 
-                    if (PrefManager.getIn().getPayment_mode() == "3") {
+                    if (PrefManager.getIn().getPayment_mode() == "3" || PrefManager.getIn().getPlan().equals(
+                            "expired",
+                            ignoreCase = true
+                        )) {
 
                         try {
                             start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date())
@@ -390,10 +413,26 @@ class LandingPage : AppConstants(), View.OnClickListener {
                             e.printStackTrace()
                         }
 
+                    }else{
+
                     }
                 } else if (inventory.hasPurchase(Utility.threemonths)) {
-
-                    if (PrefManager.getIn().getPayment_mode() == "3") {
+                    val purchase = inventory.getPurchase(Utility.threemonths)
+                    try {
+                        val jsonObject = JSONObject(purchase.toString())
+                        if (!PrefManager.getIn().autoRenewal) {
+                            if (!jsonObject.getBoolean("autoRenewing")) {
+                                PrefManager.getIn().autoRenewal = true
+                                createNotification(this.getString(R.string.app_name),"Your FLicBuzz three months subscription has been cancelled, so your next subscription will not be charged")
+                            }
+                        }
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
+                    }
+                    if (PrefManager.getIn().getPayment_mode() == "3" || PrefManager.getIn().getPlan().equals(
+                            "expired",
+                            ignoreCase = true
+                        )) {
 
                         try {
                             start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date())
@@ -425,8 +464,23 @@ class LandingPage : AppConstants(), View.OnClickListener {
 
                     }
                 } else if (inventory.hasPurchase(Utility.six_months)) {
+                    val purchase = inventory.getPurchase(Utility.six_months)
+                    try {
+                        val jsonObject = JSONObject(purchase.toString())
+                        if (!PrefManager.getIn().autoRenewal) {
+                            if (!jsonObject.getBoolean("autoRenewing")) {
+                                PrefManager.getIn().autoRenewal = true
+                                createNotification(this.getString(R.string.app_name),"Your FlicBuzz six months subscription has been cancelled, so your next subscription will not be charged")
+                            }
+                        }
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
+                    }
                     // if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) < calender.getTimeInMillis()) {
-                    if (PrefManager.getIn().getPayment_mode() == "3") {
+                    if (PrefManager.getIn().getPayment_mode() == "3" || PrefManager.getIn().getPlan().equals(
+                            "expired",
+                            ignoreCase = true
+                        )) {
                         try {
                             start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date())
                             subDate = sdf.format(start_date)
@@ -462,6 +516,18 @@ class LandingPage : AppConstants(), View.OnClickListener {
 
                     }
                 } else if (inventory.hasPurchase(Utility.one_year)) {
+                    try {
+                        val purchase = inventory.getPurchase(Utility.one_year)
+                        val jsonObject = JSONObject(purchase.toString())
+                        if (!PrefManager.getIn().autoRenewal) {
+                            if (!jsonObject.getBoolean("autoRenewing")) {
+                                PrefManager.getIn().autoRenewal = true
+                                createNotification(this.getString(R.string.app_name),"Your FLicBuzz one year subscription has been cancelled, so your next subscription will not be charged")
+                            }
+                        }
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
+                    }
                     //  if (Utility.getMilliSeconds(PrefManager.getIn().getSubscription_end_date()) < calender.getTimeInMillis()) {
                     if (PrefManager.getIn().getPayment_mode() == "3") {
                         try {
@@ -520,6 +586,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
         payment_data: String,
         renewal: Int
     ) {
+        PrefManager.getIn().autoRenewal = false
         val params = HashMap<String, String>()
         params["subscription_start_date"] = sub_start_date
         params["subscription_end_date"] = sub_end_date
@@ -1209,6 +1276,40 @@ class LandingPage : AppConstants(), View.OnClickListener {
                 }
             })
     }
+    fun createNotification(title: String, message: String) {
+        /**Creates an explicit intent for an Activity in your app */
+        val resultIntent = Intent(mContext, LandingPage::class.java)
+        resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
+        val resultPendingIntent = PendingIntent.getActivity(
+            mContext,
+            0 /* Request code */, resultIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
 
+        mBuilder = NotificationCompat.Builder(mContext)
+        mBuilder!!.setSmallIcon(R.mipmap.ic_launcher)
+        mBuilder!!.setContentTitle(title)
+            .setContentText(message)
+            .setAutoCancel(true)
+            .setStyle(NotificationCompat.BigTextStyle()
+                .bigText(message))
+            .setContentIntent(resultPendingIntent)
+
+        mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            val notificationChannel =
+                NotificationChannel(NOTIFICATION_CHANNEL_ID, "NOTIFICATION_CHANNEL_NAME", importance)
+            notificationChannel.enableLights(true)
+            notificationChannel.lightColor = Color.RED
+            notificationChannel.enableVibration(true)
+            assert(mNotificationManager != null)
+            mBuilder!!.setChannelId(NOTIFICATION_CHANNEL_ID)
+            mNotificationManager!!.createNotificationChannel(notificationChannel)
+        }
+        assert(mNotificationManager != null)
+        mNotificationManager!!.notify(0 /* Request Code */, mBuilder!!.build())
+    }
 }

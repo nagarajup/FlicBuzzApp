@@ -321,7 +321,7 @@ public class SignUpActivity extends AppConstants {
                             PrefManager.getIn().setDob(userObject.getString("dob"));
                             PrefManager.getIn().setProfile_pic(userObject.getString("profile_pic"));
                             trackEvent(SignUpActivity.this,"OTP","Verify OTP");
-                            if (PrefManager.getIn().getPayment_mode().equals("1")) {
+                            if (PrefManager.getIn().getPayment_mode().equals("1") && !PrefManager.getIn().getPlan().equalsIgnoreCase("expired")) {
                                 Intent intent = new Intent(SignUpActivity.this, LandingPage.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
