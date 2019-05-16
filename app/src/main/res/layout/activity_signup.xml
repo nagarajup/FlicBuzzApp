@@ -180,6 +180,8 @@
                             android:visibility="invisible"
                             android:textColor="@color/red"
                             android:textSize="@dimen/error_text_size"/>
+                    <RelativeLayout android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content">
                     <android.support.design.widget.TextInputLayout
                             android:focusable="true"
                             android:focusableInTouchMode="true"
@@ -191,8 +193,22 @@
                                   android:layout_width="fill_parent"
                                   android:layout_height="wrap_content"
                                   android:hint="Password"
+                                  android:paddingRight="40dp"
                                   android:inputType="textPassword"/>
                     </android.support.design.widget.TextInputLayout>
+                        <ImageView
+                                android:id="@+id/psw_img_eye"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_alignParentRight="true"
+                                android:tint="#ff53ba00"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="6dp"
+                                android:padding="5dp"
+                                android:src="@mipmap/password_invisible"
+                                android:visibility="visible"/>
+                    </RelativeLayout>
                     <TextView
                             android:id="@+id/password_error"
                             android:layout_width="match_parent"
@@ -201,6 +217,8 @@
                             android:visibility="invisible"
                             android:textColor="@color/red"
                             android:textSize="@dimen/error_text_size"/>
+                    <RelativeLayout android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content">
                     <android.support.design.widget.TextInputLayout
                             android:focusable="true"
                             android:focusableInTouchMode="true"
@@ -209,11 +227,25 @@
                             android:layout_marginTop="2dp">
                         <EditText android:textSize="14sp"
                                   android:id="@+id/confirm_pwd"
+                                  android:paddingRight="40dp"
                                   android:layout_width="fill_parent"
                                   android:layout_height="wrap_content"
                                   android:hint="Confirm Password"
                                   android:inputType="textPassword"/>
                     </android.support.design.widget.TextInputLayout>
+                        <ImageView
+                                android:id="@+id/psw_confirm_img_eye"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_alignParentRight="true"
+                                android:tint="#ff53ba00"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="6dp"
+                                android:padding="5dp"
+                                android:src="@mipmap/password_invisible"
+                                android:visibility="visible"/>
+                    </RelativeLayout>
                     <TextView
                             android:id="@+id/confirpassword_error"
                             android:layout_width="match_parent"

@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
@@ -30,7 +31,8 @@ public class LoginActivity extends AppCompatActivity {
     RelativeLayout loginLL, otpLL;
     String user_id = "", mobile_num = "";
     String reqString = "";
-
+    ImageView img_eye;
+    boolean check_visibility=true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +65,7 @@ public class LoginActivity extends AppCompatActivity {
          reqString = Build.MANUFACTURER
                 + " " + Build.MODEL + " " + Build.VERSION.RELEASE
                 + " " + Build.VERSION_CODES.class.getFields()[android.os.Build.VERSION.SDK_INT].getName();
+        img_eye = (ImageView)findViewById(R.id.img_eye);
         otpErro = (TextView) findViewById(R.id.otp_error);
         resendOTP = (TextView) findViewById(R.id.resendOTP);
         otpEditText = (EditText) findViewById(R.id.ot_et);
@@ -76,6 +79,22 @@ public class LoginActivity extends AppCompatActivity {
         forgotPassword = (TextView) findViewById(R.id.forgotPsd);
         emailEditText = (EditText) findViewById(R.id.email_txt);
         passwordEditText = (EditText) findViewById(R.id.pwd_txt);
+        img_eye.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (check_visibility) {
+                    passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
+                    img_eye.setImageResource(R.mipmap.password_visible);
+                    passwordEditText.setSelection(passwordEditText.getText().length());
+                    check_visibility = false;
+                } else {
+                    passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    img_eye.setImageResource(R.mipmap.password_invisible);
+                    passwordEditText.setSelection(passwordEditText.getText().length());
+                    check_visibility = true;
+                }
+            }
+        });
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
