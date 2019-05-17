@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Typeface
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.NotificationCompat
@@ -1278,6 +1279,13 @@ class LandingPage : AppConstants(), View.OnClickListener {
                 }
             })
     }
+     fun setIcon(): Int {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return  R.mipmap.ic_notification
+        }else{
+            return  R.mipmap.ic_launcher
+        }
+    }
     fun createNotification(title: String, message: String) {
         /**Creates an explicit intent for an Activity in your app */
         val resultIntent = Intent(mContext, LandingPage::class.java)
@@ -1290,7 +1298,9 @@ class LandingPage : AppConstants(), View.OnClickListener {
         )
 
         mBuilder = NotificationCompat.Builder(mContext)
-        mBuilder!!.setSmallIcon(R.mipmap.ic_launcher)
+        mBuilder!!.setSmallIcon(setIcon())
+        mBuilder!!.setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
+            R.mipmap.ic_launcher))
         mBuilder!!.setContentTitle(title)
             .setContentText(message)
             .setAutoCancel(true)

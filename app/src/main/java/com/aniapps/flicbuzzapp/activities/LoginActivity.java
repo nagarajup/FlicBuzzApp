@@ -251,7 +251,7 @@ public class LoginActivity extends AppConstants {
                             PrefManager.getIn().setPayment_data(jsonObject.getString("payment_data"));
                             PrefManager.getIn().setSubscription_start_date(jsonObject.getString("subscription_start_date"));
                             PrefManager.getIn().setSubscription_end_date(jsonObject.getString("subscription_end_date"));
-                            PrefManager.getIn().setPlan(jsonObject.getString("plan"));
+                            PrefManager.getIn().setPayment_mode(jsonObject.getString("payment_mode"));
                             PrefManager.getIn().setPlan(jsonObject.getString("plan"));
                             PrefManager.getIn().setDeveloper_mode(jsonObject.getString("developer_mode"));
                             PrefManager.getIn().setShow_splash_message(jsonObject.getString("show_splash_message"));
