@@ -567,13 +567,15 @@ class LandingPage : AppConstants(), View.OnClickListener {
 
                     }
                 } else {
-                    planUpdate(
-                        "expired",
-                        PrefManager.getIn().getSubscription_start_date(),
-                        PrefManager.getIn().getSubscription_end_date(),
-                        PrefManager.getIn().getPayment_data(),
-                        1
-                    )
+                    if (PrefManager.getIn().getPayment_mode() == "3") {
+                        planUpdate(
+                            "expired",
+                            PrefManager.getIn().getSubscription_start_date(),
+                            PrefManager.getIn().getSubscription_end_date(),
+                            PrefManager.getIn().getPayment_data(),
+                            1
+                        )
+                    }
                 }
                 //}
             }
