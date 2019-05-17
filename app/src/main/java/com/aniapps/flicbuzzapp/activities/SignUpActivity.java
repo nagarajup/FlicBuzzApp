@@ -1,6 +1,7 @@
 package com.aniapps.flicbuzzapp.activities;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -12,12 +13,14 @@ import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.*;
 import com.aniapps.flicbuzzapp.AppConstants;
 import com.aniapps.flicbuzzapp.R;
 import com.aniapps.flicbuzzapp.networkcall.APIResponse;
 import com.aniapps.flicbuzzapp.networkcall.RetrofitClient;
 import com.aniapps.flicbuzzapp.player.LandingPage;
+import com.aniapps.flicbuzzapp.utils.DatePickerRes;
 import com.aniapps.flicbuzzapp.utils.PrefManager;
 import com.aniapps.flicbuzzapp.utils.Utility;
 import org.json.JSONObject;
@@ -119,9 +122,30 @@ public class SignUpActivity extends AppConstants {
         dobEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                datePickerDialog(SignUpActivity.this, dobEditText, Calendar.getInstance());
+                if (dobEditText.getText().toString().trim().contains("-")) {
+                    String date = dobEditText.getText().toString().trim();
+                    String[] p = date.split("\\-");
+                    datePickerDialog(SignUpActivity.this, p[0], p[1], p[2], new DatePickerRes() {
+                        @Override
+                        public void datePickerRes(String res) {
+                            dobEditText.setText(res);
+                        }
+
+                    });
+                } else {
+                    datePickerDialog(SignUpActivity.this, "", "", "", new DatePickerRes() {
+                        @Override
+                        public void datePickerRes(String res) {
+                            dobEditText.setText(res);
+                        }
+                    });
+                }
+
+                //datePickerDialog(SignUpActivity.this, dobEditText, Calendar.getInstance());
             }
         });
+
+
 
         psw_img_eye.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -402,6 +426,55 @@ public class SignUpActivity extends AppConstants {
         timer.start();*/
     }
 
+
+    public void datePickerDialog(Context context, String date, String month,
+                                 String year, final DatePickerRes result) {
+        final Dialog date_picker = new Dialog(context, R.style.ThemeDialogCustom);
+        date_picker.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        date_picker.setContentView(R.layout.custom_layout_datepickr);
+        date_picker.setCancelable(false);
+        final DatePicker dt = date_picker.findViewById(R.id.datePicker1);
+        Button set_date = date_picker.findViewById(R.id.button1);
+        Button cancel_date = date_picker.findViewById(R.id.button2);
+        if (date.length() > 0 && month.length() > 0 && year.length() > 0) {
+            dt.updateDate(Integer.parseInt(year), Integer.parseInt(month) - 1,
+                    Integer.parseInt(date));
+        }
+
+        set_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dt.clearFocus();
+                int m = dt.getMonth();
+                int day = dt.getDayOfMonth();
+                int year = dt.getYear();
+                int mnth = m + 1;
+                String month = String.valueOf(mnth);
+                if (month.length() < 2) {
+                    month = "0" + month;
+                } else {
+                    month = "" + month;
+                }
+                String date = String.valueOf(day);
+                if (date.length() < 2) {
+                    date = "0" + date;
+                } else {
+                    date = "" + date;
+                }
+                result.datePickerRes(date + "-" + month + "-" + year);
+                date_picker.dismiss();
+            }
+        });
+
+        cancel_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // result.datePickerRes("");
+                date_picker.dismiss();
+            }
+        });
+        date_picker.show();
+    }
     public static void datePickerDialog(Context context, final EditText editText, final Calendar myCalendar) {
         Calendar mcurrentDate = Calendar.getInstance();
         int mYear = mcurrentDate.get(Calendar.YEAR);

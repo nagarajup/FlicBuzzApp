@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/shape_white"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_setdate"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Set Date"
+        android:textSize="18sp"
+        android:textColor="@color/colorPrimary"
+        />
+
+    <View
+        android:id="@+id/v"
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorPrimary" />
+
+    <DatePicker
+        android:datePickerMode="spinner"
+        android:id="@+id/datePicker1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:calendarViewShown="false" />
+
+    <View
+        android:id="@+id/v1"
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorPrimary" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:gravity="center_vertical|right">
+
+
+
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="115dp"
+                android:layout_height="38dp"
+                android:background="@android:color/transparent"
+                android:padding="5dp"
+                android:text="@string/cancel"
+                android:textColor="@color/colorPrimary" />
+
+
+
+
+            <Button
+                android:id="@+id/button1"
+                android:layout_width="115dp"
+                android:layout_height="38dp"
+                android:background="@android:color/transparent"
+                android:padding="5dp"
+                android:text="SET"
+                android:textColor="@color/colorPrimary" />
+
+
+    </LinearLayout>
+
+</LinearLayout>
