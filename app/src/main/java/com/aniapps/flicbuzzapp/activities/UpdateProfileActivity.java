@@ -111,7 +111,7 @@ public class UpdateProfileActivity extends AppConstants {
                 if (dobEditText.getText().toString().trim().contains("-")) {
                     String date = dobEditText.getText().toString().trim();
                     String[] p = date.split("\\-");
-                    datePickerDialog(UpdateProfileActivity.this, p[0], p[1], p[2], new DatePickerRes() {
+                    datePickerDialog(UpdateProfileActivity.this, p[2], p[1], p[0], new DatePickerRes() {
                         @Override
                         public void datePickerRes(String res) {
                             dobEditText.setText(res);
@@ -485,7 +485,7 @@ public class UpdateProfileActivity extends AppConstants {
                 } else {
                     date = "" + date;
                 }
-                result.datePickerRes(date + "-" + month + "-" + year);
+                result.datePickerRes(year + "-" + month + "-" + date);
                 date_picker.dismiss();
             }
         });

@@ -212,6 +212,7 @@
                                       android:textColor="#ff53ba00"
                                       android:id="@+id/forgotPsd"
                                       android:layout_gravity="center"
+                                      android:layout_marginTop="6dp"
                                       android:layout_width="wrap_content"
                                       android:layout_height="wrap_content"
                                       android:text="Forgot ?"
