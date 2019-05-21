@@ -603,14 +603,14 @@ public class PaymentScreen_New extends AppCompatActivity {
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        if (renewal == 0) {
+                        //if (renewal == 0) {
                             Intent intent = new Intent(PaymentScreen_New.this, LandingPage.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
                             overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
-                        }
+                       // }
                     } else {
                         Utility.alertDialog(PaymentScreen_New.this, "Alert", jsonObject.getString("message"));
                     }
