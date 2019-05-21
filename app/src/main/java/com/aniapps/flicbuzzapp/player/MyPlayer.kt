@@ -790,9 +790,9 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
 
     fun makeTextViewResizable(tv: TextView, maxLine: Int, expandText: String, viewMore: Boolean) {
         /*https://stackoverflow.com/questions/31668697/android-expandable-text-view-with-view-more-button-displaying-at-center-after*/
-        if (tv.tag == null) {
+       // if (tv.tag == null) {
             tv.tag = tv.text
-        }
+      //  }
         val vto = tv.viewTreeObserver
         vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
 
