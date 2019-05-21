@@ -21,6 +21,7 @@ import java.net.URL;
  */
 public class DownloadTask {
 
+
     private static final String TAG = "Download Task";
     private Activity context;
 
