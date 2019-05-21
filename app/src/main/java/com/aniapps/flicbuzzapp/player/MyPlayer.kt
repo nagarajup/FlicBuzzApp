@@ -794,6 +794,7 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
        //if (tv.tag == null) {
             tv.tag = tv.text
         //}
+
         val vto = tv.viewTreeObserver
         vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
 
