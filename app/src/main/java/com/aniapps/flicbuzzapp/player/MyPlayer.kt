@@ -189,9 +189,9 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
                             adapter = MainAdapter(this@MyPlayer, myvideos, "player")
                             layoutManager = LinearLayoutManager(applicationContext)
                             my_recycler_view.setLayoutManager(layoutManager)
-                            var  param: RelativeLayout.LayoutParams =
+                           /* var  param: RelativeLayout.LayoutParams =
                                 RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
-                            my_recycler_view.setLayoutParams(param);
+                            my_recycler_view.setLayoutParams(param);*/
                             my_recycler_view.setNestedScrollingEnabled(false)
                             my_recycler_view.adapter = adapter
                             adapter.notifyDataSetChanged()

@@ -109,13 +109,14 @@
                         android:src="@mipmap/share_icon_video"/>
             </LinearLayout>
 
-            <RelativeLayout android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+            <!--<RelativeLayout android:layout_width="match_parent"
+                            android:layout_height="wrap_content">-->
 
                 <TextView
                         android:id="@+id/tv_play_description"
                         android:layout_width="match_parent"
                         android:layout_margin="7sp"
+                        android:text="asdfasfasdfnal sdkfal sdjfa;sldkfjasldkfjalsdkfj;l"
                         android:textColor="@android:color/white"
                         android:layout_height="wrap_content"/>
 
@@ -137,7 +138,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"/>
-            </RelativeLayout>
+           <!-- </RelativeLayout>-->
 
         </LinearLayout>
     </com.aniapps.flicbuzzapp.utils.StickyNestedScrollView>
