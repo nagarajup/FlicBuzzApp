@@ -569,6 +569,7 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
         //  Log.e("###", "ui title" + myVideo.headline)
         tv_play_title.setText(myVideo.headline)
         tv_play_description.setText(myVideo.description)
+
         makeTextViewResizable(tv_play_description, 2, "View More", true)
 
         lay_fav = findViewById(R.id.lay_fav)
@@ -790,9 +791,9 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
 
     fun makeTextViewResizable(tv: TextView, maxLine: Int, expandText: String, viewMore: Boolean) {
         /*https://stackoverflow.com/questions/31668697/android-expandable-text-view-with-view-more-button-displaying-at-center-after*/
-        if (tv.tag == null) {
+       //if (tv.tag == null) {
             tv.tag = tv.text
-        }
+        //}
         val vto = tv.viewTreeObserver
         vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
 

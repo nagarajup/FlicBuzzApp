@@ -116,7 +116,6 @@
                         android:id="@+id/tv_play_description"
                         android:layout_width="match_parent"
                         android:layout_margin="7sp"
-                        android:text="asdfasfasdfnal sdkfal sdjfa;sldkfjasldkfjalsdkfj;l"
                         android:textColor="@android:color/white"
                         android:layout_height="wrap_content"/>
 
