@@ -54,10 +54,11 @@ public class PaymentScreen_New extends AppCompatActivity {
         setContentView(R.layout.activity_payment_new);
 
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        TextView header_title = (TextView) findViewById(R.id.title);
+        TextView header_title = (TextView) findViewById(R.id.tvheader);
         header_title.setText("Packages");
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         plan_details = (LinearLayout) findViewById(R.id.plan_details);
         plan_expiry_date = (TextView) findViewById(R.id.plan_expiry_text);

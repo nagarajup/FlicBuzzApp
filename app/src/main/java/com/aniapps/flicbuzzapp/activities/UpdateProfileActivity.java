@@ -58,9 +58,10 @@ public class UpdateProfileActivity extends AppConstants {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_profile);
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        TextView  header_title = (TextView) findViewById(R.id.title);
+        TextView  header_title = (TextView) findViewById(R.id.tvheader);
         header_title.setText("My Profile");
         setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         initViews();
     }

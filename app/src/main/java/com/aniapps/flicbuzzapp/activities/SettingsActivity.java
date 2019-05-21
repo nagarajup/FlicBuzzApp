@@ -23,10 +23,11 @@ public class SettingsActivity extends AppConstants {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        header_title = (TextView) findViewById(R.id.title);
+        header_title = (TextView) findViewById(R.id.tvheader);
         header_title.setText("Settings");
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         initViews();
     }

@@ -32,10 +32,11 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgotpassword);
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        TextView  header_title = (TextView) findViewById(R.id.title);
+        TextView  header_title = (TextView) findViewById(R.id.tvheader);
         header_title.setText("Forgot Password");
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         initViews();
     }
 
