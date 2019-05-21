@@ -5,7 +5,7 @@ import android.os.Parcelable
 
 data class MyVideos(val id:String, val headline:String, val description:String, val category:String,
                     val category_id:String, val video_filename:String,val short_video_filename:String,val
-                    thumb:String,val views:Int,val fav_video:String, val short_desc:String):Parcelable {
+                    thumb:String,val views:Int,val fav_video:String, val short_desc:String,val video_date2:String):Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString(),
@@ -16,6 +16,7 @@ data class MyVideos(val id:String, val headline:String, val description:String, 
         parcel.readString(),
         parcel.readString(),
         parcel.readInt(),
+        parcel.readString(),
         parcel.readString(),
         parcel.readString()
     ) {
@@ -33,6 +34,7 @@ data class MyVideos(val id:String, val headline:String, val description:String, 
         parcel.writeInt(views)
         parcel.writeString(fav_video)
         parcel.writeString(short_desc)
+        parcel.writeString(video_date2)
     }
 
     override fun describeContents(): Int {

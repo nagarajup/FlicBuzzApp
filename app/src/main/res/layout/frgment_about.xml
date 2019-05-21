@@ -20,7 +20,7 @@
 
     <WebView
             android:id="@+id/web_page"
-            android:layout_marginTop="58sp"
+            android:layout_marginTop="52dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

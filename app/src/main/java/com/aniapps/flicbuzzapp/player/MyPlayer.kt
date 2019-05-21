@@ -137,7 +137,7 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
         }
 
         dynamicConcatenatingMediaSource = DynamicConcatenatingMediaSource()
-        myPlayerApi(mySequence.get(currentWindow), "")
+        myPlayerApi(mySequence.get(currentWindow))
     }
 
 
@@ -150,7 +150,7 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
          Log.e("@@@@", "ins in Class")
      }*/
 
-    private fun myPlayerApi(myVideo: MyVideos, from: String) {
+    private fun myPlayerApi(myVideo: MyVideos) {
         val params = HashMap<String, String>()
         params["action"] = "get_similar_by_video_id"
         params["video_id"] = myVideo.id
@@ -181,13 +181,17 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
                             }
 
 
-                            // preparePlayer(myvideos.get(0).video_filename)
                             initUi(myVideo)
                             my_recycler_view.adapter = null;
                             my_recycler_view.setHasFixedSize(true)
+                            my_recycler_view.setItemViewCacheSize(20);
+                            my_recycler_view.setDrawingCacheEnabled(true);
                             adapter = MainAdapter(this@MyPlayer, myvideos, "player")
                             layoutManager = LinearLayoutManager(applicationContext)
                             my_recycler_view.setLayoutManager(layoutManager)
+                            var  param: RelativeLayout.LayoutParams =
+                                RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+                            my_recycler_view.setLayoutParams(param);
                             my_recycler_view.setNestedScrollingEnabled(false)
                             my_recycler_view.adapter = adapter
                             adapter.notifyDataSetChanged()
@@ -206,7 +210,7 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
     }
 
 
-    private fun impressionTracker(from: String, myVideo: MyVideos) {
+    private fun impressionTracker(myVideo: MyVideos) {
 
         val params = HashMap<String, String>()
         params["action"] = "video_impression_tracker"
@@ -237,7 +241,7 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
                                     }*//*
                                 }
                             }*/
-                            myPlayerApi(myVideo, from)
+                            myPlayerApi(myVideo)
                         } else {
                             Toast.makeText(this@MyPlayer, "status" + details, Toast.LENGTH_LONG).show()
                         }
@@ -566,6 +570,7 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
         tv_play_title.setText(myVideo.headline)
         tv_play_description.setText(myVideo.description)
         makeTextViewResizable(tv_play_description, 2, "View More", true)
+
         lay_fav = findViewById(R.id.lay_fav)
         img_fav = findViewById(R.id.img_fav)
         img_fav_done = findViewById(R.id.img_fav_done)
@@ -734,6 +739,15 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
         if (newConfig!!.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            myPlayerApi(mySequence.get(currentWindow))
+           /* initUi(mySequence.get(currentWindow))
+            my_recycler_view.setHasFixedSize(true)
+            my_recycler_view.setItemViewCacheSize(20);
+            my_recycler_view.setDrawingCacheEnabled(true);
+            layoutManager = LinearLayoutManager(applicationContext)
+            my_recycler_view.setLayoutManager(layoutManager)
+            my_recycler_view.setNestedScrollingEnabled(false)*/
+           // Handler().postDelayed(Runnable {  adapter.notifyDataSetChanged() },300)
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
             mFullScreenIcon.setImageDrawable(
@@ -745,6 +759,16 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
 
             playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+            myPlayerApi(mySequence.get(currentWindow))
+          /*  initUi(mySequence.get(currentWindow))
+            my_recycler_view.setHasFixedSize(true)
+            my_recycler_view.setItemViewCacheSize(20);
+            my_recycler_view.setDrawingCacheEnabled(true);
+            layoutManager = LinearLayoutManager(applicationContext)
+            my_recycler_view.setLayoutManager(layoutManager)
+            my_recycler_view.setNestedScrollingEnabled(false)*/
+            //Handler().postDelayed(Runnable {  adapter.notifyDataSetChanged() },300)
+
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
             mFullScreenIcon.setImageDrawable(
                 ContextCompat.getDrawable(
@@ -806,10 +830,7 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
     ): SpannableStringBuilder {
         val str = strSpanned.toString()
         val ssb = SpannableStringBuilder(strSpanned)
-
         if (str.contains(spanableText)) {
-
-
             ssb.setSpan(object : MySpannable(false) {
                 override fun onClick(widget: View) {
                     tv.layoutParams = tv.layoutParams
@@ -820,7 +841,7 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
                         makeTextViewResizable(tv, -1, "View Less", false)
                     } else {
                         trackEvent(this@MyPlayer, "Player", "View More")
-                        makeTextViewResizable(tv, 3, "View More", true)
+                        makeTextViewResizable(tv, 2, "View More", true)
                     }
                 }
             }, str.indexOf(spanableText), str.indexOf(spanableText) + spanableText.length, 0)
@@ -863,7 +884,7 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
 
             if (currentWindow != newcurrentWindow) {
                 currentWindow = player.currentWindowIndex
-                impressionTracker("next", mySequence.get(currentWindow))
+                impressionTracker(mySequence.get(currentWindow))
                 mySequence.get(currentWindow).id
                 // myPlayerApi(LandingPage.playingVideos.get(currentWindow).id, "next")
                 // Log.e("&&&&&&", " video id 2" +mySequence.get(currentWindow).id)

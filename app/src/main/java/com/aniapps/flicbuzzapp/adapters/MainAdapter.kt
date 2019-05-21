@@ -41,7 +41,7 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
         val singleItem = itemsList[i]
         holder.tvTitle.setText(singleItem.headline)
         holder.tvDesc.setText(singleItem.description)
-        holder.tvViews.setText("" + singleItem.views + " " + "Views")
+        holder.tvViews.setText(singleItem.video_date2 + " | " + singleItem.views + " " + "Views")
         if (from.equals("main") || from.equals("fav")) {
             holder.tvDesc.setTextColor(ContextCompat.getColor(context, R.color.lightgray))
 
@@ -72,7 +72,7 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
                         val status = jobj.getInt("status")
                         val details = jobj.getString("details")
                         if (status == 1) {
-                           // LandingPage.playingVideos.add(myVideo)
+                            // LandingPage.playingVideos.add(myVideo)
                             var myurl2 = "";
                             val jsonArray = jobj.getJSONArray("next")
                             for (i in 0 until jsonArray.length()) {
@@ -80,7 +80,7 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
                                     jsonArray.get(i).toString(),
                                     MyVideos::class.java
                                 )
-                              //  LandingPage.playingVideos.add(lead)
+                                //  LandingPage.playingVideos.add(lead)
                             }
 
 
@@ -93,12 +93,12 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
                                 context.startActivity(player_in)
                                 context.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
                             } else {
-                               /* try {
-                                    //  (context as MyPlayer).refresh(myVideo.id, myVideo.video_filename, myurl2, "adapter")
-                                    Log.e("@@@@", "ins in adapter")
-                                } catch (exception: ClassCastException) {
-                                    // do something
-                                }*/
+                                /* try {
+                                     //  (context as MyPlayer).refresh(myVideo.id, myVideo.video_filename, myurl2, "adapter")
+                                     Log.e("@@@@", "ins in adapter")
+                                 } catch (exception: ClassCastException) {
+                                     // do something
+                                 }*/
                                 val player_in = Intent(context, MyPlayer::class.java)
                                 player_in.putExtra("playingVideo", myVideo)
                                 player_in.putExtra("from", from)

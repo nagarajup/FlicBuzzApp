@@ -12,13 +12,29 @@
             android:layout_width="match_parent"
             android:theme="@style/AppTheme.AppBarOverlay">
 
-       <include layout="@layout/toolbar_main" />
 
+        <include layout="@layout/toolbar_main"/>
+
+       <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/tvtitle"
+                  android:padding="8sp"
+                  android:gravity="center"
+                  android:textSize="20sp"
+                  app:layout_scrollFlags="scroll|enterAlways"
+                  android:background="@color/white"
+                  android:fontFamily="@font/cera_gr_bold"
+                  android:text="Latest Bollywood News"
+                  android:visibility="gone"
+                  android:textColor="@color/lightgray"
+                  tools:ignore="MissingConstraints"/>
 
 
     </android.support.design.widget.AppBarLayout>
 
+
     <include layout="@layout/content_main"/>
+
 
     <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"

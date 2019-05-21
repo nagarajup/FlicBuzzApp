@@ -8,6 +8,7 @@
                                    app:contentInsetStart="0dp"
                                    app:contentInsetStartWithNavigation="0dp"
                                    android:background="?attr/colorPrimary"
+                                   app:layout_scrollFlags="scroll|enterAlways"
                                    app:popupTheme="@style/AppTheme.PopupOverlay"
                                    android:theme="@style/AppTheme.AppBarOverlay">
 

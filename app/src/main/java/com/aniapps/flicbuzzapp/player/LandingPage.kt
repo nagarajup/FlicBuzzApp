@@ -760,6 +760,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
         clear.setOnClickListener {
             searchEditText.setText("")
             search_list.visibility = View.GONE
+            tvtitle.visibility = View.VISIBLE
             mHighlightArrayAdapter.notifyDataSetChanged()
             MenuItemCompat.collapseActionView(menuItem)
         }
@@ -803,6 +804,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
             override fun onMenuItemActionExpand(menuItem: MenuItem): Boolean {
                 trackEvent(this@LandingPage, "MainPage", "Search")
                 searchEditText.requestFocus()
+                tvtitle.visibility = View.GONE
                 if (searchEditText.requestFocus()) {
                     val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
@@ -818,6 +820,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
                 imm.hideSoftInputFromWindow(currentFocus.windowToken, 0)
                 searchEditText.setText("")
                 search_list.visibility = View.GONE
+                tvtitle.visibility = View.VISIBLE
                 searchFilters.clear();
                 tag_id = "";
                 apiCall(tag_id)
