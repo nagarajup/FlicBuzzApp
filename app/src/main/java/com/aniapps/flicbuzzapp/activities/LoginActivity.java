@@ -207,6 +207,7 @@ public class LoginActivity extends AppConstants {
                             PrefManager.getIn().setPlan(jsonObject.getString("plan"));
                             PrefManager.getIn().setPayment_mode(jsonObject.getString("payment_mode"));
                             PrefManager.getIn().setDeveloper_mode(jsonObject.getString("developer_mode"));
+                            PrefManager.getIn().setServer_version_mode(jsonObject.getString("server_version_mode"));
                             PrefManager.getIn().setShow_splash_message(jsonObject.getString("show_splash_message"));
                             PrefManager.getIn().setSplash_message(jsonObject.getString("splash_message"));
                             JSONObject userObject = jsonObject.getJSONObject("data");
@@ -254,6 +255,7 @@ public class LoginActivity extends AppConstants {
                             PrefManager.getIn().setPayment_mode(jsonObject.getString("payment_mode"));
                             PrefManager.getIn().setPlan(jsonObject.getString("plan"));
                             PrefManager.getIn().setDeveloper_mode(jsonObject.getString("developer_mode"));
+                            PrefManager.getIn().setServer_version_mode(jsonObject.getString("server_version_mode"));
                             PrefManager.getIn().setShow_splash_message(jsonObject.getString("show_splash_message"));
                             PrefManager.getIn().setSplash_message(jsonObject.getString("splash_message"));
                             JSONObject userObject = jsonObject.getJSONObject("data");

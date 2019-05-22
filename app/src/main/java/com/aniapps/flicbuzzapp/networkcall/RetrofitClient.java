@@ -99,6 +99,7 @@ public class RetrofitClient extends AppCompatActivity {
         if (!postParams.get("action").equals("login")) {
             postParams.put("user_id", PrefManager.getIn().getUserId());
         }
+        postParams.put("from_source", "android");
         postParams.put("language", PrefManager.getIn().getLanguage().toLowerCase());
        // Log.e("#API#", "Post Params" + postParams);
         apiService.coreApiResult(context.getResources().getString(R.string.core_live) + postParams.get("action"), postParams).enqueue(new Callback<String>() {

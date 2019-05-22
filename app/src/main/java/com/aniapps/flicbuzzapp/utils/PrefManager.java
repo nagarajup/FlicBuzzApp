@@ -121,6 +121,17 @@ public class PrefManager {
     public String show_splash_message = "";
     public String splash_message = "";
 
+    public String getServer_version_mode() {
+        return pref.getString("server_version_mode", "3");
+    }
+
+    public void setServer_version_mode(String server_version_mode) {
+        editor.putString("server_version_mode", server_version_mode);
+        editor.commit();
+    }
+
+    public String server_version_mode = "3";
+
     public String getDeveloper_mode() {
         return pref.getString("developer_mode", "0");
     }

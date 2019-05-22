@@ -8,6 +8,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -331,7 +333,13 @@ class LandingPage : AppConstants(), View.OnClickListener {
              alertDialog(this@LandingPage, "Alert", "Your plan is expired, Please purchase subscription.", 1)
          }*/
 
-
+        if(!PrefManager.getIn().getServer_version_mode().equals("3")){
+            if(PrefManager.getIn().getServer_version_mode().equals("2")) {
+                updatePopup(true);
+            }else{
+                updatePopup(false);
+            }
+        }
 
         super.onResume()
 
@@ -831,7 +839,60 @@ class LandingPage : AppConstants(), View.OnClickListener {
 
         return true
     }
+    private fun updatePopup(is_critical: Boolean) {
+        try {
+            val dialog = Dialog(this@LandingPage)
+            dialog.setCanceledOnTouchOutside(false)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setContentView(R.layout.customalert)
+            dialog.window!!.setBackgroundDrawable(
+                ColorDrawable(Color.TRANSPARENT)
+            )
+            val title_text = dialog
+                .findViewById(R.id.custom_alert_dialog_title) as TextView
+            val msg_text = dialog
+                .findViewById(R.id.custom_alert_dialog_msg) as TextView
+            val positiveBtn = dialog
+                .findViewById(R.id.custom_alert_dialog_button_ok) as TextView
 
+            val negativeBtn = dialog
+                .findViewById(R.id.custom_alert_dialog_button_cancel) as TextView
+            if (is_critical) {
+                negativeBtn.visibility = View.GONE
+                dialog.setCancelable(false)
+            }
+            title_text.text = "Update Notice"
+            msg_text.text =
+                "It looks like your are using an older version of FlicBuzz app.Please update your app at once to the latest version"
+            positiveBtn.text = "UPDATE"
+            negativeBtn.text = "CANCEL"
+            positiveBtn.setOnClickListener {
+                // TODO Auto-generated method stub
+                val appPackageName = packageName // getPackageName() from Context or Activity object
+                try {
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$appPackageName")))
+                } catch (anfe: android.content.ActivityNotFoundException) {
+                    startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("https://play.google.com/store/apps/details?id=com.cartrade.car&hl=en=$appPackageName")
+                        )
+                    )
+                }
+
+                dialog.dismiss()
+            }
+            negativeBtn.setOnClickListener {
+                // TODO Auto-generated method stub
+                dialog.dismiss()
+            }
+            if (!isFinishing)
+                dialog.show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
     private fun setLangSelection() {
         if (PrefManager.getIn().language.equals("Hindi", true)) {
             nav_hindi.setTypeface(nav_hindi.getTypeface(), Typeface.BOLD)
