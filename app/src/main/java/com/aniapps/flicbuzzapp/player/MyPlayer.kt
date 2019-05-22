@@ -189,9 +189,9 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
                             adapter = MainAdapter(this@MyPlayer, myvideos, "player")
                             layoutManager = LinearLayoutManager(applicationContext)
                             my_recycler_view.setLayoutManager(layoutManager)
-                           /* var  param: RelativeLayout.LayoutParams =
-                                RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
-                            my_recycler_view.setLayoutParams(param);*/
+                            /* var  param: RelativeLayout.LayoutParams =
+                                 RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+                             my_recycler_view.setLayoutParams(param);*/
                             my_recycler_view.setNestedScrollingEnabled(false)
                             my_recycler_view.adapter = adapter
                             adapter.notifyDataSetChanged()
@@ -398,10 +398,10 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
             icon_pip.visibility = View.GONE
         }
 
-        if(mySequence.get(currentWindow).short_video_filename.equals("")){
-            share.visibility=View.GONE
-        }else{
-            share.visibility=View.VISIBLE
+        if (mySequence.get(currentWindow).short_video_filename.equals("")) {
+            share.visibility = View.GONE
+        } else {
+            share.visibility = View.VISIBLE
         }
         share.setOnClickListener {
             trackEvent(this@MyPlayer, "Player", "Player|Share")
@@ -481,12 +481,13 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
     }
 
     fun DownloadTask(context: Activity, myVideos: MyVideos) {
-       // val firstLine = myVideos.description.split('.');
+        // val firstLine = myVideos.description.split('.');
         val i = Intent(Intent.ACTION_SEND)
         i.type = "text/plain"
         i.putExtra(Intent.EXTRA_TEXT, "text")
-        i.putExtra(Intent.EXTRA_TEXT, myVideos.headline +"\n\n" + myVideos.short_desc+ "\n\n" +
-                myVideos.short_video_filename
+        i.putExtra(
+            Intent.EXTRA_TEXT, myVideos.headline + "\n\n" + myVideos.short_desc + "\n\n" +
+                    myVideos.short_video_filename
         )
         context.startActivity(Intent.createChooser(i, "Share to"))
 
@@ -585,10 +586,10 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
             img_fav_done.visibility = View.GONE
         }
 
-        if(mySequence.get(currentWindow).short_video_filename.equals("")){
-            img_share.visibility=View.GONE
-        }else{
-            img_share.visibility=View.VISIBLE
+        if (mySequence.get(currentWindow).short_video_filename.equals("")) {
+            img_share.visibility = View.GONE
+        } else {
+            img_share.visibility = View.VISIBLE
         }
 
         img_share.setOnClickListener {
@@ -740,15 +741,7 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
         if (newConfig!!.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            myPlayerApi(mySequence.get(currentWindow))
-           /* initUi(mySequence.get(currentWindow))
-            my_recycler_view.setHasFixedSize(true)
-            my_recycler_view.setItemViewCacheSize(20);
-            my_recycler_view.setDrawingCacheEnabled(true);
-            layoutManager = LinearLayoutManager(applicationContext)
-            my_recycler_view.setLayoutManager(layoutManager)
-            my_recycler_view.setNestedScrollingEnabled(false)*/
-           // Handler().postDelayed(Runnable {  adapter.notifyDataSetChanged() },300)
+            //  myPlayerApi(mySequence.get(currentWindow))
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
             mFullScreenIcon.setImageDrawable(
@@ -758,18 +751,8 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
                 )
             );
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-
             playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
             myPlayerApi(mySequence.get(currentWindow))
-          /*  initUi(mySequence.get(currentWindow))
-            my_recycler_view.setHasFixedSize(true)
-            my_recycler_view.setItemViewCacheSize(20);
-            my_recycler_view.setDrawingCacheEnabled(true);
-            layoutManager = LinearLayoutManager(applicationContext)
-            my_recycler_view.setLayoutManager(layoutManager)
-            my_recycler_view.setNestedScrollingEnabled(false)*/
-            //Handler().postDelayed(Runnable {  adapter.notifyDataSetChanged() },300)
-
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
             mFullScreenIcon.setImageDrawable(
                 ContextCompat.getDrawable(
@@ -777,22 +760,14 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
                     R.drawable.ic_fullscreen_expand
                 )
             );
-
-
         }
-
-
-        //  my_recycler_view.adapter!!.notifyDataSetChanged()
-        // recycler_view_list.adapter!!.notifyDataSetChanged()
-
-
     }
 
 
     fun makeTextViewResizable(tv: TextView, maxLine: Int, expandText: String, viewMore: Boolean) {
         /*https://stackoverflow.com/questions/31668697/android-expandable-text-view-with-view-more-button-displaying-at-center-after*/
-       //if (tv.tag == null) {
-            tv.tag = tv.text
+        //if (tv.tag == null) {
+        tv.tag = tv.text
         //}
 
         val vto = tv.viewTreeObserver
