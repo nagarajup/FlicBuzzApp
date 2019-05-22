@@ -317,7 +317,7 @@ public class SignUpActivity extends AppConstants {
                             user_id = jsonObject.getString("user_id");
                             PrefManager.getIn().saveUserId(jsonObject.getString("user_id"));
                             if (status == 14) {
-                                Toast.makeText(SignUpActivity.this, "Otp sent succussfully", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SignUpActivity.this, "OTP sent successfully", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(SignUpActivity.this, jsonObject.getString("sms_details"), Toast.LENGTH_SHORT).show();
                             }

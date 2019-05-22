@@ -841,7 +841,7 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
                 Player.STATE_ENDED      // The player has finished playing the media
                 -> {
                     progressBar.visibility = View.GONE
-                    Toast.makeText(this@MyPlayer, "My Player Ending" + currentWindow, Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(this@MyPlayer, "My Player Ending" + currentWindow, Toast.LENGTH_SHORT).show()
                 }
 
             }

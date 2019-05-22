@@ -63,6 +63,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
     internal lateinit var rc_list: RecyclerView
     internal lateinit var myvideos: ArrayList<MyVideos>
     internal var loading = false
+    internal var updatePopup = false
     internal var scrollFlag = false
     internal var layoutManager: LinearLayoutManager? = null
     internal var total_records = ""
@@ -333,7 +334,8 @@ class LandingPage : AppConstants(), View.OnClickListener {
              alertDialog(this@LandingPage, "Alert", "Your plan is expired, Please purchase subscription.", 1)
          }*/
 
-        if(!PrefManager.getIn().getServer_version_mode().equals("3")){
+        if(!updatePopup && !PrefManager.getIn().getServer_version_mode().equals("3")){
+            updatePopup=true;
             if(PrefManager.getIn().getServer_version_mode().equals("2")) {
                 updatePopup(true);
             }else{
