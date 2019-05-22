@@ -553,7 +553,6 @@ public class PaymentScreen_New extends AppCompatActivity {
             @Override
             public void onSuccess(String result) {
                 try {
-
                     jsonObject = new JSONObject(result);
                     int status = jsonObject.getInt("status");
                     if (status == 1) {
