@@ -567,6 +567,11 @@ public class PaymentScreen_New extends AppCompatActivity {
                         PrefManager.getIn().setSubscription_start_date(params.get("subscription_start_date"));
                         PrefManager.getIn().setSubscription_renewal_date(params.get("subscription_renewal_date"));
                         PrefManager.getIn().setSubscription_end_date(params.get("subscription_end_date"));
+                        try {
+                            PrefManager.getIn().setSplash_message(jsonObject.getString("splash_message"));
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                         PrefManager.getIn().setPlan(params.get("package"));
                         if (PrefManager.getIn().getPlan().equals("3")) {
                             threemonthsflag = true;
