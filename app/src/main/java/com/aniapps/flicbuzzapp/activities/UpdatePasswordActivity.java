@@ -33,10 +33,11 @@ public class UpdatePasswordActivity extends AppConstants {
         setContentView(R.layout.activity_changepassword);
 
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        TextView  header_title = (TextView) findViewById(R.id.title);
+        TextView  header_title = (TextView) findViewById(R.id.tvheader);
         header_title.setText("Change Password");
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         initViews();
     }
 

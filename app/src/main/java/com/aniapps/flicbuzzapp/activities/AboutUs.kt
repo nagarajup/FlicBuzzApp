@@ -22,12 +22,11 @@ class AboutUs : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.frgment_about)
         val mToolbar = findViewById<View>(R.id.toolbar) as Toolbar
-        val header_title = findViewById<View>(R.id.title) as TextView
-
+        val header_title = findViewById<View>(R.id.tvheader) as TextView
         setSupportActionBar(mToolbar)
+        supportActionBar!!.setDisplayShowTitleEnabled(false);
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         title = intent.getStringExtra("title")
-
         header_title.text = title
         webview = findViewById<WebView>(R.id.web_page)
         tv_note = findViewById<TextView>(R.id.tv_note)

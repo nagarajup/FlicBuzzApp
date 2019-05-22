@@ -43,7 +43,7 @@ class MyFav : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.favourite_list)
         val mToolbar = findViewById<View>(R.id.toolbar) as Toolbar
-        val header_title = findViewById<View>(R.id.title) as TextView
+        val header_title = findViewById<View>(R.id.tvheader) as TextView
 
         setSupportActionBar(mToolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)

@@ -1,26 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                 xmlns:tools="http://schemas.android.com/tools"
-                                                 android:layout_width="match_parent"
-                                                 android:layout_height="match_parent"
-                                                 tools:context=".player.LandingPage">
-
-    <android.support.design.widget.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBarOverlay">
-
-        <include layout="@layout/toolbar"/>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context=".player.LandingPage">
 
 
-
-    </android.support.design.widget.AppBarLayout>
+    <include layout="@layout/toolbar"/>
 
 
     <WebView
             android:id="@+id/web_page"
-            android:layout_marginTop="52dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -28,11 +20,10 @@
             android:textSize="16sp"/>
 
     <TextView android:layout_width="match_parent"
-              android:layout_height="390dp"
-              android:layout_marginTop="75sp"
+              android:layout_height="wrap_content"
               android:layout_gravity="center_vertical"
               android:text="Comming Soon.."
-              android:visibility="visible"
+              android:visibility="gone"
               android:layout_margin="20sp"
               android:fontFamily="@font/cera_gr_regular"
               android:gravity="top"
@@ -40,7 +31,7 @@
               android:textSize="18sp"/>
 
 
-</android.support.design.widget.CoordinatorLayout>
+</LinearLayout>
 
 
 

@@ -39,10 +39,11 @@ public class LoginActivity extends AppConstants {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_new);
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        TextView header_title = (TextView) findViewById(R.id.title);
+        TextView header_title = (TextView) findViewById(R.id.tvheader);
         header_title.setText("Login");
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

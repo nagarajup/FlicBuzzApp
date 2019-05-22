@@ -6,12 +6,9 @@
 
               android:background="@android:color/white"
               android:layout_height="fill_parent">
-    <android.support.design.widget.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBarOverlay">
+
         <include layout="@layout/toolbar"/>
-    </android.support.design.widget.AppBarLayout>
+
     <ScrollView android:layout_width="fill_parent"
                 android:layout_margin="10sp"
                 android:layout_height="fill_parent">
