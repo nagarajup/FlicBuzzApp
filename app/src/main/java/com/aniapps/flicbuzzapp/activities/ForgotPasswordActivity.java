@@ -20,19 +20,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
-    Button update_btn;
-    TextView email_error,passwordError, confirmPasswordError, text_header;
-    EditText passwordEditText, confirmPasswordEditText, emailMobileEditText;
+    Button update_btn, validateMobile;
+    TextView email_error, passwordError, confirmPasswordError, text_header, otpErro, resendOTP;
+    EditText passwordEditText, confirmPasswordEditText, emailMobileEditText, otpEditText;
     JSONObject jsonObject;
-    LinearLayout email_ll, change_psd_ll;
-    ImageView psw_confirm_img_eye,psw_img_eye;
-    boolean check_visibility=true,check_visibility_confirm=true;
+    LinearLayout email_ll, change_psd_ll, btn_lay;
+    RelativeLayout otpLL;
+    ImageView psw_confirm_img_eye, psw_img_eye;
+    boolean check_visibility = true, check_visibility_confirm = true;
+    String mobile="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgotpassword);
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        TextView  header_title = (TextView) findViewById(R.id.tvheader);
+        TextView header_title = (TextView) findViewById(R.id.tvheader);
         header_title.setText("Forgot Password");
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -41,7 +43,12 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     void initViews() {
-
+        otpErro = (TextView) findViewById(R.id.otp_error);
+        resendOTP = (TextView) findViewById(R.id.resendOTP);
+        otpEditText = (EditText) findViewById(R.id.ot_et);
+        validateMobile = (Button) findViewById(R.id.validate_otp_btn);
+        otpLL = (RelativeLayout) findViewById(R.id.otpLL);
+        btn_lay = (LinearLayout) findViewById(R.id.btn_lay);
         change_psd_ll = (LinearLayout) findViewById(R.id.change_psd_ll);
         email_ll = (LinearLayout) findViewById(R.id.email_ll);
         text_header = (TextView) findViewById(R.id.text_header);
@@ -53,8 +60,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         passwordEditText = (EditText) findViewById(R.id.pwd);
         emailMobileEditText = (EditText) findViewById(R.id.email_mobile_et);
         update_btn = (Button) findViewById(R.id.update_btn);
-        psw_img_eye = (ImageView)findViewById(R.id.psw_img_eye);
-        psw_confirm_img_eye = (ImageView)findViewById(R.id.psw_confirm_img_eye);
+        psw_img_eye = (ImageView) findViewById(R.id.psw_img_eye);
+        psw_confirm_img_eye = (ImageView) findViewById(R.id.psw_confirm_img_eye);
         psw_img_eye.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -99,15 +106,59 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 }
             }
         });
+        resendOTP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (resendOTP.getText().toString().equalsIgnoreCase("Resend OTP")) {
+                    HashMap<String, String> params = new HashMap<>();
+                    params.put("mobile",mobile);
+                    params.put("from_source", "android");
+                    params.put("action", "resend_otp");
+                    params.put("user_id", PrefManager.getIn().getUserId());
+                    ApiCall(params, 4);
+                }
+            }
+        });
+        validateMobile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (otpEditText.getText().toString().length() < 4) {
+                    otpErro.setVisibility(View.VISIBLE);
+                } else {
+                    otpErro.setVisibility(View.INVISIBLE);
+                    HashMap<String, String> params = new HashMap<>();
+                    params.put("mobile", mobile);
+                    params.put("otp", otpEditText.getText().toString());
+                    params.put("user_id", PrefManager.getIn().getUserId());
+                    params.put("from_source", "android");
+                    params.put("action", "verify_otp");
+                    ApiCall(params, 3);
+                }
+            }
+        });
     }
+    @Override
+    public void onBackPressed() {
 
+        if (email_ll.getVisibility() == View.VISIBLE) {
+            finish();
+            overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
+        } else {
+            email_ll.setVisibility(View.VISIBLE);
+            change_psd_ll.setVisibility(View.GONE);
+            btn_lay.setVisibility(View.VISIBLE);
+            otpLL.setVisibility(View.GONE);
+            text_header.setText("Forgot your password");
+        }
+        super.onBackPressed();
+    }
     public void checkValidation(int from) {
         if (from == 1) {
-            email_error.setVisibility(View.GONE);
-            if(emailMobileEditText.getText().toString().length()==0){
+            email_error.setVisibility(View.INVISIBLE);
+            if (emailMobileEditText.getText().toString().length() == 0) {
                 emailMobileEditText.requestFocus();
                 email_error.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 HashMap<String, String> params = new HashMap<>();
                 params.put("email", emailMobileEditText.getText().toString());
                 params.put("from_source", "android");
@@ -158,18 +209,32 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                     jsonObject = new JSONObject(result);
                     int status = jsonObject.getInt("status");
                     if (status == 1) {
-                        if(from==1){
+                        if (from == 1) {
+                            mobile= jsonObject.getJSONObject("data").getString("mobile");
+                            text_header.setText("Set your password");
+                            email_ll.setVisibility(View.GONE);
+                            change_psd_ll.setVisibility(View.GONE);
+                            btn_lay.setVisibility(View.GONE);
+                            otpLL.setVisibility(View.VISIBLE);
+                            PrefManager.getIn().saveUserId(jsonObject.getString("user_id"));
+
+                        } else if (from == 3) {
                             text_header.setText("Set your password");
                             email_ll.setVisibility(View.GONE);
                             change_psd_ll.setVisibility(View.VISIBLE);
+                            otpLL.setVisibility(View.GONE);
+                            btn_lay.setVisibility(View.VISIBLE);
                             PrefManager.getIn().saveUserId(jsonObject.getString("user_id"));
 
-                        }else {
+                        } else if (from == 4) {
+                            Toast.makeText(ForgotPasswordActivity.this, jsonObject.getString("message") + ", Please authenticate with otp", Toast.LENGTH_SHORT).show();
+
+                        } else {
                             Toast.makeText(ForgotPasswordActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                             finish();
                         }
                     } else {
-                        if(from==1){
+                        if (from == 1) {
                             email_error.setVisibility(View.VISIBLE);
                         }
                         Utility.alertDialog(ForgotPasswordActivity.this, "Alert", jsonObject.getString("message"));
