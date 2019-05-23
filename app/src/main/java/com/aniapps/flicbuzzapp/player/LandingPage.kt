@@ -434,7 +434,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
                         if (!PrefManager.getIn().autoRenewal) {
                             if (!jsonObject.getBoolean("autoRenewing")) {
                                 PrefManager.getIn().autoRenewal = true
-                                createNotification(this.getString(R.string.app_name),"Your FLicBuzz three months subscription has been cancelled, so your next subscription will not be charged")
+                                createNotification(this.getString(R.string.app_name),"Your FlicBuzz three months subscription has been cancelled, so your next subscription will not be charged")
                             }
                         }
                     } catch (e: JSONException) {
@@ -533,7 +533,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
                         if (!PrefManager.getIn().autoRenewal) {
                             if (!jsonObject.getBoolean("autoRenewing")) {
                                 PrefManager.getIn().autoRenewal = true
-                                createNotification(this.getString(R.string.app_name),"Your FLicBuzz one year subscription has been cancelled, so your next subscription will not be charged")
+                                createNotification(this.getString(R.string.app_name),"Your FlicBuzz one year subscription has been cancelled, so your next subscription will not be charged")
                             }
                         }
                     } catch (e: JSONException) {
