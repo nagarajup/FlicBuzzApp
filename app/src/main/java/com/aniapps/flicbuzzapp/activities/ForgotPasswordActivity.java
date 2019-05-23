@@ -233,6 +233,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                             Toast.makeText(ForgotPasswordActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                             finish();
                         }
+                    }else if(status==14){
+                        Utility.alertDialog(ForgotPasswordActivity.this,  jsonObject.getString("message"));
                     } else {
                         if (from == 1) {
                             email_error.setVisibility(View.VISIBLE);

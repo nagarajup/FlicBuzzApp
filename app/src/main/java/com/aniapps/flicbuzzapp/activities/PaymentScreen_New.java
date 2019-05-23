@@ -620,6 +620,8 @@ public class PaymentScreen_New extends AppCompatActivity {
                             overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
                         }
                        // }
+                    }else if(status==14){
+                        Utility.alertDialog(PaymentScreen_New.this,  jsonObject.getString("message"));
                     } else {
                         Utility.alertDialog(PaymentScreen_New.this, "Alert", jsonObject.getString("message"));
                     }
