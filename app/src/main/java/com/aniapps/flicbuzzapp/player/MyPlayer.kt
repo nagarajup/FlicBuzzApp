@@ -34,6 +34,7 @@ import com.aniapps.flicbuzzapp.adapters.MainAdapter
 import com.aniapps.flicbuzzapp.models.MyVideos
 import com.aniapps.flicbuzzapp.networkcall.APIResponse
 import com.aniapps.flicbuzzapp.networkcall.RetrofitClient
+import com.aniapps.flicbuzzapp.utils.Utility
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.*
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
@@ -195,6 +196,11 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
                             my_recycler_view.setNestedScrollingEnabled(false)
                             my_recycler_view.adapter = adapter
                             adapter.notifyDataSetChanged()
+                        } else if (status == 14) run {
+                            Utility.alertDialog(
+                                this@MyPlayer,
+                                jobj.getString("message")
+                            )
                         }
 
                     } catch (e: Exception) {
@@ -638,6 +644,11 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
                             }, 500)
                             // flag = true
                             Toast.makeText(this@MyPlayer, jobj.getString("message"), Toast.LENGTH_SHORT).show();
+                        } else if (status == 14) run {
+                            Utility.alertDialog(
+                                this@MyPlayer,
+                                jobj.getString("message")
+                            )
                         } else {
                             //   flag = false
                             Toast.makeText(this@MyPlayer, "status" + details, Toast.LENGTH_LONG).show()
@@ -677,6 +688,11 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
                             }, 500)
 
                             Toast.makeText(this@MyPlayer, jobj.getString("message"), Toast.LENGTH_SHORT).show();
+                        } else if (status == 14) run {
+                            Utility.alertDialog(
+                                this@MyPlayer,
+                                jobj.getString("message")
+                            )
                         } else {
                             Toast.makeText(this@MyPlayer, "status" + details, Toast.LENGTH_LONG).show()
                         }

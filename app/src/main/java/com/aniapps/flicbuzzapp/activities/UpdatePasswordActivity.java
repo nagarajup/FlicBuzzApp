@@ -167,6 +167,8 @@ public class UpdatePasswordActivity extends AppConstants {
                     if (status == 1) {
                         trackEvent(UpdatePasswordActivity.this,"MainPage","Change Password|Update Password");
                         Toast.makeText(UpdatePasswordActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                    }else if(status==14){
+                        Utility.alertDialog(UpdatePasswordActivity.this,  jsonObject.getString("message"));
                     } else {
 
                         Utility.alertDialog(UpdatePasswordActivity.this, "Alert", jsonObject.getString("message"));

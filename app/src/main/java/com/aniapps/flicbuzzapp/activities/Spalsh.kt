@@ -21,6 +21,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.graphics.Color
+import com.aniapps.flicbuzzapp.utils.Utility
 
 
 class Spalsh : AppCompatActivity() {
@@ -97,6 +98,8 @@ class Spalsh : AppCompatActivity() {
                         finish()
                     }else if(status == 90){
                         alertDialog(this@Spalsh)
+                    }else if(status==14){
+                        Utility.alertDialog(this@Spalsh,  jsonObject.getString("message"))
                     }
 
                 } catch (e: Exception) {
@@ -110,19 +113,19 @@ class Spalsh : AppCompatActivity() {
         })
     }
     fun alertDialog(context: Context) {
-        val builder = AlertDialog.Builder(context)
+        /*val builder = AlertDialog.Builder(context)
         builder.setMessage("This Account is activated in another device, Please logout and try again.")
         builder.setTitle("Notice")
         builder.setCancelable(false)
-        builder.setPositiveButton("OK") { dialog, which ->
+        builder.setPositiveButton("OK") { dialog, which ->*/
             PrefManager.getIn().clearLogins();
             val i = Intent(this@Spalsh, SignIn::class.java)
             startActivity(i)
             overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
             finish()
-        }
+       /* }
         //builder.setNegativeButton("NO", null);
-        builder.show()
+        builder.show()*/
     }
 
 

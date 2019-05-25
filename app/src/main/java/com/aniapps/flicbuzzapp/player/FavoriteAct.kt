@@ -17,6 +17,7 @@ import com.aniapps.flicbuzzapp.adapters.MainAdapter
 import com.aniapps.flicbuzzapp.models.MyVideos
 import com.aniapps.flicbuzzapp.networkcall.APIResponse
 import com.aniapps.flicbuzzapp.networkcall.RetrofitClient
+import com.aniapps.flicbuzzapp.utils.Utility
 import com.google.gson.Gson
 import org.json.JSONArray
 import org.json.JSONObject
@@ -141,6 +142,11 @@ class FavoriteAct : AppCompatActivity() {
                             } else {
                                 laynofav.visibility = View.VISIBLE
                             }
+                        } else if (status == 14) run {
+                            Utility.alertDialog(
+                                this@FavoriteAct,
+                                jobj.getString("message")
+                            )
                         } else {
                             Toast.makeText(this@FavoriteAct, "status" + status, Toast.LENGTH_LONG).show()
                         }

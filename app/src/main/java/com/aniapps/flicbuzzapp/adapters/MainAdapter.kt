@@ -20,6 +20,7 @@ import com.aniapps.flicbuzzapp.models.MyVideos
 import com.aniapps.flicbuzzapp.networkcall.APIResponse
 import com.aniapps.flicbuzzapp.networkcall.RetrofitClient
 import com.aniapps.flicbuzzapp.player.LandingPage
+import com.aniapps.flicbuzzapp.utils.Utility
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import org.json.JSONObject
@@ -108,6 +109,11 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
                                 context.startActivity(player_in)
                                 context.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
                             }
+                        } else if (status == 14) run {
+                            Utility.alertDialog(
+                                context,
+                                jobj.getString("message")
+                            )
                         } else {
                             Toast.makeText(context, "status" + details, Toast.LENGTH_LONG).show()
                         }

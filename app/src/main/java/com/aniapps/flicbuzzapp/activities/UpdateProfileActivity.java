@@ -235,6 +235,8 @@ public class UpdateProfileActivity extends AppConstants {
                         PrefManager.getIn().setProfile_pic(jsonObject.getString("pic_url"));
                         Toast.makeText(UpdateProfileActivity.this, "Successfully profile pic updated.", Toast.LENGTH_SHORT).show();
                        // finish();
+                    }else if(status==14){
+                        Utility.alertDialog(UpdateProfileActivity.this,  jsonObject.getString("message"));
                     } else {
                         Utility.alertDialog(UpdateProfileActivity.this, "Alert", jsonObject.getString("message"));
 
@@ -275,7 +277,9 @@ public class UpdateProfileActivity extends AppConstants {
                         PrefManager.getIn().setDob(dobEditText.getText().toString());
                         Toast.makeText(UpdateProfileActivity.this, jsonObject.getString("details"), Toast.LENGTH_SHORT).show();
                         finish();
-                    } else {
+                    } else if(status==14){
+                        Utility.alertDialog(UpdateProfileActivity.this,  jsonObject.getString("message"));
+                    }else {
                         Utility.alertDialog(UpdateProfileActivity.this, "Alert", jsonObject.getString("message"));
 
                     }

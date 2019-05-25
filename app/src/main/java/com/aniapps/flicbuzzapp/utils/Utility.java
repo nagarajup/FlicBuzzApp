@@ -3,12 +3,18 @@ package com.aniapps.flicbuzzapp.utils;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.EditText;
+import com.aniapps.flicbuzzapp.R;
+import com.aniapps.flicbuzzapp.activities.LoginActivity;
+import com.aniapps.flicbuzzapp.activities.SettingsActivity;
+import com.aniapps.flicbuzzapp.activities.SignIn;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 public class Utility {
 
@@ -97,7 +103,7 @@ public class Utility {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                dialog.dismiss();
 
             }
         });
@@ -118,5 +124,26 @@ public class Utility {
 
         }
         return false;
+    }
+    public static void alertDialog(final Context context,  String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(msg);
+        builder.setTitle("Notice");
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                PrefManager.getIn().clearLogins();
+                //PrefManager.getIn().setLogin(false);
+                Intent intent =new Intent(context, SignIn.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                context.startActivity(intent);
+
+            }
+        });
+        builder.show();
     }
 }

@@ -651,6 +651,11 @@ class LandingPage : AppConstants(), View.OnClickListener {
                                 PrefManager.getIn().setPayment_mode("1")
                             }
 
+                        } else if (status == 14) run {
+                            Utility.alertDialog(
+                                this@LandingPage,
+                                jsonObject.getString("message")
+                            )
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -990,6 +995,11 @@ class LandingPage : AppConstants(), View.OnClickListener {
                             mHighlightArrayAdapter.notifyDataSetChanged()
                             //  autoSuggestAdapter.setData(searchFilters)
                             // autoSuggestAdapter.notifyDataSetChanged()
+                        } else if (status == 14) run {
+                            Utility.alertDialog(
+                                this@LandingPage,
+                                jobj.getString("message")
+                            )
                         } else {
                             Toast.makeText(this@LandingPage, "status" + status, Toast.LENGTH_LONG).show()
                         }
@@ -1233,6 +1243,11 @@ class LandingPage : AppConstants(), View.OnClickListener {
                                 adapter.notifyDataSetChanged()
                             }
 
+                        } else if (status == 14) run {
+                            Utility.alertDialog(
+                                this@LandingPage,
+                                jobj.getString("message")
+                            )
                         } else {
                             Toast.makeText(this@LandingPage, "status" + status, Toast.LENGTH_LONG).show()
                         }
@@ -1277,6 +1292,11 @@ class LandingPage : AppConstants(), View.OnClickListener {
                         if (status == 1) {
                             Toast.makeText(this@LandingPage, "" + jobj.getString("message"), Toast.LENGTH_LONG).show()
 
+                        }else if (status == 14) run {
+                            Utility.alertDialog(
+                                this@LandingPage,
+                                jobj.getString("message")
+                            )
                         } else {
                             Toast.makeText(this@LandingPage, "status" + details, Toast.LENGTH_LONG).show()
                         }
@@ -1329,6 +1349,11 @@ class LandingPage : AppConstants(), View.OnClickListener {
                             startActivity(player_in)
                             overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 
+                        }else if (status == 14) run {
+                            Utility.alertDialog(
+                                this@LandingPage,
+                                jobj.getString("message")
+                            )
                         } else {
                             Toast.makeText(this@LandingPage, "status" + details, Toast.LENGTH_LONG).show()
                         }

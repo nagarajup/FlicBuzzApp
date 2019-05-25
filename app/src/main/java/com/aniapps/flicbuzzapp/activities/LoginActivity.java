@@ -1,5 +1,8 @@
 package com.aniapps.flicbuzzapp.activities;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,6 +12,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
@@ -239,10 +243,11 @@ public class LoginActivity extends AppConstants {
                             PrefManager.getIn().saveUserId(jsonObject.getString("user_id"));
                             user_id = jsonObject.getString("user_id");
                             mobile_num = jsonObject.getString("mobile");
-                            Toast.makeText(LoginActivity.this, jsonObject.getString("message") + ", Please authenticate with otp", Toast.LENGTH_SHORT).show();
-                            otpLL.setVisibility(View.VISIBLE);
-                            loginLL.setVisibility(View.GONE);
-                            countDown(resendOTP);
+                            alertDialog(LoginActivity.this,"Notice",jsonObject.getString("message") + ", Please authenticate with otp");
+                            //Toast.makeText(LoginActivity.this, jsonObject.getString("message") + ", Please authenticate with otp", Toast.LENGTH_SHORT).show();
+
+                        }else if(status==14){
+                            Utility.alertDialog(LoginActivity.this,  jsonObject.getString("message"));
                         } else {
                             Utility.alertDialog(LoginActivity.this, "Alert", jsonObject.getString("message"));
                         }
@@ -283,10 +288,16 @@ public class LoginActivity extends AppConstants {
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
                             }
+                        }else if(status==14){
+                            Utility.alertDialog(LoginActivity.this,  jsonObject.getString("message"));
                         } else {
                             Utility.alertDialog(LoginActivity.this, "Alert", jsonObject.getString("message"));
                         }
 
+                    }else if (from == 3){
+                        otpLL.setVisibility(View.VISIBLE);
+                        loginLL.setVisibility(View.GONE);
+                        countDown(resendOTP);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -304,7 +315,33 @@ public class LoginActivity extends AppConstants {
     int interval = 1000; // 10 secs
     Runnable runnable;
     Handler handler;
+    public  void alertDialog(final Context context, String title, String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(msg);
+        builder.setTitle(title);
+        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                trackEvent(LoginActivity.this,"Login","Login|Popup|Cancel");
+                dialog.dismiss();
+            }
+        });
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                trackEvent(LoginActivity.this,"Login","Login|Popup|Cancel");
+                dialog.dismiss();
+                HashMap<String, String> params = new HashMap<>();
+                params.put("mobile", mobile_num);
+                params.put("from_source", "android");
+                params.put("action", "resend_otp");
+                params.put("user_id", user_id);
+                ApiCall(params, 3);
 
+            }
+        });
+        builder.show();
+    }
     public void countDown(final TextView mTextField) {
         // validateMobile.setBackground(getDrawable(R.drawable.rounded_corners_grey));
         // validateMobile.setEnabled(false);
