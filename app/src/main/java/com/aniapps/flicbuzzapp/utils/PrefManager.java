@@ -1,8 +1,15 @@
 package com.aniapps.flicbuzzapp.utils;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import com.aniapps.flicbuzzapp.AppApplication;
+import com.aniapps.flicbuzzapp.networkcall.APIResponse;
+import com.aniapps.flicbuzzapp.networkcall.RetrofitClient;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Lincoln on 05/05/16.
@@ -309,4 +316,40 @@ public class PrefManager {
     public String profile_pic = "";
 
 
+    public String getFcm_token() {
+        return pref.getString("fcm_token", "");
+    }
+
+    public void setFcm_token(String fcm_token) {
+        editor.putString("fcm_token", fcm_token);
+        editor.apply();
+    }
+
+    public void sendRegistrationToServer(Context context, final String token) {
+
+        if (PrefManager.getIn().getUserId().equals("")) {
+             Log.e("#FCM#", "Tokent@Return " + token);
+            return;
+        }
+
+        if (token.length() > 0) {
+            Log.e("#FCM#", "Tokent@api " + token);
+            Map<String, String> params = new HashMap<>();
+            params.put("action", "notification_tokens");
+            params.put("fcm_token", token);
+            params.put("from_source", "android");
+            RetrofitClient.getInstance().doBackProcess(context, params, "online",  new APIResponse() {
+
+                @Override
+                public void onSuccess(String res) {
+                    Log.e("#FCM#", "Tokent@success " + token);
+                }
+
+                @Override
+                public void onFailure(String res) {
+                    Log.e("#FCM#", "Tokent@failuer " + token);
+                }
+            });
+        }
+    }
 }

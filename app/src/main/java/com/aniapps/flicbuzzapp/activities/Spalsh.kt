@@ -22,6 +22,10 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.graphics.Color
 import com.aniapps.flicbuzzapp.utils.Utility
+import com.google.firebase.iid.InstanceIdResult
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.iid.FirebaseInstanceId
+import android.util.Log
 
 
 class Spalsh : AppCompatActivity() {
@@ -30,9 +34,17 @@ class Spalsh : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
-        if (!PrefManager.getIn().login) {
-            Handler().postDelayed({
 
+       /* //notification_tokens
+        FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener(this@Spalsh,
+            OnSuccessListener<InstanceIdResult> { instanceIdResult ->
+                val newToken = instanceIdResult.token
+                Log.e("newToken", newToken)
+            })*/
+
+        if (!PrefManager.getIn().login) {
+
+            Handler().postDelayed({
                 val i = Intent(this@Spalsh, IntroductionScreen::class.java)
                 startActivity(i)
                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
@@ -40,6 +52,8 @@ class Spalsh : AppCompatActivity() {
                 finish()
             }, 2000)
         } else {
+
+
             ApiCall()
         }
 
@@ -94,6 +108,16 @@ class Spalsh : AppCompatActivity() {
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                             startActivity(intent)
                             overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+                        }
+                        try {
+                            runOnUiThread {
+                                PrefManager.getIn().sendRegistrationToServer(
+                                    this@Spalsh,
+                                    PrefManager.getIn().getFcm_token()
+                                )
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
                         finish()
                     }else if(status == 90){

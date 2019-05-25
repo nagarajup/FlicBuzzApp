@@ -5,6 +5,8 @@ import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.aniapps.flicbuzzapp.networkcall.APIResponse
+import com.aniapps.flicbuzzapp.networkcall.RetrofitClient
 import com.aniapps.flicbuzzapp.utils.PrefManager
 import com.appsflyer.AFInAppEventType
 import com.appsflyer.AppsFlyerLib
@@ -33,4 +35,6 @@ open class AppConstants : AppCompatActivity() {
          AppsFlyerLib.getInstance().setAdditionalData(CustomDataMap)*/
 
     }
+
+
 }

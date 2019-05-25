@@ -62,6 +62,7 @@ dependencies {
     annotationProcessor "com.jakewharton:butterknife-compiler:8.8.1"
     implementation 'com.appsflyer:af-android-sdk:4.9.0'
     implementation 'com.android.installreferrer:installreferrer:1.0'
-    implementation 'com.google.firebase:firebase-core:16.0.9'
+    implementation 'com.google.firebase:firebase-messaging:18.0.0'
+    implementation "com.google.firebase:firebase-core:16.0.3"
 }
 apply plugin: 'com.google.gms.google-services'
