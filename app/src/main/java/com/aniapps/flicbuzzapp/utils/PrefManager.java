@@ -335,9 +335,8 @@ public class PrefManager {
         if (token.length() > 0) {
             Log.e("#FCM#", "Tokent@api " + token);
             Map<String, String> params = new HashMap<>();
-            params.put("action", "notification_tokens");
+            params.put("action", "notification_registration");
             params.put("fcm_token", token);
-            params.put("from_source", "android");
             RetrofitClient.getInstance().doBackProcess(context, params, "online",  new APIResponse() {
 
                 @Override

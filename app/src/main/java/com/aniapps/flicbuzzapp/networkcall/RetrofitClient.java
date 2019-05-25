@@ -95,6 +95,7 @@ public class RetrofitClient extends AppCompatActivity {
         this.context = context;
         apiService = RetrofitClient.getClient(context).create(APIService.class);
         postParams.put("version_code", "" + BuildConfig.VERSION_CODE);
+        postParams.put("api_key", "fb2019v1.0");
         postParams.put("device_id", Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID));
         if (!postParams.get("action").equals("login")) {
             postParams.put("user_id", PrefManager.getIn().getUserId());
@@ -158,7 +159,8 @@ public class RetrofitClient extends AppCompatActivity {
                                     final MultipartBody.Part body, final APIResponse api_res) {
         apiService = RetrofitClient.getClient(context).create(APIService.class);
         postParams.put("version_code", "" + BuildConfig.VERSION_CODE);
-       // postParams.put("device_id", PrefManager.getIn().getDeviceId());
+        postParams.put("api_key", "fb2019v1.0");
+        // postParams.put("device_id", PrefManager.getIn().getDeviceId());
         postParams.put("device_id", Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID));
         postParams.put("user_id", PrefManager.getIn().getUserId());
         //Log.e(TAG, "post params" + postParams);

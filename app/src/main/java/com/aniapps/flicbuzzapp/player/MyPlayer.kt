@@ -404,7 +404,7 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
             icon_pip.visibility = View.GONE
         }
 
-        if (mySequence.get(currentWindow).short_video_filename.equals("")) {
+        if (mySequence.get(currentWindow).share_url.equals("")) {
             share.visibility = View.GONE
         } else {
             share.visibility = View.VISIBLE
@@ -493,7 +493,7 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
         i.putExtra(Intent.EXTRA_TEXT, "text")
         i.putExtra(
             Intent.EXTRA_TEXT, myVideos.headline + "\n\n" + myVideos.short_desc + "\n\n" +
-                    myVideos.short_video_filename
+                    myVideos.share_url
         )
         context.startActivity(Intent.createChooser(i, "Share to"))
 
@@ -592,7 +592,7 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
             img_fav_done.visibility = View.GONE
         }
 
-        if (mySequence.get(currentWindow).short_video_filename.equals("")) {
+        if (mySequence.get(currentWindow).share_url.equals("")) {
             img_share.visibility = View.GONE
         } else {
             img_share.visibility = View.VISIBLE

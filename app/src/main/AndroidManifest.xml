@@ -140,6 +140,41 @@
             </intent-filter>
         </service>
 
+        <receiver
+                android:name="com.aniapps.flicbuzzapp.notifications.Notification_BroadCast"
+                android:enabled="false">
+            <intent-filter android:priority="777">
+                <action android:name="com.catradeexchange.NOTIFICATIONBROADCAST" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+
+
+        <activity
+                android:name="com.aniapps.flicbuzzapp.activities.DeeplinkBrowser"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                        android:host="www.flicbuzz.com"
+                        android:pathPattern="/browse/.*"
+                        android:scheme="https" />
+
+                <data
+                        android:host="www.flicbuzz.com"
+                        android:pathPattern="/browse/.*"
+                        android:scheme="http" />
+                <!--<data android:scheme=”http”
+ android:host=”www.example.com"
+ android:pathPrefix=”/gizmos” />-->
+            </intent-filter>
+        </activity>
 
     </application>
 

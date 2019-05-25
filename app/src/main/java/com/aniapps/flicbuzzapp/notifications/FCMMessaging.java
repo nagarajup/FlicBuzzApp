@@ -31,8 +31,8 @@ import java.util.Random;
 
 public class FCMMessaging extends FirebaseMessagingService {
     private Context context = this;
-    String push_title = "", push_msg = "", push_type = "", push_img_url = "",
-            push_root_url = "";
+    String push_title = "", push_msg = "", push_id = "", push_img_url = "",
+            push_root_url = "",push_type="",push_video_id="",push_video_language="";
     String refreshedToken = "";
 
     @Override
@@ -60,9 +60,9 @@ public class FCMMessaging extends FirebaseMessagingService {
                     data.putString(entry.getKey(), entry.getValue());
                 }
                 if (remoteMessage.getData().size() > 0) {
-                    if (null != data.getString("push_type") &&
-                            !data.getString("push_type").equals("") &&
-                            !data.getString("push_type").equalsIgnoreCase("null")) {
+                    if (null != data.getString("push_id") &&
+                            !data.getString("push_id").equals("") &&
+                            !data.getString("push_id").equalsIgnoreCase("null")) {
                         generateNotification(data);
                     }
 
@@ -77,12 +77,18 @@ public class FCMMessaging extends FirebaseMessagingService {
     NotificationManager notificationManager = null;
 
     private void generateNotification(Bundle data) {
+        push_id = data.getString("push_id");
         push_title = data.getString("push_title");
         push_msg = data.getString("push_msg");
-        push_type = data.getString("push_type");
         push_img_url = data.getString("push_img_url");
         push_root_url = data.getString("push_root_url");
-        switch (push_type) {
+        Log.e("#FCM#","push_id"+push_id);
+        Log.e("#FCM#","push_title"+push_title);
+        Log.e("#FCM#","push_msg"+push_msg);
+        Log.e("#FCM#","push_img_url"+push_img_url);
+        Log.e("#FCM#","push_root_url"+push_root_url);
+
+        switch (push_id) {
 
             default:
                 try {
@@ -91,7 +97,7 @@ public class FCMMessaging extends FirebaseMessagingService {
                             R.mipmap.ic_notification);
                     Intent onclick = new Intent(this, Notification_BroadCast.class);
                     onclick.putExtra("push_msg", push_msg);
-                    onclick.putExtra("push_type", push_type);
+                    onclick.putExtra("push_id", push_id);
                     onclick.putExtra("push_img_url", push_img_url);
                     onclick.putExtra("push_root_url", push_root_url);
                     onclick.putExtra("push_title", push_title);
@@ -104,62 +110,62 @@ public class FCMMessaging extends FirebaseMessagingService {
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         NotificationChannel chan;
-                        switch (push_type) {
+                        switch (push_id) {
                             case "1":
-                                NotificationChannel chan1 = new NotificationChannel(push_type,
+                                NotificationChannel chan1 = new NotificationChannel(push_id,
                                         "Web in APP", NotificationManager.IMPORTANCE_DEFAULT);
                                 chan1.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
                                 getManager(context).createNotificationChannel(chan1);
                                 builder = new NotificationCompat.Builder(
-                                        context, push_type);
+                                        context, push_id);
                                 break;
                             case "2":
-                                NotificationChannel chan2= new NotificationChannel(push_type,
+                                NotificationChannel chan2= new NotificationChannel(push_id,
                                         "Consumer Cars", NotificationManager.IMPORTANCE_DEFAULT);
                                 chan2.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
                                 getManager(context).createNotificationChannel(chan2);
                                 builder = new NotificationCompat.Builder(
-                                        context, push_type);
+                                        context, push_id);
                                 break;
                             case "3":
-                                NotificationChannel chan3 = new NotificationChannel(push_type,
+                                NotificationChannel chan3 = new NotificationChannel(push_id,
                                         "Listing Package Expiry", NotificationManager.IMPORTANCE_DEFAULT);
                                 chan3.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
                                 getManager(context).createNotificationChannel(chan3);
                                 builder = new NotificationCompat.Builder(
-                                        context, push_type);
+                                        context, push_id);
                                 break;
                             case "4":
-                                NotificationChannel chan4 = new NotificationChannel(push_type,
+                                NotificationChannel chan4 = new NotificationChannel(push_id,
                                         "Dealer Rating Program", NotificationManager.IMPORTANCE_DEFAULT);
                                 chan4.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
                                 getManager(context).createNotificationChannel(chan4);
                                 builder = new NotificationCompat.Builder(
-                                        context, push_type);
+                                        context, push_id);
                                 break;
                             case "5":
-                                NotificationChannel chan5 = new NotificationChannel(push_type,
+                                NotificationChannel chan5 = new NotificationChannel(push_id,
                                         "Lead Marketplace", NotificationManager.IMPORTANCE_DEFAULT);
                                 chan5.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
                                 getManager(context).createNotificationChannel(chan5);
                                 builder = new NotificationCompat.Builder(
-                                        context, push_type);
+                                        context, push_id);
                                 break;
                             case "6":
-                                NotificationChannel chan6 = new NotificationChannel(push_type,
+                                NotificationChannel chan6 = new NotificationChannel(push_id,
                                         "Buy Leads", NotificationManager.IMPORTANCE_DEFAULT);
                                 chan6.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
                                 getManager(context).createNotificationChannel(chan6);
                                 builder = new NotificationCompat.Builder(
-                                        context, push_type);
+                                        context, push_id);
                                 break;
                             case "7":
-                                NotificationChannel chan7 = new NotificationChannel(push_type,
+                                NotificationChannel chan7 = new NotificationChannel(push_id,
                                         "Live Auctions", NotificationManager.IMPORTANCE_DEFAULT);
                                 chan7.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
                                 getManager(context).createNotificationChannel(chan7);
                                 builder = new NotificationCompat.Builder(
-                                        context, push_type);
+                                        context, push_id);
                                 break;
 
 
@@ -194,7 +200,7 @@ public class FCMMessaging extends FirebaseMessagingService {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                break;
+
         }
 
     }

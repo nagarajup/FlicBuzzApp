@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import com.aniapps.flicbuzzapp.activities.SignIn;
 import com.aniapps.flicbuzzapp.activities.Spalsh;
 import com.aniapps.flicbuzzapp.player.LandingPage;
@@ -11,7 +12,7 @@ import com.aniapps.flicbuzzapp.utils.PrefManager;
 
 
 public class Notification_BroadCast extends BroadcastReceiver {
-    String push_title = "", push_msg = "", push_type = "", push_name = "", push_img_url = "",
+    String push_title = "", push_msg = "", push_id = "", push_name = "", push_img_url = "",
             push_root_url = "";
     String dealer_id="";
     private boolean remember;
@@ -23,19 +24,25 @@ public class Notification_BroadCast extends BroadcastReceiver {
         // message
         push_msg = intent.getStringExtra("push_msg");
         // push type
-        push_type = intent.getStringExtra("push_type");
+        push_id = intent.getStringExtra("push_id");
         // image url
         push_img_url = intent.getStringExtra("push_img_url");
         // root url OEM Consumer Offers
         push_root_url = intent.getStringExtra("push_root_url");
 
 
+        Log.e("#FCM111#","push_id"+push_id);
+        Log.e("#FCM111#","push_title"+push_title);
+        Log.e("#FCM111#","push_msg"+push_msg);
+        Log.e("#FCM111#","push_img_url"+push_img_url);
+        Log.e("#FCM111#","push_root_url"+push_root_url);
+
         Intent notificationIntent;
         dealer_id =  PrefManager.getIn().getUserId();
         remember = PrefManager.getIn().getLogin();
 
-        if (push_type != null && !push_type.equals("")) {
-            switch (push_type) {
+        if (push_id != null && !push_id.equals("")) {
+            switch (push_id) {
                 //Start App
                 case "1":
                     try {
@@ -82,7 +89,7 @@ public class Notification_BroadCast extends BroadcastReceiver {
                         try {
                             notificationIntent = new Intent(context,
                                     LandingPage.class);
-                            notificationIntent.putExtra("push_type", push_type);
+                            notificationIntent.putExtra("push_id", push_id);
                             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             context.startActivity(notificationIntent);
                         } catch (Exception e) {
@@ -105,7 +112,7 @@ public class Notification_BroadCast extends BroadcastReceiver {
                         try {
                             notificationIntent = new Intent(context,
                                     LandingPage.class);
-                            notificationIntent.putExtra("push_type", push_type);
+                            notificationIntent.putExtra("push_id", push_id);
                             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             context.startActivity(notificationIntent);
                         } catch (Exception e) {
