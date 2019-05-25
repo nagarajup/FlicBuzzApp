@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "412255403512",
+    "firebase_url": "https://flicbuzzapp.firebaseio.com",
+    "project_id": "flicbuzzapp",
+    "storage_bucket": "flicbuzzapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:412255403512:android:ffe028d35cbd5d2c",
+        "android_client_info": {
+          "package_name": "com.aniapps.flicbuzzapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "412255403512-0iuk3jskmmvintjd28jas5c48og9av5q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVqeZSFxpG0BFEQlYhY5zYtMpOSCuCvC4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "412255403512-0iuk3jskmmvintjd28jas5c48og9av5q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
