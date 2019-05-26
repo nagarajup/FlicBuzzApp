@@ -491,13 +491,12 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
         val i = Intent(Intent.ACTION_SEND)
         i.type = "text/plain"
         i.putExtra(Intent.EXTRA_TEXT, "text")
-        i.putExtra(
+        i.putExtra(Intent.EXTRA_TEXT, myVideos.share_url)
+      /*  i.putExtra(
             Intent.EXTRA_TEXT, myVideos.headline + "\n\n" + myVideos.short_desc + "\n\n" +
                     myVideos.share_url
-        )
+        )*/
         context.startActivity(Intent.createChooser(i, "Share to"))
-
-
         /* val activities = context.packageManager.queryIntentActivities(i, 0)
          val appNames = ArrayList<String>()
          for (info in activities) {

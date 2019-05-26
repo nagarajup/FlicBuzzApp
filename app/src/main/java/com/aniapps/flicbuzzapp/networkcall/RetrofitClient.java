@@ -74,7 +74,7 @@ public class RetrofitClient extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                          FlickLoading.getInstance().show(context);
+                        FlickLoading.getInstance().show(context);
                     }
                 });
             } catch (Exception e) {
@@ -101,12 +101,13 @@ public class RetrofitClient extends AppCompatActivity {
             postParams.put("user_id", PrefManager.getIn().getUserId());
         }
         postParams.put("from_source", "android");
-        postParams.put("language", PrefManager.getIn().getLanguage().toLowerCase());
-       // Log.e("#API#", "Post Params" + postParams);
+        if (!postParams.get("action").equals("get_video_by_id"))
+            postParams.put("language", PrefManager.getIn().getLanguage().toLowerCase());
+        // Log.e("#API#", "Post Params" + postParams);
         apiService.coreApiResult(context.getResources().getString(R.string.core_live) + postParams.get("action"), postParams).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, final Response<String> res) {
-               // Log.e("RES", "res" + res.body());
+                // Log.e("RES", "res" + res.body());
                 if (from.length() == 0) {
                     try {
                         runOnUiThread(new Runnable() {
@@ -154,6 +155,7 @@ public class RetrofitClient extends AppCompatActivity {
             }
         });
     }
+
     //Images
     public void getNoCryptResImages(final Context context, final Map<String, String> postParams,
                                     final MultipartBody.Part body, final APIResponse api_res) {
@@ -165,10 +167,10 @@ public class RetrofitClient extends AppCompatActivity {
         postParams.put("user_id", PrefManager.getIn().getUserId());
         //Log.e(TAG, "post params" + postParams);
         if (body != null) {
-            apiService.uploadImage(context.getResources().getString(R.string.core_live)+ postParams.get("action"), body, postParams).enqueue(new Callback<String>() {
+            apiService.uploadImage(context.getResources().getString(R.string.core_live) + postParams.get("action"), body, postParams).enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, final Response<String> res) {
-                   // Log.e("RES", "res" + res.body());
+                    // Log.e("RES", "res" + res.body());
                     if (res.isSuccessful()) {
                         try {
                             if (null != res.body() && !res.body().equals("")) {
@@ -194,7 +196,7 @@ public class RetrofitClient extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
-                   // Log.e("RES", "failure" + t.getMessage());
+                    // Log.e("RES", "failure" + t.getMessage());
                     retrofit = null;
                     api_res.onFailure(t.getMessage());
                 }

@@ -142,7 +142,7 @@
 
         <receiver
                 android:name="com.aniapps.flicbuzzapp.notifications.Notification_BroadCast"
-                android:enabled="false">
+                android:enabled="true">
             <intent-filter android:priority="777">
                 <action android:name="com.catradeexchange.NOTIFICATIONBROADCAST" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

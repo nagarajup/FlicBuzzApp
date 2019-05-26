@@ -1321,6 +1321,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
 
         params["action"] = "get_video_by_id"
         params["video_id"] = id
+        params["language"] = PrefManager.getIn().language.toLowerCase()
 
         RetrofitClient.getInstance()
             .doBackProcess(this@LandingPage, params, "", object : APIResponse {

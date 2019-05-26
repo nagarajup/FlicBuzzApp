@@ -82,11 +82,17 @@ public class FCMMessaging extends FirebaseMessagingService {
         push_msg = data.getString("push_msg");
         push_img_url = data.getString("push_img_url");
         push_root_url = data.getString("push_root_url");
+        push_type = data.getString("push_type");
+        push_video_id = data.getString("push_video_id");
+        push_video_language = data.getString("push_video_language");
+
         Log.e("#FCM#","push_id"+push_id);
         Log.e("#FCM#","push_title"+push_title);
         Log.e("#FCM#","push_msg"+push_msg);
         Log.e("#FCM#","push_img_url"+push_img_url);
         Log.e("#FCM#","push_root_url"+push_root_url);
+        Log.e("#FCM#","push_video_id"+push_video_id);
+        Log.e("#FCM#","push_video_language"+push_video_language);
 
         switch (push_id) {
 
@@ -95,12 +101,15 @@ public class FCMMessaging extends FirebaseMessagingService {
                     NotificationCompat.Builder builder = null;
                     Bitmap icon = BitmapFactory.decodeResource(getApplicationContext().getResources(),
                             R.mipmap.ic_notification);
-                    Intent onclick = new Intent(this, Notification_BroadCast.class);
+                    Intent onclick = new Intent(getApplicationContext(), Notification_BroadCast.class);
                     onclick.putExtra("push_msg", push_msg);
                     onclick.putExtra("push_id", push_id);
                     onclick.putExtra("push_img_url", push_img_url);
                     onclick.putExtra("push_root_url", push_root_url);
                     onclick.putExtra("push_title", push_title);
+                    onclick.putExtra("push_type", push_type);
+                    onclick.putExtra("push_video_id", push_video_id);
+                    onclick.putExtra("push_video_language", push_video_language);
                     onclick.setAction("0");
 
                     PendingIntent intent = PendingIntent.getBroadcast(context, 0,

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
+import com.aniapps.flicbuzzapp.activities.DeeplinkBrowser;
+import com.aniapps.flicbuzzapp.activities.PaymentScreen_New;
 import com.aniapps.flicbuzzapp.activities.SignIn;
 import com.aniapps.flicbuzzapp.activities.Spalsh;
 import com.aniapps.flicbuzzapp.player.LandingPage;
@@ -12,8 +14,8 @@ import com.aniapps.flicbuzzapp.utils.PrefManager;
 
 
 public class Notification_BroadCast extends BroadcastReceiver {
-    String push_title = "", push_msg = "", push_id = "", push_name = "", push_img_url = "",
-            push_root_url = "";
+    String push_title = "", push_msg = "", push_id = "",  push_img_url = "",
+            push_root_url = "",push_type="",push_video_id="",push_video_language="";
     String dealer_id="";
     private boolean remember;
 
@@ -29,6 +31,9 @@ public class Notification_BroadCast extends BroadcastReceiver {
         push_img_url = intent.getStringExtra("push_img_url");
         // root url OEM Consumer Offers
         push_root_url = intent.getStringExtra("push_root_url");
+        push_type = intent.getStringExtra("push_type");
+        push_video_id = intent.getStringExtra("push_video_id");
+        push_video_language = intent.getStringExtra("push_video_language");
 
 
         Log.e("#FCM111#","push_id"+push_id);
@@ -43,19 +48,33 @@ public class Notification_BroadCast extends BroadcastReceiver {
 
         if (push_id != null && !push_id.equals("")) {
             switch (push_id) {
-                //Start App
+                //video
                 case "1":
-                    try {
-                        notificationIntent = new Intent(context,
-                                Spalsh.class);
-                        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        notificationIntent.putExtra("url", push_root_url);
-                        context.startActivity(notificationIntent);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    if (remember) {
+                        try {
+                            notificationIntent = new Intent(context,
+                                    DeeplinkBrowser.class);
+                            notificationIntent.putExtra("push_id", push_id);
+                            notificationIntent.putExtra("push_video_id", push_video_id);
+                            notificationIntent.putExtra("push_video_language", push_video_language);
+
+                            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(notificationIntent);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        try {
+                            notificationIntent = new Intent(context,
+                                    SignIn.class);
+                            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(notificationIntent);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                     break;
-                // Play Store
+                //  App Update
                 case "2":
                     final String appPackageName = context.getPackageName();
                     try {
@@ -72,24 +91,13 @@ public class Notification_BroadCast extends BroadcastReceiver {
                         context.startActivity(notificationIntent);
                     }
                     break;
-                // Web View
+                // expire notice
+
                 case "3":
-                    try {
-                        notificationIntent = new Intent(Intent.ACTION_VIEW,
-                                Uri.parse(push_root_url));
-                        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(notificationIntent);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    break;
-
-                case "4":
                     if (remember) {
                         try {
                             notificationIntent = new Intent(context,
-                                    LandingPage.class);
-                            notificationIntent.putExtra("push_id", push_id);
+                                    PaymentScreen_New.class);
                             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             context.startActivity(notificationIntent);
                         } catch (Exception e) {
@@ -107,28 +115,7 @@ public class Notification_BroadCast extends BroadcastReceiver {
                     }
                     break;
 
-                default:
-                    if (remember) {
-                        try {
-                            notificationIntent = new Intent(context,
-                                    LandingPage.class);
-                            notificationIntent.putExtra("push_id", push_id);
-                            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            context.startActivity(notificationIntent);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        try {
-                            notificationIntent = new Intent(context,
-                                    SignIn.class);
-                            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            context.startActivity(notificationIntent);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    break;
+
             }
         }
     }
