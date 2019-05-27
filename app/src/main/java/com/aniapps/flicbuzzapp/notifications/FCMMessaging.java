@@ -16,6 +16,8 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import com.aniapps.flicbuzzapp.AppConstants;
 import com.aniapps.flicbuzzapp.R;
+import com.aniapps.flicbuzzapp.db.LocalDB;
+import com.aniapps.flicbuzzapp.db.NotificationData;
 import com.aniapps.flicbuzzapp.utils.PrefManager;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -25,6 +27,7 @@ import com.google.gson.Gson;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.Random;
@@ -32,7 +35,7 @@ import java.util.Random;
 public class FCMMessaging extends FirebaseMessagingService {
     private Context context = this;
     String push_title = "", push_msg = "", push_id = "", push_img_url = "",
-            push_root_url = "",push_type="",push_video_id="",push_video_language="";
+            push_root_url = "", push_type = "", push_video_id = "", push_video_language = "";
     String refreshedToken = "";
 
     @Override
@@ -86,13 +89,19 @@ public class FCMMessaging extends FirebaseMessagingService {
         push_video_id = data.getString("push_video_id");
         push_video_language = data.getString("push_video_language");
 
-        Log.e("#FCM#","push_id"+push_id);
-        Log.e("#FCM#","push_title"+push_title);
-        Log.e("#FCM#","push_msg"+push_msg);
-        Log.e("#FCM#","push_img_url"+push_img_url);
-        Log.e("#FCM#","push_root_url"+push_root_url);
-        Log.e("#FCM#","push_video_id"+push_video_id);
-        Log.e("#FCM#","push_video_language"+push_video_language);
+        Log.e("#FCM#", "push_id" + push_id);
+        Log.e("#FCM#", "push_title" + push_title);
+        Log.e("#FCM#", "push_msg" + push_msg);
+        Log.e("#FCM#", "push_img_url" + push_img_url);
+        Log.e("#FCM#", "push_root_url" + push_root_url);
+        Log.e("#FCM#", "push_video_id" + push_video_id);
+        Log.e("#FCM#", "push_video_language" + push_video_language);
+        String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
+
+        NotificationData myData = new NotificationData(push_id, push_title, push_msg,
+                push_img_url, push_type, push_root_url, push_video_id, push_video_language, currentDateTimeString, "n");
+
+        LocalDB.getInstance(context).insertNotifications(myData);
 
         switch (push_id) {
 
@@ -129,7 +138,7 @@ public class FCMMessaging extends FirebaseMessagingService {
                                         context, push_id);
                                 break;
                             case "2":
-                                NotificationChannel chan2= new NotificationChannel(push_id,
+                                NotificationChannel chan2 = new NotificationChannel(push_id,
                                         "Consumer Cars", NotificationManager.IMPORTANCE_DEFAULT);
                                 chan2.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
                                 getManager(context).createNotificationChannel(chan2);

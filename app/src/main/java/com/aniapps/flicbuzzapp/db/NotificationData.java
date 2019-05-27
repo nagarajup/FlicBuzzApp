@@ -34,18 +34,25 @@ public class NotificationData {
     @ColumnInfo(name = "push_video_language")
     private String push_video_language = "";
 
-    public NotificationData(int id, String push_title, String push_msg, String push_id,
+    @ColumnInfo(name = "push_read")
+    private String push_read = "";
+
+    @ColumnInfo(name = "push_time")
+    private String push_time = "";
+
+    public NotificationData( String push_id,String push_title, String push_msg,
                             String push_img_url, String push_type, String push_root_url,
-                            String push_video_id, String push_video_language) {
-        this.id = id;
+                            String push_video_id, String push_video_language,String push_time,String push_read) {
+        this.push_id = push_id;
         this.push_title = push_title;
         this.push_msg = push_msg;
-        this.push_id = push_id;
         this.push_img_url = push_img_url;
         this.push_type = push_type;
         this.push_root_url = push_root_url;
         this.push_video_id = push_video_id;
         this.push_video_language = push_video_language;
+        this.push_time=push_time;
+        this.push_read=push_read;
     }
 
     public int getId() {
