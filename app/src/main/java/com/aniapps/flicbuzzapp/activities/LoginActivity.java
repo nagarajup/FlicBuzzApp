@@ -37,7 +37,8 @@ public class LoginActivity extends AppConstants {
     String user_id = "", mobile_num = "";
     String reqString = "";
     ImageView img_eye;
-    boolean check_visibility=true;
+    boolean check_visibility = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,8 +52,8 @@ public class LoginActivity extends AppConstants {
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(handler!=null){
-                    if(runnable!=null)
+                if (handler != null) {
+                    if (runnable != null)
                         handler.removeCallbacks(runnable);
                 }
                 if (loginLL.getVisibility() == View.VISIBLE) {
@@ -68,10 +69,10 @@ public class LoginActivity extends AppConstants {
     }
 
     void initViews() {
-         reqString = Build.MANUFACTURER
+        reqString = Build.MANUFACTURER
                 + " " + Build.MODEL + " " + Build.VERSION.RELEASE
                 + " " + Build.VERSION_CODES.class.getFields()[android.os.Build.VERSION.SDK_INT].getName();
-        img_eye = (ImageView)findViewById(R.id.img_eye);
+        img_eye = (ImageView) findViewById(R.id.img_eye);
         otpErro = (TextView) findViewById(R.id.otp_error);
         resendOTP = (TextView) findViewById(R.id.resendOTP);
         otpEditText = (EditText) findViewById(R.id.ot_et);
@@ -104,7 +105,7 @@ public class LoginActivity extends AppConstants {
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                trackEvent(LoginActivity.this,"Login","SignUp");
+                trackEvent(LoginActivity.this, "Login", "SignUp");
                 Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
@@ -114,7 +115,7 @@ public class LoginActivity extends AppConstants {
         forgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                trackEvent(LoginActivity.this,"Login","Forgot Password");
+                trackEvent(LoginActivity.this, "Login", "Forgot Password");
                 Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
@@ -123,7 +124,7 @@ public class LoginActivity extends AppConstants {
         resendOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                trackEvent(LoginActivity.this,"OTP","Resend OTP");
+                trackEvent(LoginActivity.this, "OTP", "Resend OTP");
                 if (resendOTP.getText().toString().equalsIgnoreCase("Resend OTP")) {
                     HashMap<String, String> params = new HashMap<>();
                     params.put("mobile", mobile_num);
@@ -137,7 +138,7 @@ public class LoginActivity extends AppConstants {
         validateMobile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                trackEvent(LoginActivity.this,"OTP","Verify OTP");
+                trackEvent(LoginActivity.this, "OTP", "Verify OTP");
                 if (otpEditText.getText().toString().length() < 4) {
                     otpErro.setVisibility(View.VISIBLE);
                 } else {
@@ -176,7 +177,7 @@ public class LoginActivity extends AppConstants {
                         "Please check your internet connectivity and try again!");
 
             } else {
-                trackEvent(LoginActivity.this,"Login","Login");
+                trackEvent(LoginActivity.this, "Login", "Login");
                 HashMap<String, String> params = new HashMap<>();
                 params.put("password", passwordEditText.getText().toString());
                 params.put("email", emailEditText.getText().toString());
@@ -239,15 +240,29 @@ public class LoginActivity extends AppConstants {
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
                             }
+                            try {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        PrefManager.getIn().sendRegistrationToServer(
+                                                LoginActivity.this,
+                                                PrefManager.getIn().getFcm_token()
+                                        );
+                                    }
+                                });
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         } else if (status == 18) {
                             PrefManager.getIn().saveUserId(jsonObject.getString("user_id"));
                             user_id = jsonObject.getString("user_id");
                             mobile_num = jsonObject.getString("mobile");
-                            alertDialog(LoginActivity.this,"Notice",jsonObject.getString("message") + ", Please authenticate with otp");
+                            alertDialog(LoginActivity.this, "Notice", jsonObject.getString("message") + ", Please authenticate with otp");
                             //Toast.makeText(LoginActivity.this, jsonObject.getString("message") + ", Please authenticate with otp", Toast.LENGTH_SHORT).show();
 
-                        }else if(status==14){
-                            Utility.alertDialog(LoginActivity.this,  jsonObject.getString("message"));
+                        } else if (status == 14) {
+                            Utility.alertDialog(LoginActivity.this, jsonObject.getString("message"));
                         } else {
                             Utility.alertDialog(LoginActivity.this, "Alert", jsonObject.getString("message"));
                         }
@@ -288,13 +303,13 @@ public class LoginActivity extends AppConstants {
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
                             }
-                        }else if(status==14){
-                            Utility.alertDialog(LoginActivity.this,  jsonObject.getString("message"));
+                        } else if (status == 14) {
+                            Utility.alertDialog(LoginActivity.this, jsonObject.getString("message"));
                         } else {
                             Utility.alertDialog(LoginActivity.this, "Alert", jsonObject.getString("message"));
                         }
 
-                    }else if (from == 3){
+                    } else if (from == 3) {
                         otpLL.setVisibility(View.VISIBLE);
                         loginLL.setVisibility(View.GONE);
                         countDown(resendOTP);
@@ -311,25 +326,27 @@ public class LoginActivity extends AppConstants {
             }
         });
     }
+
     int tot_interval = 15000; // 10 secs
     int interval = 1000; // 10 secs
     Runnable runnable;
     Handler handler;
-    public  void alertDialog(final Context context, String title, String msg) {
+
+    public void alertDialog(final Context context, String title, String msg) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(msg);
         builder.setTitle(title);
         builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
-                trackEvent(LoginActivity.this,"Login","Login|Popup|Cancel");
+                trackEvent(LoginActivity.this, "Login", "Login|Popup|Cancel");
                 dialog.dismiss();
             }
         });
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                trackEvent(LoginActivity.this,"Login","Login|Popup|Cancel");
+                trackEvent(LoginActivity.this, "Login", "Login|Popup|Cancel");
                 dialog.dismiss();
                 HashMap<String, String> params = new HashMap<>();
                 params.put("mobile", mobile_num);
@@ -342,6 +359,7 @@ public class LoginActivity extends AppConstants {
         });
         builder.show();
     }
+
     public void countDown(final TextView mTextField) {
         // validateMobile.setBackground(getDrawable(R.drawable.rounded_corners_grey));
         // validateMobile.setEnabled(false);
@@ -366,10 +384,11 @@ public class LoginActivity extends AppConstants {
 
 
     }
+
     @Override
     public void onBackPressed() {
-        if(handler!=null){
-            if(runnable!=null)
+        if (handler != null) {
+            if (runnable != null)
                 handler.removeCallbacks(runnable);
         }
         if (loginLL.getVisibility() == View.VISIBLE) {
@@ -384,8 +403,8 @@ public class LoginActivity extends AppConstants {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(handler!=null){
-            if(runnable!=null)
+        if (handler != null) {
+            if (runnable != null)
                 handler.removeCallbacks(runnable);
         }
         if (loginLL.getVisibility() == View.VISIBLE) {

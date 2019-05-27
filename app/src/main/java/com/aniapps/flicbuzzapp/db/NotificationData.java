@@ -34,6 +34,22 @@ public class NotificationData {
     @ColumnInfo(name = "push_video_language")
     private String push_video_language = "";
 
+    public String getPush_read() {
+        return push_read;
+    }
+
+    public void setPush_read(String push_read) {
+        this.push_read = push_read;
+    }
+
+    public String getPush_time() {
+        return push_time;
+    }
+
+    public void setPush_time(String push_time) {
+        this.push_time = push_time;
+    }
+
     @ColumnInfo(name = "push_read")
     private String push_read = "";
 

@@ -35,10 +35,12 @@ import com.aniapps.flicbuzzapp.activities.*
 import com.aniapps.flicbuzzapp.adapters.AutoSuggestAdapter
 import com.aniapps.flicbuzzapp.adapters.MainAdapter
 import com.aniapps.flicbuzzapp.adapters.SearchAdapter
+import com.aniapps.flicbuzzapp.db.LocalDB
 import com.aniapps.flicbuzzapp.models.MyVideos
 import com.aniapps.flicbuzzapp.models.SearchData
 import com.aniapps.flicbuzzapp.networkcall.APIResponse
 import com.aniapps.flicbuzzapp.networkcall.RetrofitClient
+import com.aniapps.flicbuzzapp.notifications.Notification_Act
 import com.aniapps.flicbuzzapp.util.IabHelper
 import com.aniapps.flicbuzzapp.utils.CircleImageView
 import com.aniapps.flicbuzzapp.utils.PrefManager
@@ -84,6 +86,9 @@ class LandingPage : AppConstants(), View.OnClickListener {
     internal lateinit var tv_profile_name: TextView
     internal lateinit var tv_profile_email: TextView
     internal lateinit var tv_profile_plan: TextView
+    internal lateinit var lay_notifications: FrameLayout
+    internal lateinit var lay_notifications_count: LinearLayout
+    internal lateinit var tv_notifications_count: TextView
     // internal lateinit var switchCompat: SwitchCompat
     internal lateinit var nav_lang: TextView
     internal var tag_id: String = "";
@@ -100,7 +105,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
     internal var pageNo = 1
     internal var my_recycler_view: RecyclerView? = null
     internal lateinit var search_list: ListView
-    internal lateinit var header_title: TextView
+    // internal lateinit var header_title: TextView
     internal lateinit var header_hindi: TextView
     internal lateinit var header_english: TextView
     internal lateinit var nav_hindi: TextView
@@ -112,16 +117,16 @@ class LandingPage : AppConstants(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        mContext=this
+        mContext = this
         val mToolbar = findViewById<View>(R.id.toolbar) as Toolbar
-        header_title = findViewById<View>(R.id.title) as TextView
+        // header_title = findViewById<View>(R.id.title) as TextView
         header_hindi = findViewById<View>(R.id.header_lang_hindi) as TextView
         header_english = findViewById<View>(R.id.header_lang_eng) as TextView
         setSupportActionBar(mToolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         mHelper = IabHelper(this@LandingPage, Utility.sharedKey)
-        header_title.text = "Hindi | English"
-        setColor(header_title, 1)
+        // header_title.text = "Hindi | English"
+        //  setColor(header_title, 1)
         myvideos = ArrayList()
         playingVideos = ArrayList()
         // val jsonArray = intent.getStringExtra("jsonArray")
@@ -174,6 +179,18 @@ class LandingPage : AppConstants(), View.OnClickListener {
         nav_feedback = findViewById<TextView>(R.id.nav_contact);
         nav_settings = findViewById<TextView>(R.id.nav_settings);
         nav_logout = findViewById<TextView>(R.id.nav_logout);
+
+        lay_notifications = findViewById<FrameLayout>(R.id.icon_notifications);
+        lay_notifications_count = findViewById<LinearLayout>(R.id.header_count_circle);
+        tv_notifications_count = findViewById<TextView>(R.id.header_notification_count);
+
+        if (LocalDB.getInstance(this@LandingPage).getNumFiles() > 0) {
+            lay_notifications_count.visibility = View.VISIBLE
+            tv_notifications_count.setText("" + LocalDB.getInstance(this@LandingPage).getNumFiles())
+        } else {
+            lay_notifications_count.visibility = View.GONE
+        }
+
         nav_about.setOnClickListener(this@LandingPage)
         nav_profile.setOnClickListener(this@LandingPage)
         nav_privacy.setOnClickListener(this@LandingPage)
@@ -185,6 +202,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
         nav_feedback.setOnClickListener(this@LandingPage)
         nav_settings.setOnClickListener(this@LandingPage)
         nav_logout.setOnClickListener(this@LandingPage)
+        lay_notifications.setOnClickListener(this@LandingPage)
         //   switchCompat = findViewById<SwitchCompat>(R.id.nav_language)
         nav_lang = findViewById<TextView>(R.id.nav_lang)
         nav_english = findViewById<TextView>(R.id.nav_lang_eng)
@@ -205,15 +223,15 @@ class LandingPage : AppConstants(), View.OnClickListener {
             tv_profile_plan.setText("Plan : Trail")
         }
 
-        header_title.setOnClickListener(View.OnClickListener {
-            PrefManager.getIn().language = if (PrefManager.getIn().language.equals("Hindi")) "English" else "Hindi"
-            pageNo = 1
-            setColor(header_title, 1)
-            setColor(nav_lang, 2)
-            apiCall(tag_id);
-            drawer_layout.closeDrawer(GravityCompat.START)
-            setLangSelection()
-        })
+        /* header_title.setOnClickListener(View.OnClickListener {
+             PrefManager.getIn().language = if (PrefManager.getIn().language.equals("Hindi")) "English" else "Hindi"
+             pageNo = 1
+             setColor(header_title, 1)
+             setColor(nav_lang, 2)
+             apiCall(tag_id);
+             drawer_layout.closeDrawer(GravityCompat.START)
+             setLangSelection()
+         })*/
         header_english.setOnClickListener(View.OnClickListener {
             trackEvent(this@LandingPage, "MainPage", "Language|Header|English")
             PrefManager.getIn().language = "English"
@@ -233,7 +251,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
         nav_lang.setOnClickListener(View.OnClickListener {
             PrefManager.getIn().language = if (PrefManager.getIn().language.equals("Hindi")) "English" else "Hindi"
             pageNo = 1
-            setColor(header_title, 1)
+            //  setColor(header_title, 1)
             setColor(nav_lang, 2)
             apiCall(tag_id);
             setLangSelection()
@@ -334,13 +352,20 @@ class LandingPage : AppConstants(), View.OnClickListener {
              alertDialog(this@LandingPage, "Alert", "Your plan is expired, Please purchase subscription.", 1)
          }*/
 
-        if(!updatePopup && !PrefManager.getIn().getServer_version_mode().equals("3")){
-            updatePopup=true;
-            if(PrefManager.getIn().getServer_version_mode().equals("2")) {
+        if (!updatePopup && !PrefManager.getIn().getServer_version_mode().equals("3")) {
+            updatePopup = true;
+            if (PrefManager.getIn().getServer_version_mode().equals("2")) {
                 updatePopup(true);
-            }else{
+            } else {
                 updatePopup(false);
             }
+        }
+
+        if (LocalDB.getInstance(this@LandingPage).getNumFiles() > 0) {
+            lay_notifications_count.visibility = View.VISIBLE
+            tv_notifications_count.setText("" + LocalDB.getInstance(this@LandingPage).getNumFiles())
+        } else {
+            lay_notifications_count.visibility = View.GONE
         }
 
         super.onResume()
@@ -384,7 +409,10 @@ class LandingPage : AppConstants(), View.OnClickListener {
                         if (!PrefManager.getIn().autoRenewal) {
                             if (!jsonObject.getBoolean("autoRenewing")) {
                                 PrefManager.getIn().autoRenewal = true
-                                createNotification(this.getString(R.string.app_name),"Your FLicBuzz three months subscription has been cancelled, so your next subscription will not be charged")
+                                createNotification(
+                                    this.getString(R.string.app_name),
+                                    "Your FLicBuzz three months subscription has been cancelled, so your next subscription will not be charged"
+                                )
                             }
                         }
                     } catch (e: JSONException) {
@@ -394,7 +422,8 @@ class LandingPage : AppConstants(), View.OnClickListener {
                     if (PrefManager.getIn().getPayment_mode() == "3" || PrefManager.getIn().getPlan().equals(
                             "expired",
                             ignoreCase = true
-                        )) {
+                        )
+                    ) {
 
                         try {
                             start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date())
@@ -424,7 +453,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
                             e.printStackTrace()
                         }
 
-                    }else{
+                    } else {
 
                     }
                 } else if (inventory.hasPurchase(Utility.threemonths)) {
@@ -434,7 +463,10 @@ class LandingPage : AppConstants(), View.OnClickListener {
                         if (!PrefManager.getIn().autoRenewal) {
                             if (!jsonObject.getBoolean("autoRenewing")) {
                                 PrefManager.getIn().autoRenewal = true
-                                createNotification(this.getString(R.string.app_name),"Your FlicBuzz three months subscription has been cancelled, so your next subscription will not be charged")
+                                createNotification(
+                                    this.getString(R.string.app_name),
+                                    "Your FlicBuzz three months subscription has been cancelled, so your next subscription will not be charged"
+                                )
                             }
                         }
                     } catch (e: JSONException) {
@@ -443,7 +475,8 @@ class LandingPage : AppConstants(), View.OnClickListener {
                     if (PrefManager.getIn().getPayment_mode() == "3" || PrefManager.getIn().getPlan().equals(
                             "expired",
                             ignoreCase = true
-                        )) {
+                        )
+                    ) {
 
                         try {
                             start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date())
@@ -481,7 +514,10 @@ class LandingPage : AppConstants(), View.OnClickListener {
                         if (!PrefManager.getIn().autoRenewal) {
                             if (!jsonObject.getBoolean("autoRenewing")) {
                                 PrefManager.getIn().autoRenewal = true
-                                createNotification(this.getString(R.string.app_name),"Your FlicBuzz six months subscription has been cancelled, so your next subscription will not be charged")
+                                createNotification(
+                                    this.getString(R.string.app_name),
+                                    "Your FlicBuzz six months subscription has been cancelled, so your next subscription will not be charged"
+                                )
                             }
                         }
                     } catch (e: JSONException) {
@@ -491,7 +527,8 @@ class LandingPage : AppConstants(), View.OnClickListener {
                     if (PrefManager.getIn().getPayment_mode() == "3" || PrefManager.getIn().getPlan().equals(
                             "expired",
                             ignoreCase = true
-                        )) {
+                        )
+                    ) {
                         try {
                             start_date = sdf.parse(PrefManager.getIn().getSubscription_start_date())
                             subDate = sdf.format(start_date)
@@ -533,7 +570,10 @@ class LandingPage : AppConstants(), View.OnClickListener {
                         if (!PrefManager.getIn().autoRenewal) {
                             if (!jsonObject.getBoolean("autoRenewing")) {
                                 PrefManager.getIn().autoRenewal = true
-                                createNotification(this.getString(R.string.app_name),"Your FlicBuzz one year subscription has been cancelled, so your next subscription will not be charged")
+                                createNotification(
+                                    this.getString(R.string.app_name),
+                                    "Your FlicBuzz one year subscription has been cancelled, so your next subscription will not be charged"
+                                )
                             }
                         }
                     } catch (e: JSONException) {
@@ -846,6 +886,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
 
         return true
     }
+
     private fun updatePopup(is_critical: Boolean) {
         try {
             val dialog = Dialog(this@LandingPage)
@@ -900,6 +941,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
         }
 
     }
+
     private fun setLangSelection() {
         if (PrefManager.getIn().language.equals("Hindi", true)) {
             nav_hindi.setTypeface(nav_hindi.getTypeface(), Typeface.BOLD)
@@ -1023,7 +1065,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
     override fun onClick(p0: View?) {
         when (p0!!.id) {
             R.id.nav_profile -> {
-                    trackEvent(this@LandingPage, "MainPage", "My Profile")
+                trackEvent(this@LandingPage, "MainPage", "My Profile")
                 val myintent = Intent(this@LandingPage, UpdateProfileActivity::class.java)
                 myintent.putExtra("title", "My Profile")
                 myintent.putExtra("url", "")
@@ -1091,6 +1133,13 @@ class LandingPage : AppConstants(), View.OnClickListener {
             R.id.nav_contact -> {
                 trackEvent(this@LandingPage, "MainPage", "Contact Us")
                 MessageDialog_Feedback();
+            }
+
+            R.id.icon_notifications -> {
+                trackEvent(this@LandingPage, "MainPage", "Notifications")
+                val intent = Intent(this@LandingPage, Notification_Act::class.java)
+                startActivity(intent)
+                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
             }
 
             R.id.nav_settings -> {
@@ -1292,7 +1341,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
                         if (status == 1) {
                             Toast.makeText(this@LandingPage, "" + jobj.getString("message"), Toast.LENGTH_LONG).show()
 
-                        }else if (status == 14) run {
+                        } else if (status == 14) run {
                             Utility.alertDialog(
                                 this@LandingPage,
                                 jobj.getString("message")
@@ -1350,7 +1399,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
                             startActivity(player_in)
                             overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 
-                        }else if (status == 14) run {
+                        } else if (status == 14) run {
                             Utility.alertDialog(
                                 this@LandingPage,
                                 jobj.getString("message")
@@ -1371,13 +1420,15 @@ class LandingPage : AppConstants(), View.OnClickListener {
                 }
             })
     }
-     fun setIcon(): Int {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            return  R.mipmap.ic_notification
-        }else{
-            return  R.mipmap.ic_launcher
+
+    fun setIcon(): Int {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return R.mipmap.ic_notification
+        } else {
+            return R.mipmap.ic_launcher
         }
     }
+
     fun createNotification(title: String, message: String) {
         /**Creates an explicit intent for an Activity in your app */
         val resultIntent = Intent(mContext, LandingPage::class.java)
@@ -1391,13 +1442,19 @@ class LandingPage : AppConstants(), View.OnClickListener {
 
         mBuilder = NotificationCompat.Builder(mContext)
         mBuilder!!.setSmallIcon(setIcon())
-        mBuilder!!.setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
-            R.mipmap.ic_launcher))
+        mBuilder!!.setLargeIcon(
+            BitmapFactory.decodeResource(
+                getApplicationContext().getResources(),
+                R.mipmap.ic_launcher
+            )
+        )
         mBuilder!!.setContentTitle(title)
             .setContentText(message)
             .setAutoCancel(true)
-            .setStyle(NotificationCompat.BigTextStyle()
-                .bigText(message))
+            .setStyle(
+                NotificationCompat.BigTextStyle()
+                    .bigText(message)
+            )
             .setContentIntent(resultPendingIntent)
 
         mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

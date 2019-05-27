@@ -16,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import com.aniapps.flicbuzzapp.AppConstants;
 import com.aniapps.flicbuzzapp.R;
+import com.aniapps.flicbuzzapp.db.DBCallBacks;
 import com.aniapps.flicbuzzapp.db.LocalDB;
 import com.aniapps.flicbuzzapp.db.NotificationData;
 import com.aniapps.flicbuzzapp.utils.PrefManager;
@@ -29,6 +30,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -101,7 +103,15 @@ public class FCMMessaging extends FirebaseMessagingService {
         NotificationData myData = new NotificationData(push_id, push_title, push_msg,
                 push_img_url, push_type, push_root_url, push_video_id, push_video_language, currentDateTimeString, "n");
 
-        LocalDB.getInstance(context).insertNotifications(myData);
+        LocalDB.getInstance(getApplicationContext()).insertNotifications(myData);
+
+        LocalDB.getInstance(getApplicationContext()).getAllNotifications(new DBCallBacks() {
+            @Override
+            public void loadMainData(List<NotificationData> notificationData) {
+                Log.e("#FCM#",""+notificationData.toString());
+                Log.e("#FCM#",""+notificationData.size());
+            }
+        });
 
         switch (push_id) {
 

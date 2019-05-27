@@ -102,4 +102,33 @@ public class LocalDB {
             }
         });
     }
+
+    // delete data
+    public void deleteNotification(final String time) {
+        Completable.fromAction(new Action() {
+            @Override
+            public void run() throws Exception {
+                db.appDao().deleteNotification(time);
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CompletableObserver() {
+            @Override
+            public void onSubscribe(Disposable d) {
+            }
+
+            @Override
+            public void onComplete() {
+                Log.e("#DB Success#", "Deleted Pending Repos ");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e("#DB Error#", "Failed Delete Pending Repos" + " " + e.getMessage());
+                ;
+            }
+        });
+    }
+
+    public int getNumFiles() {
+        return db.appDao().getRowCount();
+    }
 }

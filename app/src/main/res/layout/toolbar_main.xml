@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                   xmlns:tools="http://schemas.android.com/tools"
                                    android:id="@+id/toolbar"
                                    android:layout_width="match_parent"
                                    android:layout_height="58sp"
@@ -78,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:paddingRight="5dp"
-                >
+        >
             <FrameLayout
                     android:id="@+id/icon_notifications"
                     android:layout_width="wrap_content"
@@ -89,25 +90,29 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:padding="5sp"
-                        android:src="@mipmap/icon_bell"/>
+                        android:padding="3sp"
+                        android:tint="@color/white"
+                        android:src="@mipmap/ic_notification_icon"/>
 
                 <LinearLayout
                         android:id="@+id/header_count_circle"
-                        android:layout_width="17sp"
-                        android:layout_height="17sp"
+                        android:layout_width="13sp"
+                        android:layout_height="13sp"
                         android:layout_gravity="right"
+                        android:layout_marginLeft="14sp"
                         android:background="@drawable/circle_count_notification"
                         android:gravity="center"
                         android:orientation="horizontal"
-                        android:visibility="visible">
+                        android:visibility="visible"
+                        android:layout_marginStart="14sp">
 
                     <TextView
                             android:id="@+id/header_notification_count"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/white"
-                            android:textSize="9sp"
+                            android:textSize="7sp"
+                            tools:text="9"
                             android:textStyle="bold"/>
                 </LinearLayout>
             </FrameLayout>
