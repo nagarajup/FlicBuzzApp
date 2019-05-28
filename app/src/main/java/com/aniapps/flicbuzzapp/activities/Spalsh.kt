@@ -35,12 +35,7 @@ class Spalsh : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-       /* //notification_tokens
-        FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener(this@Spalsh,
-            OnSuccessListener<InstanceIdResult> { instanceIdResult ->
-                val newToken = instanceIdResult.token
-                Log.e("newToken", newToken)
-            })*/
+
 
         if (!PrefManager.getIn().login) {
 
@@ -94,7 +89,8 @@ class Spalsh : AppCompatActivity() {
                         if (PrefManager.getIn().getPayment_mode() == "1" && !PrefManager.getIn().getPlan().equals(
                                 "expired",
                                 ignoreCase = true
-                            )) {
+                            )
+                        ) {
                             val intent = Intent(this@Spalsh, LandingPage::class.java)
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -120,10 +116,10 @@ class Spalsh : AppCompatActivity() {
                             e.printStackTrace()
                         }
                         finish()
-                    }else if(status == 90){
+                    } else if (status == 90) {
                         alertDialog(this@Spalsh)
-                    }else if(status==14){
-                        Utility.alertDialog(this@Spalsh,  jsonObject.getString("message"))
+                    } else if (status == 14) {
+                        Utility.alertDialog(this@Spalsh, jsonObject.getString("message"))
                     }
 
                 } catch (e: Exception) {
@@ -136,20 +132,21 @@ class Spalsh : AppCompatActivity() {
             }
         })
     }
+
     fun alertDialog(context: Context) {
         /*val builder = AlertDialog.Builder(context)
         builder.setMessage("This Account is activated in another device, Please logout and try again.")
         builder.setTitle("Notice")
         builder.setCancelable(false)
         builder.setPositiveButton("OK") { dialog, which ->*/
-            PrefManager.getIn().clearLogins();
-            val i = Intent(this@Spalsh, SignIn::class.java)
-            startActivity(i)
-            overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
-            finish()
-       /* }
-        //builder.setNegativeButton("NO", null);
-        builder.show()*/
+        PrefManager.getIn().clearLogins();
+        val i = Intent(this@Spalsh, SignIn::class.java)
+        startActivity(i)
+        overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+        finish()
+        /* }
+         //builder.setNegativeButton("NO", null);
+         builder.show()*/
     }
 
 

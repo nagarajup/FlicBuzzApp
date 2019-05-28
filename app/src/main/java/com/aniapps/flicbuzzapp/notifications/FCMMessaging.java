@@ -52,7 +52,7 @@ public class FCMMessaging extends FirebaseMessagingService {
                 PrefManager.getIn().sendRegistrationToServer(getApplicationContext(), refreshedToken);
             }
         }, 2000);
-        Log.e("#FCM#", s);
+        Log.e("#FCM#", "@Refresh"+s);
     }
 
     @Override

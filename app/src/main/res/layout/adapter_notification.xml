@@ -36,26 +36,28 @@
                            android:src="@mipmap/icon_close_dashbaord"
                            android:layout_gravity="center"
                            android:padding="10sp"
-                           tools:layout_editor_absoluteX="355dp"
-                           tools:ignore="MissingConstraints"/>
+                           tools:ignore="MissingConstraints" android:layout_marginEnd="8dp"
+                           app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
+                           android:layout_marginRight="8dp"/>
 
                 <ImageView
                         android:id="@+id/imag_itemImage"
                         android:scaleType="fitXY"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@mipmap/launcher_icon"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/img_notification_close"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="@+id/img_notification_close"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintHorizontal_bias="0.498" app:layout_constraintVertical_bias="1.0"
+                />
 
                 <ImageView android:id="@+id/iv_playVideo"
                            android:layout_width="50dp"
                            android:layout_height="50dp"
                            android:src="@mipmap/play_btn"
                            android:layout_gravity="center"
-                           android:visibility="gone"
                            app:layout_constraintEnd_toEndOf="parent"
                            app:layout_constraintStart_toStartOf="@+id/itemImage"
                            app:layout_constraintTop_toTopOf="parent"
@@ -99,7 +101,7 @@
                   android:layout_width="fill_parent"
                   android:fontFamily="@font/cera_gr_regular"
                   android:layout_height="wrap_content"
-                  android:text="description about sample video asdfasdfasdf asdfa dfsdfsdfsd...."
+                  android:text="description about...."
                   android:maxLines="1" android:paddingRight="5sp"/>
 
         <TextView

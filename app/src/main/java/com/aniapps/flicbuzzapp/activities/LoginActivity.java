@@ -49,6 +49,7 @@ public class LoginActivity extends AppConstants {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -225,6 +226,15 @@ public class LoginActivity extends AppConstants {
                             PrefManager.getIn().setPincode(userObject.getString("pincode"));
                             PrefManager.getIn().setDob(userObject.getString("dob"));
                             PrefManager.getIn().setProfile_pic(userObject.getString("profile_pic"));
+                            try {
+
+                                PrefManager.getIn().sendRegistrationToServer(
+                                        LoginActivity.this,
+                                        PrefManager.getIn().getFcm_token()
+                                );
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                             if (PrefManager.getIn().getPayment_mode().equals("1") && !PrefManager.getIn().getPlan().equalsIgnoreCase("expired")) {
                                 Intent intent = new Intent(LoginActivity.this, LandingPage.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -240,20 +250,7 @@ public class LoginActivity extends AppConstants {
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
                             }
-                            try {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        PrefManager.getIn().sendRegistrationToServer(
-                                                LoginActivity.this,
-                                                PrefManager.getIn().getFcm_token()
-                                        );
-                                    }
-                                });
 
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
                         } else if (status == 18) {
                             PrefManager.getIn().saveUserId(jsonObject.getString("user_id"));
                             user_id = jsonObject.getString("user_id");
@@ -288,6 +285,18 @@ public class LoginActivity extends AppConstants {
                             PrefManager.getIn().setPincode(userObject.getString("pincode"));
                             PrefManager.getIn().setDob(userObject.getString("dob"));
                             PrefManager.getIn().setProfile_pic(userObject.getString("profile_pic"));
+                            try {
+
+                                        PrefManager.getIn().sendRegistrationToServer(
+                                                LoginActivity.this,
+                                                PrefManager.getIn().getFcm_token()
+                                        );
+
+
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                             if (PrefManager.getIn().getPayment_mode().equals("1") && !PrefManager.getIn().getPlan().equalsIgnoreCase("expired")) {
                                 Intent intent = new Intent(LoginActivity.this, LandingPage.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -303,6 +312,7 @@ public class LoginActivity extends AppConstants {
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
                             }
+
                         } else if (status == 14) {
                             Utility.alertDialog(LoginActivity.this, jsonObject.getString("message"));
                         } else {
