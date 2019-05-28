@@ -37,7 +37,7 @@ class NotificationAdapter(var context: Activity, var itemsList: List<Notificatio
     internal var imageItem_height_calculation = 0
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): SingleItemRowHolder {
-        val v = LayoutInflater.from(viewGroup.context).inflate(R.layout.adapter_notification, null)
+        val v = LayoutInflater.from(viewGroup.context).inflate(R.layout.list_single_card_new, null)
         return SingleItemRowHolder(v)
     }
 
@@ -46,22 +46,25 @@ class NotificationAdapter(var context: Activity, var itemsList: List<Notificatio
 
         val singleItem = itemsList[i]
         holder.tv_title.setText(singleItem.push_title)
-        holder.tv_message.setText(singleItem.push_msg+" Testing testing testing testing testing testing testing testing ")
+        holder.tv_message.setText(singleItem.push_msg)
         holder.tv_time.setText(singleItem.push_time)
 
-        if(!singleItem.push_img_url.equals("")) {
+        if (!singleItem.push_img_url.equals("")) {
             AppApplication.myImgeRes(imageItem_height_calculation, context, holder.itemImage)
             Picasso.with(context)
                 .load(singleItem.push_img_url)
                 .error(R.mipmap.launcher_icon)
                 .into(holder.itemImage);
-        }else{
-            holder.cardView.visibility=View.GONE
+        } else {
+            holder.cardView.visibility = View.GONE
         }
 
-holder.img_notification_close.setOnClickListener({
-    LocalDB.getInstance(context).deleteNotification(singleItem.push_time)
-})
+       /* holder.img_notification_close.setOnClickListener({
+            removeAt(i)
+            LocalDB.getInstance(context).deleteNotification(singleItem.push_time)
+
+
+        })*/
         holder.lay_card.setOnClickListener({
             if (singleItem.push_type.equals("update")) {
                 val appPackageName = context.packageName
@@ -94,19 +97,28 @@ holder.img_notification_close.setOnClickListener({
                 }
 
             } else {
-                ApiCall(singleItem.push_video_id,singleItem.push_video_language)
+                ApiCall(singleItem.push_video_id, singleItem.push_video_language)
             }
         })
 
 
     }
 
-    fun ApiCall(videoid:String,language:String) {
+    fun removeAt(pos: Int) {
+        val arrlistofOptions = ArrayList<NotificationData>(itemsList);
+        arrlistofOptions.removeAt(pos);
+        notifyItemRemoved(pos);
+        notifyItemRangeChanged(pos, itemsList.size);
+
+    }
+
+
+    fun ApiCall(videoid: String, language: String) {
         val params = java.util.HashMap<String, String>()
 
         params["action"] = "get_video_by_id"
         params["video_id"] = videoid
-        params["language"] =language
+        params["language"] = language
 
 
         RetrofitClient.getInstance().doBackProcess(context, params, "online", object : APIResponse {
@@ -118,13 +130,17 @@ holder.img_notification_close.setOnClickListener({
                     if (status == 1) {
                         val data = jsonObject.getJSONObject("data")
                         val videodata = data.getJSONObject("video")
+                        val next = data.getJSONArray("next")
 
                         val lead = Gson().fromJson<MyVideos>(videodata.toString(), MyVideos::class.java)
+                        val lead2= Gson().fromJson<MyVideos>(next.get(0).toString(), MyVideos::class.java)
 
-                        var itemsList2 =ArrayList<MyVideos>()
+
+                        var itemsList2 = ArrayList<MyVideos>()
                         itemsList2.add(lead)
+                        itemsList2.add(lead2)
                         val player_in = Intent(context, MyPlayer::class.java)
-                        player_in.putExtra("playingVideo", lead)
+                        player_in.putExtra("playingVideo", itemsList2.get(0))
                         player_in.putExtra("sequence", itemsList2)
                         player_in.putExtra("from", "notification")
                         context.startActivity(player_in)
@@ -144,8 +160,6 @@ holder.img_notification_close.setOnClickListener({
     }
 
 
-
-
     override fun getItemCount(): Int {
         return itemsList.size
     }
@@ -156,7 +170,7 @@ holder.img_notification_close.setOnClickListener({
         var tv_message: TextView
         var tv_time: TextView
         var itemImage: ImageView
-        var img_notification_close: ImageView
+       // var img_notification_close: ImageView
         var lay_card: ConstraintLayout
         var cardView: CardView
 
@@ -164,11 +178,11 @@ holder.img_notification_close.setOnClickListener({
         init {
             this.lay_card = view.findViewById<ConstraintLayout>(R.id.lay_card)
             this.cardView = view.findViewById<CardView>(R.id.cardView)
-            this.tv_title = view.findViewById<TextView>(R.id.tv_notification_title)
-            this.tv_message = view.findViewById<TextView>(R.id.tv_notification_msg)
-            this.tv_time = view.findViewById<TextView>(R.id.tv_notification_time)
-            this.itemImage = view.findViewById<ImageView>(R.id.imag_itemImage)
-            this.img_notification_close = view.findViewById<ImageView>(R.id.img_notification_close)
+            this.tv_title = view.findViewById<TextView>(R.id.tvTitle)
+            this.tv_message = view.findViewById<TextView>(R.id.tvDesc)
+            this.tv_time = view.findViewById<TextView>(R.id.tvViews)
+            this.itemImage = view.findViewById<ImageView>(R.id.itemImage)
+            //this.img_notification_close = view.findViewById<ImageView>(R.id.img_notification_close)
         }
 
     }

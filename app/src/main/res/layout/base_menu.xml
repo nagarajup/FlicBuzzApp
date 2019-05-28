@@ -246,6 +246,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/nav_logout"/>
+
+
+            <TextView
+                    android:id="@+id/nav_version"
+                    android:drawablePadding="7sp"
+                    android:drawableTint="@color/darkgray"
+                    android:textColor="@color/darkgray"
+                    android:padding="10sp"
+                    android:gravity="center"
+                    android:fontFamily="@font/cera_gr_medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/version"/>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

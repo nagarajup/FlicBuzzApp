@@ -23,6 +23,7 @@
     <string name="skip">SKIP</string>
     <string name="start">GOT IT</string>
     <string name="nav_logout">Logout</string>
+    <string name="version">Version: v1.0</string>
     <string name="fullaccess">1 Year access \u20B9 361/-</string>
     <string name="fullaccesstext">at jsut \u20B9 361/- Per year</string>
     <string name="limitedacces">10 days access \u20B9 10/-</string>

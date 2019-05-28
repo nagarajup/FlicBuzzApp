@@ -156,8 +156,9 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
         params["action"] = "get_similar_by_video_id"
         params["video_id"] = myVideo.id
         params["page_number"] = "1"
+
         // Log.e("&&&&&&", " video id 4" +mySequence.get(currentWindow).id)
-        // Log.e("&&&&&&", " video id 4A" +myVideo.id)
+       // Log.e("&&&&&&", " from" +myVideo.id)
 
         /* for (i in 0 until LandingPage.playingVideos.size) {
              Log.e("###", "MYIDS" + LandingPage.playingVideos.get(i).id)
@@ -181,7 +182,6 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
                                 myvideos.add(lead)
                             }
 
-
                             initUi(myVideo)
                             my_recycler_view.adapter = null;
                             my_recycler_view.setHasFixedSize(true)
@@ -190,9 +190,6 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
                             adapter = MainAdapter(this@MyPlayer, myvideos, "player")
                             layoutManager = LinearLayoutManager(applicationContext)
                             my_recycler_view.setLayoutManager(layoutManager)
-                            /* var  param: RelativeLayout.LayoutParams =
-                                 RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
-                             my_recycler_view.setLayoutParams(param);*/
                             my_recycler_view.setNestedScrollingEnabled(false)
                             my_recycler_view.adapter = adapter
                             adapter.notifyDataSetChanged()
@@ -235,6 +232,12 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
                         val status = jobj.getInt("status")
                         val details = jobj.getString("details")
                         if (status == 1) {
+                            /*val jsonArray = jobj.getJSONArray("next")
+                            var lead = Gson().fromJson(
+                                jsonArray.get(0).toString(),
+                                MyVideos::class.java
+                            )
+                            mySequence.add(lead)*/
                             /* if (!from.equals("previous")) {
                                  val jsonArray = jobj.getJSONArray("next")
                                  for (i in 0 until jsonArray.length()) {

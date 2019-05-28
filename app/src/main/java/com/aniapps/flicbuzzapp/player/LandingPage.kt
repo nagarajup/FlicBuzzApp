@@ -30,6 +30,7 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import com.aniapps.flicbuzzapp.AppConstants
+import com.aniapps.flicbuzzapp.BuildConfig
 import com.aniapps.flicbuzzapp.R
 import com.aniapps.flicbuzzapp.activities.*
 import com.aniapps.flicbuzzapp.adapters.AutoSuggestAdapter
@@ -48,6 +49,7 @@ import com.aniapps.flicbuzzapp.utils.Utility
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.base_menu.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -83,6 +85,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
     internal lateinit var nav_feedback: TextView
     internal lateinit var nav_settings: TextView
     internal lateinit var nav_logout: TextView
+    internal lateinit var nav_version: TextView
     internal lateinit var tv_profile_name: TextView
     internal lateinit var tv_profile_email: TextView
     internal lateinit var tv_profile_plan: TextView
@@ -179,6 +182,12 @@ class LandingPage : AppConstants(), View.OnClickListener {
         nav_feedback = findViewById<TextView>(R.id.nav_contact);
         nav_settings = findViewById<TextView>(R.id.nav_settings);
         nav_logout = findViewById<TextView>(R.id.nav_logout);
+        nav_version = findViewById<TextView>(R.id.nav_version);
+        if (resources.getString(R.string.base).contains("test")) {
+            nav_version.text = "Version: " + BuildConfig.VERSION_CODE + " "+("Test")
+        } else {
+            nav_version.text = "Version: " + BuildConfig.VERSION_CODE
+        }
 
         lay_notifications = findViewById<FrameLayout>(R.id.icon_notifications);
         lay_notifications_count = findViewById<LinearLayout>(R.id.header_count_circle);
