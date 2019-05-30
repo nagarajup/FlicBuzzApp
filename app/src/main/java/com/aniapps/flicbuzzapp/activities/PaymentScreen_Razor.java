@@ -280,8 +280,8 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
             payment_details = paymentData.getData().toString();
             payment_status = "success";
             transactionCall();
-            Log.e("res", s + "res" + paymentData.getData());
-            Toast.makeText(this, "Payment Successful: " + paymentData.getData(), Toast.LENGTH_SHORT).show();
+           // Log.e("res", s + "res" + paymentData.getData());
+           // Toast.makeText(this, "Payment Successful: " + paymentData.getData(), Toast.LENGTH_SHORT).show();
 
         } catch (Exception e) {
         }
