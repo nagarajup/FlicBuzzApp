@@ -185,7 +185,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
         nav_settings = findViewById<TextView>(R.id.nav_settings);
         nav_logout = findViewById<TextView>(R.id.nav_logout);
         nav_version = findViewById<TextView>(R.id.nav_version);
-        if (resources.getString(R.string.base).contains("test")) {
+        if (resources.getString(R.string.base).contains("adgully")) {
             nav_version.text = "Version: " + BuildConfig.VERSION_CODE + " "+("Test")
         } else {
             nav_version.text = "Version: " + BuildConfig.VERSION_CODE
@@ -657,6 +657,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
         params["subscription_end_date"] = sub_end_date
         params["payment_data"] = payment_data
         params["action"] = "update_package"
+        params["language"] = PrefManager.getIn().language.toLowerCase()
         if (package_data == Utility.threemonths_threedaytrail) {
             params["package"] = "3"
         } else if (package_data == Utility.threemonths) {
@@ -1007,6 +1008,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
         val params = HashMap<String, String>()
         params["keyword"] = mytag
         params["action"] = "autosuggest"
+        params["language"] = PrefManager.getIn().language.toLowerCase()
 
         RetrofitClient.getInstance()
             .doBackProcess(this@LandingPage, params, "online", object : APIResponse {
@@ -1278,6 +1280,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
             params["action"] = "getvideos_by_tags"
             params["tag_id"] = tag_id
         }
+        params["language"] = PrefManager.getIn().language.toLowerCase()
         params["page_number"] = "" + pageNo
         if (pageNo == 1) {
             from = "";
@@ -1351,6 +1354,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
         params["email"] = PrefManager.getIn().getEmail()
         params["subject"] = subject
         params["message"] = msg
+        params["language"] = PrefManager.getIn().language.toLowerCase()
 
 
         RetrofitClient.getInstance()
@@ -1418,6 +1422,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
                             player_in.putExtra("playingVideo", lead)
                             player_in.putExtra("sequence", mylist)
                             player_in.putExtra("from", "main")
+                            player_in.putExtra("language", "")
                             startActivity(player_in)
                             overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 

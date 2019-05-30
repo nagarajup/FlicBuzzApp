@@ -34,6 +34,7 @@ import com.aniapps.flicbuzzapp.adapters.MainAdapter
 import com.aniapps.flicbuzzapp.models.MyVideos
 import com.aniapps.flicbuzzapp.networkcall.APIResponse
 import com.aniapps.flicbuzzapp.networkcall.RetrofitClient
+import com.aniapps.flicbuzzapp.utils.PrefManager
 import com.aniapps.flicbuzzapp.utils.Utility
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.*
@@ -72,6 +73,7 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
     var isPIPModeeEnabled: Boolean = true
     internal lateinit var myvideos: ArrayList<MyVideos>
     internal lateinit var adapter: MainAdapter
+    lateinit var language: String
     lateinit var playing_video: MyVideos
     lateinit var mySequence: ArrayList<MyVideos>
 
@@ -119,6 +121,7 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
         setContentView(R.layout.myplayer)
         playing_video = intent.getParcelableExtra("playingVideo")
         mySequence = intent.getParcelableArrayListExtra("sequence")
+        language = intent.getStringExtra("language")
         currentWindow = intent.getIntExtra("pos", 0)
 
         //Log.e("####myPlayingvideo", playing_video.headline);
@@ -156,9 +159,15 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
         params["action"] = "get_similar_by_video_id"
         params["video_id"] = myVideo.id
         params["page_number"] = "1"
+        params["page_number"] = "1"
+        if (language.equals("")) {
+            params["language"] = PrefManager.getIn().language.toLowerCase()
+        } else {
+            params["language"] = language;
+        }
 
         // Log.e("&&&&&&", " video id 4" +mySequence.get(currentWindow).id)
-       // Log.e("&&&&&&", " from" +myVideo.id)
+        // Log.e("&&&&&&", " from" +myVideo.id)
 
         /* for (i in 0 until LandingPage.playingVideos.size) {
              Log.e("###", "MYIDS" + LandingPage.playingVideos.get(i).id)
@@ -218,6 +227,11 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
         val params = HashMap<String, String>()
         params["action"] = "video_impression_tracker"
         params["video_id"] = myVideo.id
+        if (language.equals("")) {
+            params["language"] = PrefManager.getIn().language.toLowerCase()
+        } else {
+            params["language"] = language;
+        }
         //Log.e("&&&&&&", " video id 3" +mySequence.get(currentWindow).id)
         //Log.e("&&&&&&", " video id 3A" +myVideo.id)
         //Log.e("###", "Impression Vidoe ID" + myVideo.id)
@@ -495,10 +509,10 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
         i.type = "text/plain"
         i.putExtra(Intent.EXTRA_TEXT, "text")
         i.putExtra(Intent.EXTRA_TEXT, myVideos.share_url)
-      /*  i.putExtra(
-            Intent.EXTRA_TEXT, myVideos.headline + "\n\n" + myVideos.short_desc + "\n\n" +
-                    myVideos.share_url
-        )*/
+        /*  i.putExtra(
+              Intent.EXTRA_TEXT, myVideos.headline + "\n\n" + myVideos.short_desc + "\n\n" +
+                      myVideos.share_url
+          )*/
         context.startActivity(Intent.createChooser(i, "Share to"))
         /* val activities = context.packageManager.queryIntentActivities(i, 0)
          val appNames = ArrayList<String>()
@@ -626,6 +640,7 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
         val params = HashMap<String, String>()
         params["action"] = "add_favorite"
         params["video_id"] = mySequence.get(currentWindow).id
+        params["language"] = PrefManager.getIn().language.toLowerCase()
         // var flag = false
         RetrofitClient.getInstance()
             .doBackProcess(this@MyPlayer, params, "online", object : APIResponse {
@@ -676,6 +691,7 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
         val params = HashMap<String, String>()
         params["action"] = "remove_favorite"
         params["video_id"] = mySequence.get(currentWindow).id
+        params["language"] = PrefManager.getIn().language.toLowerCase()
         RetrofitClient.getInstance()
             .doBackProcess(this@MyPlayer, params, "online", object : APIResponse {
                 override fun onSuccess(res: String?) {

@@ -22,6 +22,7 @@ import com.aniapps.flicbuzzapp.adapters.VideoRecyclerViewAdapter
 import com.aniapps.flicbuzzapp.models.MyVideos
 import com.aniapps.flicbuzzapp.networkcall.APIResponse
 import com.aniapps.flicbuzzapp.networkcall.RetrofitClient
+import com.aniapps.flicbuzzapp.utils.PrefManager
 import com.aniapps.flicbuzzapp.utils.Utility
 import com.google.gson.Gson
 import org.json.JSONArray
@@ -111,6 +112,7 @@ class MyFav : AppCompatActivity() {
         var from = "" as String
         val params = HashMap<String, String>()
         params["action"] = "get_favorite_list"
+        params["language"] = PrefManager.getIn().language.toLowerCase()
         params["page_number"] = "" + pageNo
         if (pageNo == 1) {
             from = "";

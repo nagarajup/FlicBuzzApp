@@ -205,6 +205,7 @@ public class SignUpActivity extends AppConstants {
                     params.put("from_source", "android");
                     params.put("action", "resend_otp");
                     params.put("user_id", user_id);
+                    params.put("language", PrefManager.getIn().getLanguage().toLowerCase());
                     ApiCall(params, 3);
                 }
             }
@@ -228,6 +229,7 @@ public class SignUpActivity extends AppConstants {
                     params.put("user_id", user_id);
                     params.put("from_source", "android");
                     params.put("action", "verify_otp");
+                    params.put("language", PrefManager.getIn().getLanguage().toLowerCase());
                     ApiCall(params, 1);
                 }
             }
@@ -288,6 +290,7 @@ public class SignUpActivity extends AppConstants {
                 params.put("gender", ((RadioButton) findViewById(gender.getCheckedRadioButtonId())).getText().toString().toLowerCase());
                 params.put("from_source", "android");
                 params.put("action", "register");
+                params.put("language", PrefManager.getIn().getLanguage().toLowerCase());
                 ApiCall(params, 2);
             }
 

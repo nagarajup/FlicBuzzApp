@@ -35,13 +35,6 @@ public class Notification_BroadCast extends BroadcastReceiver {
         push_video_id = intent.getStringExtra("push_video_id");
         push_video_language = intent.getStringExtra("push_video_language");
 
-
-        Log.e("#FCM111#","push_id"+push_id);
-        Log.e("#FCM111#","push_title"+push_title);
-        Log.e("#FCM111#","push_msg"+push_msg);
-        Log.e("#FCM111#","push_img_url"+push_img_url);
-        Log.e("#FCM111#","push_root_url"+push_root_url);
-
         Intent notificationIntent;
         dealer_id =  PrefManager.getIn().getUserId();
         remember = PrefManager.getIn().getLogin();
@@ -114,6 +107,73 @@ public class Notification_BroadCast extends BroadcastReceiver {
                         }
                     }
                     break;
+                case "4":
+                    if (remember) {
+                        try {
+                            notificationIntent = new Intent(context,
+                                    LandingPage.class);
+                            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(notificationIntent);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        try {
+                            notificationIntent = new Intent(context,
+                                    SignIn.class);
+                            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(notificationIntent);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
+
+                case "5":
+                    if (remember) {
+                        try {
+                            notificationIntent = new Intent(context,
+                                    LandingPage.class);
+                            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(notificationIntent);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        try {
+                            notificationIntent = new Intent(context,
+                                    SignIn.class);
+                            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(notificationIntent);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
+
+
+                case "6":
+                    if (remember) {
+                        try {
+                            notificationIntent = new Intent(context,
+                                    LandingPage.class);
+                            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(notificationIntent);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        try {
+                            notificationIntent = new Intent(context,
+                                    SignIn.class);
+                            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(notificationIntent);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
+
 
 
             }

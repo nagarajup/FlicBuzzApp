@@ -8,8 +8,11 @@ import android.util.Log;
 import android.widget.Toast;
 import com.aniapps.flicbuzzapp.BuildConfig;
 import com.aniapps.flicbuzzapp.R;
+import com.aniapps.flicbuzzapp.utils.CryptSession;
+import com.aniapps.flicbuzzapp.utils.CryptoHandler;
 import com.aniapps.flicbuzzapp.utils.FlickLoading;
 import com.aniapps.flicbuzzapp.utils.PrefManager;
+import com.google.gson.Gson;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import org.json.JSONObject;
@@ -18,6 +21,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -101,13 +106,53 @@ public class RetrofitClient extends AppCompatActivity {
             postParams.put("user_id", PrefManager.getIn().getUserId());
         }
         postParams.put("from_source", "android");
-        if (!postParams.get("action").equals("get_video_by_id"))
+
+
+
+       /* if (!postParams.get("action").equals("get_video_by_id")) {
             postParams.put("language", PrefManager.getIn().getLanguage().toLowerCase());
-        // Log.e("#API#", "Post Params" + postParams);
-        apiService.coreApiResult(context.getResources().getString(R.string.core_live) + postParams.get("action"), postParams).enqueue(new Callback<String>() {
+        }
+
+        if (!postParams.get("action").equals("get_similar_by_video_id")){
+
+        }*/
+
+        String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        String SessionKey = CryptSession.getKey(device_id + BuildConfig.VERSION_CODE);
+        upToNCharacters = SessionKey.substring(0, Math.min(SessionKey.length(), 16));
+        final CryptoHandler cte_crypt_login = new CryptoHandler(upToNCharacters);
+
+        Gson gson = new Gson();
+        String jsonSringParams = gson.toJson(postParams);
+        Map<String, String> postEncryptedDataParams = new HashMap<>();
+        //Log.e(TAG, "Get Session" + Pref.getIn().getUser_name() + "##" + Pref.getIn().getPsw().toUpperCase());
+        //Log.e(TAG, "Get Session KEY" + upToNCharacters);
+
+        try {
+           // postEncryptedDataParams.put("encrypted_data", cte_crypt_login.encrypt(jsonSringParams));
+            postEncryptedDataParams.put("encrypted_data", URLEncoder.encode(cte_crypt_login.encrypt(jsonSringParams), "utf-8"));
+            postEncryptedDataParams.put("version_code", "" + BuildConfig.VERSION_CODE);
+            postEncryptedDataParams.put("device_id", "" + device_id);
+
+            Log.e("#Encryption#", "post encrypt full Key " + SessionKey);
+            Log.e("#Encryption#", "post encrypt Key" + upToNCharacters);
+            Log.e("#Encryption#", "post encrypt" + postEncryptedDataParams);
+            Log.e("#Encryption#", "post no crypt" + postParams);
+            Log.e("#Encryption#", "post no crypt" + URLEncoder.encode(cte_crypt_login.encrypt(jsonSringParams), "utf-8"));
+            Log.e("#Encryption#", "res encrypt" + cte_crypt_login.decrypt(cte_crypt_login.encrypt(jsonSringParams)));
+           // Log.e("#Encryption#", "res encrypt222" + cte_crypt_login.decrypt("QFkpr6cYBKeKnZ74IWkFTg=="));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        Log.e("RES", "postparams" + postParams);
+        apiService.coreApiResult(context.getResources().getString(R.string.core_live) + postParams.get("action"), postEncryptedDataParams).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, final Response<String> res) {
-                // Log.e("RES", "res" + res.body());
+                Log.e("RES", "res" + res.body());
                 if (from.length() == 0) {
                     try {
                         runOnUiThread(new Runnable() {
@@ -123,7 +168,18 @@ public class RetrofitClient extends AppCompatActivity {
                 if (res.isSuccessful()) {
                     try {
                         if (null != res.body() && !res.body().equals("")) {
-                            api_res.onSuccess(res.body().trim());
+                            JSONObject jObj = new JSONObject(res.body());
+                            int status = jObj.getInt("status");
+                            String type = jObj.getString("type");
+                            if (type.equals("encrypted")) {
+                                encrypted = jObj.getString("data");
+                                decrypted = cte_crypt_login.decrypt(encrypted);
+                                Log.e("RES", "resres encrypted" + encrypted);
+                                Log.e("RES", "resres decrypted" + decrypted);
+                                api_res.onSuccess(decrypted);
+                            } else {
+                                api_res.onSuccess(res.body().trim());
+                            }
                         } else {
                             Toast.makeText(context, "Res" + res.body(), Toast.LENGTH_SHORT).show();
                         }

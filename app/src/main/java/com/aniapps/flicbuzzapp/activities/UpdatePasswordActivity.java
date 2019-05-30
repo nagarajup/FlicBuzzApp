@@ -145,6 +145,7 @@ public class UpdatePasswordActivity extends AppConstants {
                 params.put("from_source", "android");
                 params.put("action", "change_password");
                 params.put("user_id", PrefManager.getIn().getUserId());
+                params.put("language", PrefManager.getIn().getLanguage().toLowerCase());
                 ApiCall(params, 2);
             }
 

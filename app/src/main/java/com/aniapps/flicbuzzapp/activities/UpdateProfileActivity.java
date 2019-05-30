@@ -195,6 +195,7 @@ public class UpdateProfileActivity extends AppConstants {
                 params.put("gender", ((RadioButton) findViewById(gender.getCheckedRadioButtonId())).getText().toString().toLowerCase());
                 params.put("from_source", "android");
                 params.put("action", "update_profile");
+                params.put("language", PrefManager.getIn().getLanguage().toLowerCase());
                 ApiCall(params);
             }
 

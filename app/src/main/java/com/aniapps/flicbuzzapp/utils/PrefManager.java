@@ -337,6 +337,7 @@ public class PrefManager {
             Map<String, String> params = new HashMap<>();
             params.put("action", "notification_registration");
             params.put("fcm_token", token);
+            params.put("language", PrefManager.getIn().getLanguage().toLowerCase());
             RetrofitClient.getInstance().doBackProcess(context, params, "online",  new APIResponse() {
 
                 @Override

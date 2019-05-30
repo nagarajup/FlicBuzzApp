@@ -9,7 +9,44 @@
              app:layout_constraintStart_toStartOf="parent"
              app:layout_constraintEnd_toEndOf="parent"
              app:layout_constraintBottom_toTopOf="@+id/lay_notify"
-             app:layout_constraintTop_toTopOf="parent"/>
+             app:layout_constraintTop_toTopOf="parent"
+             android:id="@+id/include"/>
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:layout_marginTop="100sp"
+                  android:visibility="gone"
+                  android:weightSum="7"
+                  android:id="@+id/lay_no_notification"
+                  android:background="@color/white"
+                  android:orientation="vertical">
+
+        <ImageView android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_weight="5"
+                   android:layout_margin="5sp"
+                   android:src="@mipmap/nonotification"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="Oops"
+                  android:layout_weight="1"
+                  android:gravity="bottom"
+                  android:textStyle="bold"
+                  android:layout_gravity="center_vertical|center"
+                  android:textSize="18sp"
+                  android:fontFamily="@font/cera_gr_bold"/>
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="Looks like you have no new notifications"
+                  android:layout_weight="1"
+                  android:layout_gravity="center_vertical|center"
+                  android:textSize="18sp"
+                  android:fontFamily="@font/cera_gr_regular"/>
+
+
+    </LinearLayout>
 
 
 
@@ -58,30 +95,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"/>
     </android.support.constraint.ConstraintLayout>
 
-   <!-- <FrameLayout android:layout_width="match_parent"
-                 android:id="@+id/lay_notify"
-                 android:layout_height="match_parent"
-                 tools:ignore="MissingConstraints">
 
-        <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_notifications"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbars="none"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="92dp"/>
-
-        <android.support.design.widget.FloatingActionButton
-                android:id="@+id/btn_notifications_clear"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center_horizontal"
-                android:layout_margin="8dp"
-                android:backgroundTint="@color/colorPrimaryDark"
-                android:src="@mipmap/icon_close_dashbaord"
-                android:tint="@color/white"
-                app:fabSize="normal"/>
-
-    </FrameLayout>-->
 
 </android.support.constraint.ConstraintLayout>

@@ -2,6 +2,7 @@ package com.aniapps.flicbuzzapp.notifications;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.aniapps.flicbuzzapp.AppConstants;
 import com.aniapps.flicbuzzapp.R;
@@ -26,6 +28,8 @@ public class Notification_Act extends AppConstants {
     RecyclerView rv_list;
     FloatingActionButton fb_clear;
     List<NotificationData> myData = new ArrayList<>();
+    ConstraintLayout lay_notify;
+    LinearLayout lay_notice;
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -39,7 +43,8 @@ public class Notification_Act extends AppConstants {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         rv_list = findViewById(R.id.rv_notifications);
-
+        lay_notify=findViewById(R.id.lay_notify);
+        lay_notice=findViewById(R.id.lay_no_notification);
         fb_clear = findViewById(R.id.btn_notifications_clear);
 
 
@@ -47,8 +52,6 @@ public class Notification_Act extends AppConstants {
             @Override
             public void loadMainData(List<NotificationData> notificationData) {
                 myData = notificationData;
-
-
                 NotificationAdapter myAdapter = new NotificationAdapter(Notification_Act.this, myData);
                 rv_list.setLayoutManager(new LinearLayoutManager(Notification_Act.this));
                 rv_list.setAdapter(myAdapter);
@@ -58,6 +61,8 @@ public class Notification_Act extends AppConstants {
 
 
         if (LocalDB.getInstance(Notification_Act.this).getNumFiles() > 0) {
+            lay_notify.setVisibility(View.VISIBLE);
+            lay_notice.setVisibility(View.GONE);
             fb_clear.setVisibility(View.VISIBLE);
             fb_clear.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -67,6 +72,8 @@ public class Notification_Act extends AppConstants {
                 }
             });
         } else {
+            lay_notice.setVisibility(View.VISIBLE);
+            lay_notify.setVisibility(View.GONE);
             fb_clear.setVisibility(View.GONE);
         }
 
