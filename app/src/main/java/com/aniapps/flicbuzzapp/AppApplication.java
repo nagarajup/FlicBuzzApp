@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import com.aniapps.flicbuzzapp.utils.PrefManager;
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
+import com.razorpay.Checkout;
 
 import java.util.Map;
 
@@ -23,6 +24,7 @@ public class AppApplication extends Application {
     public void onCreate() {
         super.onCreate();
         app_ctx = getApplicationContext();
+        Checkout.preload(getApplicationContext());
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         if (PrefManager.getIn().getDeviceId().equals("")) {

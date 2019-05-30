@@ -80,6 +80,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
     internal lateinit var nav_fav: TextView
     internal lateinit var nav_refund: TextView
     internal lateinit var nav_package: TextView
+    internal lateinit var nav_package_razor: TextView
     internal lateinit var nav_share: TextView
     internal lateinit var nav_terms: TextView
     internal lateinit var nav_feedback: TextView
@@ -177,6 +178,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
         nav_fav = findViewById<TextView>(R.id.nav_fav);
         nav_refund = findViewById<TextView>(R.id.nav_refund);
         nav_package = findViewById<TextView>(R.id.nav_package);
+        nav_package_razor = findViewById<TextView>(R.id.nav_package_razor);
         nav_share = findViewById<TextView>(R.id.nav_share);
         nav_terms = findViewById<TextView>(R.id.nav_terms);
         nav_feedback = findViewById<TextView>(R.id.nav_contact);
@@ -206,6 +208,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
         nav_fav.setOnClickListener(this@LandingPage)
         nav_refund.setOnClickListener(this@LandingPage)
         nav_package.setOnClickListener(this@LandingPage)
+        nav_package_razor.setOnClickListener(this@LandingPage)
         nav_share.setOnClickListener(this@LandingPage)
         nav_terms.setOnClickListener(this@LandingPage)
         nav_feedback.setOnClickListener(this@LandingPage)
@@ -1104,6 +1107,16 @@ class LandingPage : AppConstants(), View.OnClickListener {
                 trackEvent(this@LandingPage, "MainPage", "Packages")
                 val myintent = Intent(this@LandingPage, PaymentScreen_New::class.java)
                 myintent.putExtra("title", "Packages")
+                myintent.putExtra("url", "")
+                startActivity(myintent)
+                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+
+                // Toast.makeText(this, "Clicked item fav", Toast.LENGTH_SHORT).show()
+            }
+            R.id.nav_package_razor -> {
+                trackEvent(this@LandingPage, "MainPage", "Packages Razor")
+                val myintent = Intent(this@LandingPage, PaymentScreen_Razor::class.java)
+                myintent.putExtra("title", "Packages Razor")
                 myintent.putExtra("url", "")
                 startActivity(myintent)
                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)

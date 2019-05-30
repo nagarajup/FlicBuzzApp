@@ -75,6 +75,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/nav_package"/>
+            <TextView
+                    android:id="@+id/nav_package_razor"
+                    android:drawableLeft="@mipmap/menu_package"
+                    android:drawablePadding="7sp"
+                    android:gravity="center_vertical"
+                    android:layout_gravity="center_vertical"
+                    android:padding="10sp"
+                    android:textSize="16sp"
+                    android:drawableTint="@color/darkgray"
+                    android:textColor="@color/darkgray"
+                    android:fontFamily="@font/cera_gr_medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/nav_package_razor"/>
 
             <TextView
                     android:id="@+id/nav_refund"

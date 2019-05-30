@@ -12,6 +12,7 @@
     <string name="nav_fav">My Favourites</string>
     <string name="nav_home">Home</string>
     <string name="nav_package">Packages</string>
+    <string name="nav_package_razor">Packages Razor</string>
     <string name="nav_privacy">Privacy Policy</string>
     <string name="nav_profile">My Profile</string>
     <string name="nav_refund">Refund &amp; Cancellation</string>
