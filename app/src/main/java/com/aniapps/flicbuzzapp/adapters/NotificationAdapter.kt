@@ -11,6 +11,7 @@ import android.support.constraint.ConstraintLayout
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -120,6 +121,8 @@ class NotificationAdapter(var context: Activity, var itemsList: List<Notificatio
         params["video_id"] = videoid
         params["language"] = language
 
+        Log.e("resres","postparm"+params)
+
 
         RetrofitClient.getInstance().doBackProcess(context, params, "online", object : APIResponse {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -142,7 +145,7 @@ class NotificationAdapter(var context: Activity, var itemsList: List<Notificatio
                         val player_in = Intent(context, MyPlayer::class.java)
                         player_in.putExtra("playingVideo", itemsList2.get(0))
                         player_in.putExtra("sequence", itemsList2)
-                        player_in.putExtra("from", "notification")
+                        player_in.putExtra("language", language)
                         context.startActivity(player_in)
                         context.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
                     }

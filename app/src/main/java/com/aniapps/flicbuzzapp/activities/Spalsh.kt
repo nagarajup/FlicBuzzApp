@@ -57,6 +57,7 @@ class Spalsh : AppCompatActivity() {
     fun ApiCall() {
         val params = HashMap<String, String>()
         params["action"] = "home"
+        params["language"] = PrefManager.getIn().language.toLowerCase()
         var jsonObject: JSONObject
         RetrofitClient.getInstance().doBackProcess(this@Spalsh, params, "online", object : APIResponse {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

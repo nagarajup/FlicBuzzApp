@@ -20,6 +20,7 @@ import com.aniapps.flicbuzzapp.models.MyVideos
 import com.aniapps.flicbuzzapp.networkcall.APIResponse
 import com.aniapps.flicbuzzapp.networkcall.RetrofitClient
 import com.aniapps.flicbuzzapp.player.LandingPage
+import com.aniapps.flicbuzzapp.utils.PrefManager
 import com.aniapps.flicbuzzapp.utils.Utility
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
@@ -65,6 +66,7 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
         val params = HashMap<String, String>()
         params["action"] = "video_impression_tracker"
         params["video_id"] = myVideo.id
+        params["language"] = PrefManager.getIn().language.toLowerCase()
         RetrofitClient.getInstance()
             .doBackProcess(context, params, "", object : APIResponse {
                 override fun onSuccess(res: String?) {
@@ -91,6 +93,7 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
                                 player_in.putExtra("sequence", itemsList)
                                 player_in.putExtra("pos", pos)
                                 player_in.putExtra("from", from)
+                                player_in.putExtra("language", "")
                                 context.startActivity(player_in)
                                 context.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
                             } else {
@@ -105,6 +108,7 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
                                 player_in.putExtra("from", from)
                                 player_in.putExtra("sequence", itemsList)
                                 player_in.putExtra("pos", pos)
+                                player_in.putExtra("language", "")
                                 context.finish()
                                 context.startActivity(player_in)
                                 context.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);

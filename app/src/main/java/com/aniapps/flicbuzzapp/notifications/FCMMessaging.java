@@ -91,13 +91,7 @@ public class FCMMessaging extends FirebaseMessagingService {
         push_video_id = data.getString("push_video_id");
         push_video_language = data.getString("push_video_language");
 
-        Log.e("#FCM#", "push_id" + push_id);
-        Log.e("#FCM#", "push_title" + push_title);
-        Log.e("#FCM#", "push_msg" + push_msg);
-        Log.e("#FCM#", "push_img_url" + push_img_url);
-        Log.e("#FCM#", "push_root_url" + push_root_url);
-        Log.e("#FCM#", "push_video_id" + push_video_id);
-        Log.e("#FCM#", "push_video_language" + push_video_language);
+
         String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
 
         NotificationData myData = new NotificationData(push_id, push_title, push_msg,
@@ -141,7 +135,7 @@ public class FCMMessaging extends FirebaseMessagingService {
                         switch (push_id) {
                             case "1":
                                 NotificationChannel chan1 = new NotificationChannel(push_id,
-                                        "Web in APP", NotificationManager.IMPORTANCE_DEFAULT);
+                                        "New Video Alert", NotificationManager.IMPORTANCE_DEFAULT);
                                 chan1.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
                                 getManager(context).createNotificationChannel(chan1);
                                 builder = new NotificationCompat.Builder(
@@ -149,7 +143,7 @@ public class FCMMessaging extends FirebaseMessagingService {
                                 break;
                             case "2":
                                 NotificationChannel chan2 = new NotificationChannel(push_id,
-                                        "Consumer Cars", NotificationManager.IMPORTANCE_DEFAULT);
+                                        "App Update", NotificationManager.IMPORTANCE_DEFAULT);
                                 chan2.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
                                 getManager(context).createNotificationChannel(chan2);
                                 builder = new NotificationCompat.Builder(
@@ -157,15 +151,16 @@ public class FCMMessaging extends FirebaseMessagingService {
                                 break;
                             case "3":
                                 NotificationChannel chan3 = new NotificationChannel(push_id,
-                                        "Listing Package Expiry", NotificationManager.IMPORTANCE_DEFAULT);
+                                        "Package Expiry", NotificationManager.IMPORTANCE_DEFAULT);
                                 chan3.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
                                 getManager(context).createNotificationChannel(chan3);
                                 builder = new NotificationCompat.Builder(
                                         context, push_id);
                                 break;
+
                             case "4":
                                 NotificationChannel chan4 = new NotificationChannel(push_id,
-                                        "Dealer Rating Program", NotificationManager.IMPORTANCE_DEFAULT);
+                                        "Birth Day", NotificationManager.IMPORTANCE_DEFAULT);
                                 chan4.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
                                 getManager(context).createNotificationChannel(chan4);
                                 builder = new NotificationCompat.Builder(
@@ -173,29 +168,21 @@ public class FCMMessaging extends FirebaseMessagingService {
                                 break;
                             case "5":
                                 NotificationChannel chan5 = new NotificationChannel(push_id,
-                                        "Lead Marketplace", NotificationManager.IMPORTANCE_DEFAULT);
+                                        "Login Alert", NotificationManager.IMPORTANCE_DEFAULT);
                                 chan5.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
                                 getManager(context).createNotificationChannel(chan5);
                                 builder = new NotificationCompat.Builder(
                                         context, push_id);
                                 break;
+
                             case "6":
                                 NotificationChannel chan6 = new NotificationChannel(push_id,
-                                        "Buy Leads", NotificationManager.IMPORTANCE_DEFAULT);
+                                        "Default", NotificationManager.IMPORTANCE_DEFAULT);
                                 chan6.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
                                 getManager(context).createNotificationChannel(chan6);
                                 builder = new NotificationCompat.Builder(
                                         context, push_id);
                                 break;
-                            case "7":
-                                NotificationChannel chan7 = new NotificationChannel(push_id,
-                                        "Live Auctions", NotificationManager.IMPORTANCE_DEFAULT);
-                                chan7.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-                                getManager(context).createNotificationChannel(chan7);
-                                builder = new NotificationCompat.Builder(
-                                        context, push_id);
-                                break;
-
 
                         }
                     } else {

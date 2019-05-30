@@ -132,6 +132,7 @@ public class LoginActivity extends AppConstants {
                     params.put("from_source", "android");
                     params.put("action", "resend_otp");
                     params.put("user_id", user_id);
+                    params.put("language", PrefManager.getIn().getLanguage().toLowerCase());
                     ApiCall(params, 3);
                 }
             }
@@ -150,6 +151,7 @@ public class LoginActivity extends AppConstants {
                     params.put("user_id", user_id);
                     params.put("from_source", "android");
                     params.put("action", "verify_otp");
+                    params.put("language", PrefManager.getIn().getLanguage().toLowerCase());
                     ApiCall(params, 1);
                 }
             }
@@ -185,6 +187,7 @@ public class LoginActivity extends AppConstants {
                 params.put("from_source", "android");
                 params.put("action", "login");
                 params.put("system_info", reqString);
+                params.put("language", PrefManager.getIn().getLanguage().toLowerCase());
                 ApiCall(params, 2);
             }
 
@@ -363,6 +366,7 @@ public class LoginActivity extends AppConstants {
                 params.put("from_source", "android");
                 params.put("action", "resend_otp");
                 params.put("user_id", user_id);
+                params.put("language", PrefManager.getIn().getLanguage().toLowerCase());
                 ApiCall(params, 3);
 
             }

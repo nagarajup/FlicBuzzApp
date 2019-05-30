@@ -39,7 +39,7 @@ public class DeeplinkBrowser extends AppConstants {
         if (null != intent && null == intent.getData()) {
             push_video_id = intent.getStringExtra("push_video_id");
             push_video_language = intent.getStringExtra("push_video_language");
-            ApiCall("");
+            ApiCall("notification");
         } else {
             data = intent.getData();
             ApiCall("url");
@@ -71,6 +71,9 @@ public class DeeplinkBrowser extends AppConstants {
                         JSONObject data = jsonObject.getJSONObject("data");
                         JSONObject videodata = data.getJSONObject("video");
                         JSONArray next = data.getJSONArray("next");
+                        if (from.equals("url")) {
+                            push_video_language=jsonObject.getString("language");
+                        }
                         MyVideos lead = new Gson().fromJson(videodata.toString(), MyVideos.class);
                         MyVideos lead2 = new Gson().fromJson(next.get(0).toString(), MyVideos.class);
                         itemsList = new ArrayList<MyVideos>();
@@ -79,7 +82,7 @@ public class DeeplinkBrowser extends AppConstants {
                         Intent player_in = new Intent(DeeplinkBrowser.this, MyPlayer.class);
                         player_in.putExtra("playingVideo", itemsList.get(0));
                         player_in.putExtra("sequence", itemsList);
-                        player_in.putExtra("from", from);
+                        player_in.putExtra("language", push_video_language);
                         startActivity(player_in);
                         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
                         finish();

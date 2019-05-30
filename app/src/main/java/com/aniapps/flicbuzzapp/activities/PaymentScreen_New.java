@@ -55,6 +55,7 @@ public class PaymentScreen_New extends AppCompatActivity {
 
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         TextView header_title = (TextView) findViewById(R.id.tvheader);
+        header_title.setVisibility(View.GONE);
         header_title.setText("Packages");
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -541,6 +542,7 @@ public class PaymentScreen_New extends AppCompatActivity {
         } else if (package_data.equals("expired")) {
             params.put("package", "expired");
         }
+        params.put("language", PrefManager.getIn().getLanguage().toLowerCase());
         plan_expiry_date.setText("Expires On "+sub_end_date);
         ApiCall(params, renewal);
     }

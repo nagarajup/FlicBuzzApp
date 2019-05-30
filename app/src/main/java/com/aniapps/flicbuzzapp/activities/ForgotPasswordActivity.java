@@ -115,6 +115,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                     params.put("from_source", "android");
                     params.put("action", "resend_otp");
                     params.put("user_id", PrefManager.getIn().getUserId());
+                    params.put("language", PrefManager.getIn().getLanguage().toLowerCase());
                     ApiCall(params, 4);
                 }
             }
@@ -131,6 +132,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                     params.put("otp", otpEditText.getText().toString());
                     params.put("user_id", PrefManager.getIn().getUserId());
                     params.put("from_source", "android");
+                    params.put("language", PrefManager.getIn().getLanguage().toLowerCase());
                     params.put("action", "verify_otp");
                     ApiCall(params, 3);
                 }
@@ -164,6 +166,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 params.put("from_source", "android");
                 params.put("action", "verify_account");
                 params.put("user_id", PrefManager.getIn().getUserId());
+                params.put("language", PrefManager.getIn().getLanguage().toLowerCase());
                 ApiCall(params, 1);
             }
         } else {
@@ -189,6 +192,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                     params.put("confirm_password", confirmPasswordEditText.getText().toString());
                     params.put("from_source", "android");
                     params.put("action", "forgot_password");
+                    params.put("language", PrefManager.getIn().getLanguage().toLowerCase());
                     ApiCall(params, 2);
                 }
 
