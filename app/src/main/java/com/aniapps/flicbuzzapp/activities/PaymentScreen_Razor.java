@@ -184,7 +184,6 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
                     Utility.alertDialog(PaymentScreen_Razor.this, "Alert", e.getMessage());
                 }
             }
-
             @Override
             public void onFailure(String res) {
                 Utility.alertDialog(PaymentScreen_Razor.this, "Alert", res);
