@@ -5,10 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
-import com.aniapps.flicbuzzapp.activities.DeeplinkBrowser;
-import com.aniapps.flicbuzzapp.activities.PaymentScreen_New;
-import com.aniapps.flicbuzzapp.activities.SignIn;
-import com.aniapps.flicbuzzapp.activities.Spalsh;
+import com.aniapps.flicbuzzapp.activities.*;
 import com.aniapps.flicbuzzapp.player.LandingPage;
 import com.aniapps.flicbuzzapp.utils.PrefManager;
 
@@ -90,7 +87,7 @@ public class Notification_BroadCast extends BroadcastReceiver {
                     if (remember) {
                         try {
                             notificationIntent = new Intent(context,
-                                    PaymentScreen_New.class);
+                                    PaymentScreen_Razor.class);
                             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             context.startActivity(notificationIntent);
                         } catch (Exception e) {

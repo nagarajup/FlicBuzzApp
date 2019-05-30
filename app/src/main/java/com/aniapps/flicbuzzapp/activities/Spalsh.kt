@@ -87,6 +87,7 @@ class Spalsh : AppCompatActivity() {
                         PrefManager.getIn().setPincode(userObject.getString("pincode"))
                         PrefManager.getIn().setDob(userObject.getString("dob"))
                         PrefManager.getIn().setProfile_pic(userObject.getString("profile_pic"))
+                        PrefManager.getIn().setSubscription_auto_renew(jsonObject.getString("subscription_auto_renew"))
                         if (PrefManager.getIn().getPayment_mode() == "1" && !PrefManager.getIn().getPlan().equals(
                                 "expired",
                                 ignoreCase = true
@@ -99,7 +100,7 @@ class Spalsh : AppCompatActivity() {
                             startActivity(intent)
                             overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
                         } else {
-                            val intent = Intent(this@Spalsh, PaymentScreen_New::class.java)
+                            val intent = Intent(this@Spalsh, PaymentScreen_Razor::class.java)
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)

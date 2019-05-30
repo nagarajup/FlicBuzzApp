@@ -361,7 +361,7 @@ public class SignUpActivity extends AppConstants {
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
                             } else {
-                                Intent intent = new Intent(SignUpActivity.this, PaymentScreen_New.class);
+                                Intent intent = new Intent(SignUpActivity.this, PaymentScreen_Razor.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);

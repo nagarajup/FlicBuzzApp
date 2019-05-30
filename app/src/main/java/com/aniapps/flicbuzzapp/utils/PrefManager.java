@@ -64,7 +64,7 @@ public class PrefManager {
         editor.commit();
     }
 
-    public void clearLogins(){
+    public void clearLogins() {
         editor.clear();
         editor.commit();
     }
@@ -304,6 +304,17 @@ public class PrefManager {
     public String pincode = "";
     public String dob = "";
 
+    public String getSubscription_auto_renew() {
+        return pref.getString("subscription_auto_renew", "");
+    }
+
+    public void setSubscription_auto_renew(String subscription_auto_renew) {
+        editor.putString("subscription_auto_renew", subscription_auto_renew);
+        editor.commit();
+    }
+
+    public String subscription_auto_renew = "";
+
     public String getProfile_pic() {
         return pref.getString("profile_pic", "");
     }
@@ -328,7 +339,7 @@ public class PrefManager {
     public void sendRegistrationToServer(Context context, final String token) {
 
         if (PrefManager.getIn().getUserId().equals("")) {
-             Log.e("#FCM#", "Tokent@Return " + token);
+            Log.e("#FCM#", "Tokent@Return " + token);
             return;
         }
 
@@ -338,7 +349,7 @@ public class PrefManager {
             params.put("action", "notification_registration");
             params.put("fcm_token", token);
             params.put("language", PrefManager.getIn().getLanguage().toLowerCase());
-            RetrofitClient.getInstance().doBackProcess(context, params, "online",  new APIResponse() {
+            RetrofitClient.getInstance().doBackProcess(context, params, "online", new APIResponse() {
 
                 @Override
                 public void onSuccess(String res) {

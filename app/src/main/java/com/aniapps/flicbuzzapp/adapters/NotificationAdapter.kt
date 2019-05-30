@@ -21,6 +21,7 @@ import android.widget.Toast
 import com.aniapps.flicbuzzapp.AppApplication
 import com.aniapps.flicbuzzapp.R
 import com.aniapps.flicbuzzapp.activities.PaymentScreen_New
+import com.aniapps.flicbuzzapp.activities.PaymentScreen_Razor
 import com.aniapps.flicbuzzapp.db.LocalDB
 import com.aniapps.flicbuzzapp.db.NotificationData
 import com.aniapps.flicbuzzapp.models.MyVideos
@@ -89,7 +90,7 @@ class NotificationAdapter(var context: Activity, var itemsList: List<Notificatio
                 try {
                     val notificationIntent = Intent(
                         context,
-                        PaymentScreen_New::class.java
+                        PaymentScreen_Razor::class.java
                     )
                     notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     context.startActivity(notificationIntent)

@@ -229,6 +229,7 @@ public class LoginActivity extends AppConstants {
                             PrefManager.getIn().setPincode(userObject.getString("pincode"));
                             PrefManager.getIn().setDob(userObject.getString("dob"));
                             PrefManager.getIn().setProfile_pic(userObject.getString("profile_pic"));
+                            PrefManager.getIn().setSubscription_auto_renew(jsonObject.getString("subscription_auto_renew"));
                             try {
 
                                 PrefManager.getIn().sendRegistrationToServer(
@@ -246,7 +247,7 @@ public class LoginActivity extends AppConstants {
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
                             } else {
-                                Intent intent = new Intent(LoginActivity.this, PaymentScreen_New.class);
+                                Intent intent = new Intent(LoginActivity.this, PaymentScreen_Razor.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -279,6 +280,7 @@ public class LoginActivity extends AppConstants {
                             PrefManager.getIn().setServer_version_mode(jsonObject.getString("server_version_mode"));
                             PrefManager.getIn().setShow_splash_message(jsonObject.getString("show_splash_message"));
                             PrefManager.getIn().setSplash_message(jsonObject.getString("splash_message"));
+                            PrefManager.getIn().setSubscription_auto_renew(jsonObject.getString("subscription_auto_renew"));
                             JSONObject userObject = jsonObject.getJSONObject("data");
                             PrefManager.getIn().setName(userObject.getString("name"));
                             PrefManager.getIn().setEmail(userObject.getString("email"));
@@ -288,6 +290,7 @@ public class LoginActivity extends AppConstants {
                             PrefManager.getIn().setPincode(userObject.getString("pincode"));
                             PrefManager.getIn().setDob(userObject.getString("dob"));
                             PrefManager.getIn().setProfile_pic(userObject.getString("profile_pic"));
+
                             try {
 
                                         PrefManager.getIn().sendRegistrationToServer(
@@ -308,7 +311,7 @@ public class LoginActivity extends AppConstants {
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
                             } else {
-                                Intent intent = new Intent(LoginActivity.this, PaymentScreen_New.class);
+                                Intent intent = new Intent(LoginActivity.this, PaymentScreen_Razor.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);

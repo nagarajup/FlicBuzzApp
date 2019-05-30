@@ -107,16 +107,6 @@ public class RetrofitClient extends AppCompatActivity {
         }
         postParams.put("from_source", "android");
 
-
-
-       /* if (!postParams.get("action").equals("get_video_by_id")) {
-            postParams.put("language", PrefManager.getIn().getLanguage().toLowerCase());
-        }
-
-        if (!postParams.get("action").equals("get_similar_by_video_id")){
-
-        }*/
-
         String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
 
         String SessionKey = CryptSession.getKey(device_id + BuildConfig.VERSION_CODE);
@@ -127,7 +117,7 @@ public class RetrofitClient extends AppCompatActivity {
         String jsonSringParams = gson.toJson(postParams);
         Map<String, String> postEncryptedDataParams = new HashMap<>();
         //Log.e(TAG, "Get Session" + Pref.getIn().getUser_name() + "##" + Pref.getIn().getPsw().toUpperCase());
-        //Log.e(TAG, "Get Session KEY" + upToNCharacters);
+        Log.e(TAG, "jsonSringParams" + jsonSringParams);
 
         try {
            // postEncryptedDataParams.put("encrypted_data", cte_crypt_login.encrypt(jsonSringParams));

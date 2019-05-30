@@ -737,7 +737,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
 
             if (from == 1) {
                 trackEvent(this@LandingPage, "MainPage", "Plan Expired|Ok")
-                val intent = Intent(this@LandingPage, PaymentScreen_New::class.java)
+                val intent = Intent(this@LandingPage, PaymentScreen_Razor::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -1107,7 +1107,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
             }
             R.id.nav_package -> {
                 trackEvent(this@LandingPage, "MainPage", "Packages")
-                val myintent = Intent(this@LandingPage, PaymentScreen_New::class.java)
+                val myintent = Intent(this@LandingPage, PaymentScreen_Razor::class.java)
                 myintent.putExtra("title", "Packages")
                 myintent.putExtra("url", "")
                 startActivity(myintent)
