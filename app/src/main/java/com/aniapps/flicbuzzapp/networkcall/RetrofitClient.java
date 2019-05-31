@@ -125,12 +125,7 @@ public class RetrofitClient extends AppCompatActivity {
             postEncryptedDataParams.put("version_code", "" + BuildConfig.VERSION_CODE);
             postEncryptedDataParams.put("device_id", "" + device_id);
 
-            Log.e("#Encryption#", "post encrypt full Key " + SessionKey);
-            Log.e("#Encryption#", "post encrypt Key" + upToNCharacters);
-            Log.e("#Encryption#", "post encrypt" + postEncryptedDataParams);
-            Log.e("#Encryption#", "post no crypt" + postParams);
-            Log.e("#Encryption#", "post no crypt" + URLEncoder.encode(cte_crypt_login.encrypt(jsonSringParams), "utf-8"));
-            Log.e("#Encryption#", "res encrypt" + cte_crypt_login.decrypt(cte_crypt_login.encrypt(jsonSringParams)));
+
            // Log.e("#Encryption#", "res encrypt222" + cte_crypt_login.decrypt("QFkpr6cYBKeKnZ74IWkFTg=="));
 
         } catch (Exception e) {
