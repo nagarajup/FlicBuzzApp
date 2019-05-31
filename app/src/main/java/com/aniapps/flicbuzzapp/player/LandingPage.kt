@@ -358,7 +358,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
         } else if (PrefManager.getIn().getPlan().equals("expired")) {
             tv_profile_plan.setText("Plan : Expired")
         } else if (PrefManager.getIn().getPlan().equals("trail")) {
-            tv_profile_plan.setText("Plan : Trail")
+            tv_profile_plan.setText("Plan : Trial")
         }
         /* if (PrefManager.getIn().getPlan().equals("expired")) {
              alertDialog(this@LandingPage, "Alert", "Your plan is expired, Please purchase subscription.", 1)

@@ -61,7 +61,7 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
         threemonths.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (PrefManager.getIn().getPayment_mode().equals("1")) {
+                if (PrefManager.getIn().getPayment_mode().equals("1") && !PrefManager.getIn().getPlan().equalsIgnoreCase("trail")) {
                     String message = "";
                     if (PrefManager.getIn().getPlan().equals("3")) {
                         message = "Three Months";
@@ -80,7 +80,7 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
         sixmonths.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (PrefManager.getIn().getPayment_mode().equals("1")) {
+                if (PrefManager.getIn().getPayment_mode().equals("1") && !PrefManager.getIn().getPlan().equalsIgnoreCase("trail")) {
                     String message = "";
                     if (PrefManager.getIn().getPlan().equals("3")) {
                         message = "Three Months";
@@ -99,7 +99,7 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
         oneyear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (PrefManager.getIn().getPayment_mode().equals("1")) {
+                if (PrefManager.getIn().getPayment_mode().equals("1") && !PrefManager.getIn().getPlan().equalsIgnoreCase("trail")) {
                     String message = "";
                     if (PrefManager.getIn().getPlan().equals("3")) {
                         message = "Three Months";
@@ -291,7 +291,7 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
     public void onPaymentError(int i, String s, PaymentData paymentData) {
         try {
             Log.e("res", s + "res" + paymentData.getData());
-            Toast.makeText(this, "Payment Successful: " + paymentData.getData(), Toast.LENGTH_SHORT).show();
+           // Toast.makeText(this, "Payment Successful: " + paymentData.getData(), Toast.LENGTH_SHORT).show();
 
         } catch (Exception e) {
         }
