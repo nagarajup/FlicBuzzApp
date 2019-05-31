@@ -155,11 +155,14 @@
                 <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
             </intent-filter>
         </receiver>
+        <!--test
         <meta-data
                 android:name="com.razorpay.ApiKey"
-                android:value="rzp_test_dXP9LJNPoD7Nqc"
-        />
-
+                android:value="rzp_test_dXP9LJNPoD7Nqc" />-->
+        <!--Live-->
+        <meta-data
+                android:name="com.razorpay.ApiKey"
+                android:value="rzp_live_UH1IYzcq0XcL6T" />
         <activity
                 android:name="com.aniapps.flicbuzzapp.activities.DeeplinkBrowser"
                 android:screenOrientation="portrait"
