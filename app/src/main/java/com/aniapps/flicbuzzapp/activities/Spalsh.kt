@@ -1,6 +1,5 @@
 package com.aniapps.flicbuzzapp.activities
 
-import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -8,24 +7,14 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.annotation.RequiresApi
 import android.support.v7.app.AppCompatActivity
+import android.widget.Toast
 import com.aniapps.flicbuzzapp.R
 import com.aniapps.flicbuzzapp.networkcall.APIResponse
 import com.aniapps.flicbuzzapp.networkcall.RetrofitClient
 import com.aniapps.flicbuzzapp.player.LandingPage
 import com.aniapps.flicbuzzapp.utils.PrefManager
-import org.json.JSONObject
-import android.support.v4.app.NotificationCompat
-import android.graphics.Bitmap
-import com.google.android.exoplayer2.util.NotificationUtil.createNotificationChannel
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.graphics.Color
 import com.aniapps.flicbuzzapp.utils.Utility
-import com.google.firebase.iid.InstanceIdResult
-import com.google.android.gms.tasks.OnSuccessListener
-import com.google.firebase.iid.FirebaseInstanceId
-import android.util.Log
+import org.json.JSONObject
 
 
 class Spalsh : AppCompatActivity() {
@@ -48,8 +37,11 @@ class Spalsh : AppCompatActivity() {
             }, 2000)
         } else {
 
-
-            ApiCall()
+            if (Utility.isConnectingToInternet(this@Spalsh)) {
+                ApiCall()
+            } else {
+                Toast.makeText(this@Spalsh, "No Internet", Toast.LENGTH_SHORT).show()
+            }
         }
 
     }
@@ -125,12 +117,14 @@ class Spalsh : AppCompatActivity() {
                     }
 
                 } catch (e: Exception) {
+                    Utility.alertDialog(this@Spalsh,"Alert!",e.message);
                     e.printStackTrace()
                 }
 
             }
 
             override fun onFailure(res: String) {
+                Utility.alertDialog(this@Spalsh,"Alert!",res);
             }
         })
     }

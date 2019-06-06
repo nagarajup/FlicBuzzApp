@@ -241,7 +241,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                         Utility.alertDialog(ForgotPasswordActivity.this,  jsonObject.getString("message"));
                     } else {
                         if (from == 1) {
-                            email_error.setVisibility(View.VISIBLE);
+                          //  email_error.setVisibility(View.VISIBLE);
                         }
                         Utility.alertDialog(ForgotPasswordActivity.this, "Alert", jsonObject.getString("message"));
 
