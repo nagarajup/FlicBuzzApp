@@ -294,7 +294,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements  MySMSB
             LocalBroadcastManager.getInstance(this).unregisterReceiver(myReceiver);
         }
         otpEditText.setText(getVerificationCode(otp));
-        validateMobile.performClick();
+       // validateMobile.performClick();
     }
 
     @Override

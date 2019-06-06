@@ -459,7 +459,7 @@ public class LoginActivity extends AppConstants implements MySMSBroadcastReceive
             LocalBroadcastManager.getInstance(this).unregisterReceiver(myReceiver);
         }
         otpEditText.setText(getVerificationCode(otp));
-        validateMobile.performClick();
+       // validateMobile.performClick();
     }
 
     @Override

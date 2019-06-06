@@ -536,7 +536,7 @@ public class SignUpActivity extends AppConstants implements  MySMSBroadcastRecei
             LocalBroadcastManager.getInstance(this).unregisterReceiver(myReceiver);
         }
         otpEditText.setText(getVerificationCode(otp));
-        validateMobile.performClick();
+       // validateMobile.performClick();
     }
 
     @Override
