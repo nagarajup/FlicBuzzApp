@@ -3,9 +3,10 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="com.aniapps.flicbuzzapp">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.hardware.camera.autofocus"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -185,8 +186,17 @@
                 <!--<data android:scheme=”http”
  android:host=”www.example.com"
  android:pathPrefix=”/gizmos” />-->
+
+
             </intent-filter>
         </activity>
+        <receiver
+                android:name="com.aniapps.flicbuzzapp.utils.MySMSBroadcastReceiver"
+                android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.gms.auth.api.phone.SMS_RETRIEVED" />
+            </intent-filter>
+        </receiver>
 
     </application>
 
