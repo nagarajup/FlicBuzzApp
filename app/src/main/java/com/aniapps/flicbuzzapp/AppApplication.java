@@ -9,6 +9,7 @@ import android.os.StrictMode;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.ImageView;
+import com.aniapps.flicbuzzapp.utils.AppSignatureHelper;
 import com.aniapps.flicbuzzapp.utils.PrefManager;
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
@@ -31,6 +32,7 @@ public class AppApplication extends Application {
             PrefManager.getIn().saveDeviceId(Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID));
         }
         //Log.e("###Deviceid", "" + PrefManager.getIn().getDeviceId());
+        Log.e("OTP HASH","###"+new AppSignatureHelper(app_ctx).getAppSignatures().get(0));
         initChannel();
         AppsFlyerConversionListener conversionDataListener =
                 new AppsFlyerConversionListener() {

@@ -4,11 +4,14 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
@@ -16,19 +19,27 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+import com.aniapps.flicbuzzapp.AppApplication;
 import com.aniapps.flicbuzzapp.AppConstants;
 import com.aniapps.flicbuzzapp.R;
 import com.aniapps.flicbuzzapp.networkcall.APIResponse;
 import com.aniapps.flicbuzzapp.networkcall.RetrofitClient;
 import com.aniapps.flicbuzzapp.player.LandingPage;
+import com.aniapps.flicbuzzapp.utils.MySMSBroadcastReceiver;
 import com.aniapps.flicbuzzapp.utils.PrefManager;
 import com.aniapps.flicbuzzapp.utils.Utility;
+import com.google.android.gms.auth.api.phone.SmsRetriever;
+import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class LoginActivity extends AppConstants {
+public class LoginActivity extends AppConstants implements MySMSBroadcastReceiver.OTPReceiveListener {
     Button signIn, validateMobile;
     TextView emailError, passwordError, signUp, forgotPassword, otpErro, resendOTP;
     EditText otpEditText, emailEditText, passwordEditText;
@@ -38,6 +49,7 @@ public class LoginActivity extends AppConstants {
     String reqString = "";
     ImageView img_eye;
     boolean check_visibility = true;
+    private MySMSBroadcastReceiver myReceiver = new MySMSBroadcastReceiver();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +61,11 @@ public class LoginActivity extends AppConstants {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        startSMSListener();
+        myReceiver.initOTPListener(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(SmsRetriever.SMS_RETRIEVED_ACTION);
+        AppApplication.app_ctx.registerReceiver(myReceiver, intentFilter);
 
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -293,11 +310,10 @@ public class LoginActivity extends AppConstants {
 
                             try {
 
-                                        PrefManager.getIn().sendRegistrationToServer(
-                                                LoginActivity.this,
-                                                PrefManager.getIn().getFcm_token()
-                                        );
-
+                                PrefManager.getIn().sendRegistrationToServer(
+                                        LoginActivity.this,
+                                        PrefManager.getIn().getFcm_token()
+                                );
 
 
                             } catch (Exception e) {
@@ -404,6 +420,9 @@ public class LoginActivity extends AppConstants {
 
     @Override
     public void onBackPressed() {
+        if (myReceiver != null) {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(myReceiver);
+        }
         if (handler != null) {
             if (runnable != null)
                 handler.removeCallbacks(runnable);
@@ -433,4 +452,68 @@ public class LoginActivity extends AppConstants {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onOTPReceived(@NotNull String otp) {
+        if (myReceiver != null) {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(myReceiver);
+        }
+        otpEditText.setText(getVerificationCode(otp));
+        validateMobile.performClick();
+    }
+
+    @Override
+    public void onOTPTimeOut() {
+
+    }
+
+   /* private String getVerificationCode(String message) {
+        String code = null, mycode="";
+        int index = message.indexOf("<#>");
+
+        if (index != -1) {
+            int start = index + 4;
+            int length = 6;
+            mycode = message.substring(start, start + length);
+            code=mycode.replace(" ","");
+            return code;
+        }
+
+
+        return code;
+    }*/
+   private String getVerificationCode(String message) {
+        String code = null;
+        int index = message.indexOf("<#>");
+
+        if (index != -1) {
+            int start = index + 4;
+            int length = 4;
+            code = message.substring(start, start + length);
+            return code;
+        }
+
+
+        return code;
+    }
+
+    private void startSMSListener() {
+        SmsRetrieverClient client = SmsRetriever.getClient(this);
+        Task<Void> task = client.startSmsRetriever();
+        task.addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.i("#SMS#", "Success to start retriever");
+            }
+        });
+
+        task.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.i("#SMS#", "Failed to start retriever");
+            }
+        });
+    }
+
+
 }

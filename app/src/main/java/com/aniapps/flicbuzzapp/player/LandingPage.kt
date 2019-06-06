@@ -936,7 +936,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
                     startActivity(
                         Intent(
                             Intent.ACTION_VIEW,
-                            Uri.parse("https://play.google.com/store/apps/details?id=com.cartrade.car&hl=en=$appPackageName")
+                            Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")
                         )
                     )
                 }

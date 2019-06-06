@@ -10,7 +10,7 @@ android {
         applicationId "com.aniapps.flicbuzzapp"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 14
+        versionCode 15
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
@@ -64,6 +64,7 @@ dependencies {
     implementation 'com.android.installreferrer:installreferrer:1.0'
     implementation 'com.google.firebase:firebase-messaging:18.0.0'
     implementation "com.google.firebase:firebase-core:16.0.3"
+    implementation 'com.google.android.gms:play-services-auth-api-phone:16.0.0'
     // Room components
     implementation "android.arch.persistence.room:runtime:1.1.1"
     annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
