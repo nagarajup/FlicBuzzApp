@@ -721,8 +721,60 @@ class LandingPage : AppConstants(), View.OnClickListener {
             })
     }
 
-
     fun alertDialog(context: Context, title: String, msg: String, from: Int) {
+
+        val metrics = resources.displayMetrics
+        val width = metrics.widthPixels
+        val alert_dialog = Dialog(this@LandingPage)
+        alert_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        alert_dialog.setContentView(R.layout.alert_dialog)
+        alert_dialog.setCanceledOnTouchOutside(false)
+        alert_dialog.window!!.setLayout(6 * width / 7, LinearLayout.LayoutParams.WRAP_CONTENT)
+        val txt_alert_title = alert_dialog.findViewById<View>(R.id.custom_alert_dialog_title) as TextView
+        val txt_alert_description = alert_dialog.findViewById<View>(R.id.custom_alert_dialog_msg) as TextView
+        val main = alert_dialog.findViewById<View>(R.id.main) as LinearLayout
+        val txt_ok = alert_dialog.findViewById<View>(R.id.ok) as Button
+        val txt_cancel = alert_dialog.findViewById<View>(R.id.cancel) as Button
+        main.visibility = View.VISIBLE
+        txt_alert_title.text = title
+        txt_alert_description.text = msg
+        txt_cancel.text = "OK"
+        txt_ok.text = "CANCEL"
+        if (from == 1) {
+            txt_ok.visibility= View.GONE
+        }
+        txt_cancel.setOnClickListener {
+            alert_dialog.dismiss()
+            if (from == 1) {
+                trackEvent(this@LandingPage, "MainPage", "Plan Expired|Ok")
+                val intent = Intent(this@LandingPage, PaymentScreen_Razor::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intent)
+                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+            } else {
+                PrefManager.getIn().clearLogins();
+                trackEvent(this@LandingPage, "MainPage", "LogOut|Ok")
+                // PrefManager.getIn().setLogin(false);
+                val intent = Intent(this@LandingPage, SignIn::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intent)
+                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+            }
+        }
+
+        txt_ok.setOnClickListener {
+            trackEvent(this@LandingPage, "MainPage", "LogOut|Cancel")
+            alert_dialog.dismiss()
+        }
+
+        alert_dialog.show()
+    }
+
+   /* fun alertDialog(context: Context, title: String, msg: String, from: Int) {
         val builder = AlertDialog.Builder(context)
         builder.setMessage(msg)
         builder.setTitle(title)
@@ -756,7 +808,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
             }
         }
         builder.show()
-    }
+    }*/
 
     fun myData(myData: String) {
         try {
@@ -1175,7 +1227,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
 
             R.id.nav_logout -> {
                 trackEvent(this@LandingPage, "MainPage", "LogOut")
-                alertDialog(this@LandingPage, "Logout", "Are you sure to logout.", 2)
+                alertDialog(this@LandingPage, "Logout", "Are you sure you want to logout?", 2)
 
             }
             R.id.nav_share -> {

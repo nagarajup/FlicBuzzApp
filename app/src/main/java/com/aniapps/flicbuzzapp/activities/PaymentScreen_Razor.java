@@ -3,8 +3,6 @@ package com.aniapps.flicbuzzapp.activities;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
@@ -25,7 +23,6 @@ import com.aniapps.flicbuzzapp.networkcall.RetrofitClient;
 import com.aniapps.flicbuzzapp.player.LandingPage;
 import com.aniapps.flicbuzzapp.util.IabHelper;
 import com.aniapps.flicbuzzapp.util.IabResult;
-import com.aniapps.flicbuzzapp.util.Inventory;
 import com.aniapps.flicbuzzapp.util.Purchase;
 import com.aniapps.flicbuzzapp.utils.PrefManager;
 import com.aniapps.flicbuzzapp.utils.Utility;
@@ -52,7 +49,8 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
     private final String TAG = "PaymentScreen_New";
     private boolean threemonthsflag, sixmonthsflag, oneyearflag, trailFlag;
     String subDate = "";
-    String selection="";
+    String selection = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,7 +89,7 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
                     plan = "3";
                     paymentDialog("3");
 
-                   // planCall();
+                    // planCall();
                 }
             }
         });
@@ -205,7 +203,7 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
 
 
     public void paymentDialog(final String plan) {
-        this.plan =plan;
+        this.plan = plan;
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         int width = metrics.widthPixels;
         final Dialog alert_dialog = new Dialog(PaymentScreen_Razor.this);
@@ -227,14 +225,14 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
             @Override
             public void onClick(View view) {
                 alert_dialog.dismiss();
-                selection="google";
-                if(plan.equalsIgnoreCase("3")){
+                selection = "google";
+                if (plan.equalsIgnoreCase("3")) {
                     mHelper.flagEndAsync();
                     mHelper.launchSubscriptionPurchaseFlow(PaymentScreen_Razor.this, Utility.threemonths, PURCHSE_REQUEST, mPurchaseFinishedListener, null);
-                }else if(plan.equalsIgnoreCase("6")){
+                } else if (plan.equalsIgnoreCase("6")) {
                     mHelper.flagEndAsync();
                     mHelper.launchSubscriptionPurchaseFlow(PaymentScreen_Razor.this, Utility.six_months, PURCHSE_REQUEST, mPurchaseFinishedListener, null);
-                }else  if(plan.equalsIgnoreCase("12")){
+                } else if (plan.equalsIgnoreCase("12")) {
                     mHelper.flagEndAsync();
                     mHelper.launchSubscriptionPurchaseFlow(PaymentScreen_Razor.this, Utility.one_year, PURCHSE_REQUEST, mPurchaseFinishedListener, null);
                 }
@@ -244,7 +242,7 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
             @Override
             public void onClick(View view) {
                 alert_dialog.dismiss();
-                selection="razor";
+                selection = "razor";
                 planCall();
             }
         });
@@ -324,8 +322,8 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
                         PrefManager.getIn().setShow_splash_message(jsonObject.getString("show_splash_message"));
                         PrefManager.getIn().setSplash_message(jsonObject.getString("splash_message"));
                         PrefManager.getIn().setGateway("razorpay");
-                        //PrefManager.getIn().setSubscription_auto_renew(jsonObject.getString("subscription_auto_renew"));
-                        Intent intent = new Intent(PaymentScreen_Razor.this, LandingPage.class);
+                        PrefManager.getIn().setSubscription_auto_renew("yes");
+                        Intent intent = new Intent(PaymentScreen_Razor.this, PaymentSuccuss.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -401,7 +399,6 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
     }
 
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "onActivityResult(" + requestCode + "," + resultCode + "," + data);
@@ -443,28 +440,15 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            if (PrefManager.getIn().getSubscription_start_date().equals("0000-00-00 00:00:00")) {
-                //  if (PrefManager.getIn().getDeveloper_mode().equalsIgnoreCase("0")) {
-                c.add(Calendar.DATE, 7);
-               /* } else {
-                    c.add(Calendar.DATE, 3);
-                }*/
-                String endDate = sdf.format(c.getTime());
-                planUpdate("trail", startdate, endDate, purchase.toString(), 0);
-            } else {
-               /* if (purchase.getSku().equals(Utility.threemonths_threedaytrail)) {
-                    c.add(Calendar.MONTH, 3);
-                } else*/
-                if (purchase.getSku().equals(Utility.threemonths)) {
-                    c.add(Calendar.MONTH, 3);
-                } else if (purchase.getSku().equals(Utility.six_months)) {
-                    c.add(Calendar.MONTH, 6);
-                } else if (purchase.getSku().equals(Utility.one_year)) {
-                    c.add(Calendar.MONTH, 12);
-                }
-                String endDate = sdf.format(c.getTime());
-                planUpdate(purchase.getSku(), startdate, endDate, purchase.toString(), 0);
+            if (purchase.getSku().equals(Utility.threemonths)) {
+                c.add(Calendar.MONTH, 3);
+            } else if (purchase.getSku().equals(Utility.six_months)) {
+                c.add(Calendar.MONTH, 6);
+            } else if (purchase.getSku().equals(Utility.one_year)) {
+                c.add(Calendar.MONTH, 12);
             }
+            String endDate = sdf.format(c.getTime());
+            planUpdate(purchase.getSku(), startdate, endDate, purchase.toString(), 0);
 
 
         }
@@ -520,7 +504,7 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
                         PrefManager.getIn().setSubscription_renewal_date(params.get("subscription_renewal_date"));
                         PrefManager.getIn().setSubscription_end_date(params.get("subscription_end_date"));
                         PrefManager.getIn().setGateway("googlepay");
-                       // PrefManager.getIn().setSubscription_auto_renew(jsonObject.getString("subscription_auto_renew"));
+                        PrefManager.getIn().setSubscription_auto_renew("yes");
                         try {
                             PrefManager.getIn().setSplash_message(jsonObject.getString("splash_message"));
                         } catch (Exception e) {
@@ -560,7 +544,7 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
                         }
                         //if (renewal == 0) {
                         if (!PrefManager.getIn().getPlan().equals("expired")) {
-                            Intent intent = new Intent(PaymentScreen_Razor.this, LandingPage.class);
+                            Intent intent = new Intent(PaymentScreen_Razor.this, PaymentSuccuss.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);

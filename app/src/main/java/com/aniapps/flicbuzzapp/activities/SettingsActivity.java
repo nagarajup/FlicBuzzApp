@@ -26,6 +26,7 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +35,7 @@ public class SettingsActivity extends AppConstants {
     TextView header_title;
     JSONObject jsonObject;
     SimpleDateFormat sdf;
+    SimpleDateFormat sdf1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +47,8 @@ public class SettingsActivity extends AppConstants {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        sdf = new SimpleDateFormat("dd MMM yyy");
+        sdf = new SimpleDateFormat("dd MMM yyyy");
+        sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         initViews();
     }
 
@@ -104,19 +107,21 @@ public class SettingsActivity extends AppConstants {
         alert_dialog.setContentView(R.layout.alert_dialog);
         alert_dialog.setCanceledOnTouchOutside(false);
         alert_dialog.getWindow().setLayout((6 * width) / 7, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout main = (LinearLayout) alert_dialog.findViewById(R.id.main);
         TextView txt_alert_title = (TextView) alert_dialog.findViewById(R.id.custom_alert_dialog_title);
         TextView txt_alert_description = (TextView) alert_dialog.findViewById(R.id.custom_alert_dialog_msg);
-        LinearLayout main = (LinearLayout) alert_dialog.findViewById(R.id.main);
         Button txt_ok = (Button) alert_dialog.findViewById(R.id.ok);
         Button txt_cancel = (Button) alert_dialog.findViewById(R.id.cancel);
         main.setVisibility(View.VISIBLE);
         if (from == 1) {
             try {
-                txt_alert_description.setText("If you confirm and end your subscription now, you can still access it until " + sdf.parse(PrefManager.getIn().getSubscription_start_date()));
+                Date date = sdf1.parse(PrefManager.getIn().getSubscription_end_date());
+                txt_alert_title.setText("Are you sure you want to proceed with your cancellation");
+                txt_alert_description.setText("If you confirm and end your subscription now, you can still access it until \n" + sdf.format(date));
             } catch (ParseException e) {
                 e.printStackTrace();
+                txt_alert_title.setText("Are you sure you want to proceed with your cancellation");
                 txt_alert_description.setText("If you confirm and end your subscription now, you can still access it until end date.");
-
             }
         }else{
             txt_alert_title.setText("LOGOUT");

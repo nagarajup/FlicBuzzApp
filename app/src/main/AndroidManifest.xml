@@ -115,6 +115,9 @@
         <activity android:name="com.aniapps.flicbuzzapp.activities.PaymentScreenFullAccess"
                   android:label="@string/app_name"
                   android:screenOrientation="portrait"/>
+        <activity android:name="com.aniapps.flicbuzzapp.activities.PaymentSuccuss"
+                  android:label="@string/app_name"
+                  android:screenOrientation="portrait"/>
 
         <activity android:name="com.aniapps.flicbuzzapp.notifications.Notification_Act"
                   android:label="@string/app_name"
