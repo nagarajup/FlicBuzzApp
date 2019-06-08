@@ -304,6 +304,17 @@ public class PrefManager {
     public String pincode = "";
     public String dob = "";
 
+    public String getGateway() {
+        return pref.getString("gateway", "");
+    }
+
+    public void setGateway(String gateway) {
+        editor.putString("gateway", gateway);
+        editor.commit();
+    }
+
+    public String gateway="";
+
     public String getSubscription_auto_renew() {
         return pref.getString("subscription_auto_renew", "");
     }

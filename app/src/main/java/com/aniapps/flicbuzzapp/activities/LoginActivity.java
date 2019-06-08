@@ -1,6 +1,7 @@
 package com.aniapps.flicbuzzapp.activities;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,9 +16,15 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.*;
 import com.aniapps.flicbuzzapp.AppApplication;
 import com.aniapps.flicbuzzapp.AppConstants;
@@ -237,6 +244,7 @@ public class LoginActivity extends AppConstants implements MySMSBroadcastReceive
                             PrefManager.getIn().setServer_version_mode(jsonObject.getString("server_version_mode"));
                             PrefManager.getIn().setShow_splash_message(jsonObject.getString("show_splash_message"));
                             PrefManager.getIn().setSplash_message(jsonObject.getString("splash_message"));
+                            PrefManager.getIn().setGateway(jsonObject.getString("gateway"));
                             JSONObject userObject = jsonObject.getJSONObject("data");
                             PrefManager.getIn().setName(userObject.getString("name"));
                             PrefManager.getIn().setEmail(userObject.getString("email"));
@@ -297,6 +305,7 @@ public class LoginActivity extends AppConstants implements MySMSBroadcastReceive
                             PrefManager.getIn().setServer_version_mode(jsonObject.getString("server_version_mode"));
                             PrefManager.getIn().setShow_splash_message(jsonObject.getString("show_splash_message"));
                             PrefManager.getIn().setSplash_message(jsonObject.getString("splash_message"));
+                            PrefManager.getIn().setGateway(jsonObject.getString("gateway"));
                             PrefManager.getIn().setSubscription_auto_renew(jsonObject.getString("subscription_auto_renew"));
                             JSONObject userObject = jsonObject.getJSONObject("data");
                             PrefManager.getIn().setName(userObject.getString("name"));

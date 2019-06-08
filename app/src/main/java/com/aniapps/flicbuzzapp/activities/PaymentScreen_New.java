@@ -568,6 +568,7 @@ public class PaymentScreen_New extends AppCompatActivity {
                         PrefManager.getIn().setSubscription_start_date(params.get("subscription_start_date"));
                         PrefManager.getIn().setSubscription_renewal_date(params.get("subscription_renewal_date"));
                         PrefManager.getIn().setSubscription_end_date(params.get("subscription_end_date"));
+                        PrefManager.getIn().setGateway("googlepay");
                         try {
                             PrefManager.getIn().setSplash_message(jsonObject.getString("splash_message"));
                         }catch (Exception e){

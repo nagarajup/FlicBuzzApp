@@ -4,9 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -59,7 +57,7 @@ public class SettingsActivity extends AppConstants {
             @Override
             public void onClick(View view) {
                 trackEvent(SettingsActivity.this, "MainPage", "Settings|LogOut");
-                alertDialog(SettingsActivity.this, "Logout", "Are you sure to logout.",1);
+                alertDialog(SettingsActivity.this, "Logout", "Are you sure to logout.", 1);
             }
         });
         cancelSubscription.setOnClickListener(new View.OnClickListener() {
@@ -71,7 +69,7 @@ public class SettingsActivity extends AppConstants {
                         Uri.parse("https://play.google.com/store/account/subscriptions"));
                 startActivity(browserIntent);
                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);*/
-                    alertDialog(SettingsActivity.this,"Alert","Are you sure to cancel subscription",2);
+                    alertDialog(SettingsActivity.this, "Alert", "Are you sure to cancel subscription", 2);
                 } else {
                     Toast.makeText(SettingsActivity.this, "Already subscription cancelled.", Toast.LENGTH_SHORT).show();
                 }
@@ -89,16 +87,16 @@ public class SettingsActivity extends AppConstants {
         });
     }
 
-    public void alertDialog(final Context context, String title, String msg,final int from) {
+    public void alertDialog(final Context context, String title, String msg, final int from) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(msg);
         builder.setTitle(title);
         builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
-                if(from==1) {
+                if (from == 1) {
                     trackEvent(SettingsActivity.this, "MainPage", "Settings|LogOut|Cancel");
-                }else{
+                } else {
                     trackEvent(SettingsActivity.this, "MainPage", "Settings|Cancel Subscription popup|Cancel");
                 }
                 dialog.dismiss();
@@ -107,7 +105,7 @@ public class SettingsActivity extends AppConstants {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if(from==1) {
+                if (from == 1) {
                     trackEvent(SettingsActivity.this, "MainPage", "Settings|LogOut|Ok");
                     dialog.dismiss();
                     PrefManager.getIn().clearLogins();
@@ -118,13 +116,17 @@ public class SettingsActivity extends AppConstants {
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
-                }else{
+                } else {
                     trackEvent(SettingsActivity.this, "MainPage", "Settings|Cancel Subscription popup|Ok");
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String canceldate = sdf.format(Calendar.getInstance().getTime());
                     HashMap<String, String> params = new HashMap<>();
                     params.put("from_source", "android");
-                    params.put("action", "subscription_cancelled");
+                    if (PrefManager.getIn().getGateway().equalsIgnoreCase("razorpay")) {
+                        params.put("action", "subscription_cancelled");
+                    }else {
+                        params.put("action", "googlepay_cancel");
+                    }
                     params.put("user_id", PrefManager.getIn().getUserId());
                     params.put("cancel_date", canceldate);
                     ApiCall(params);
@@ -149,14 +151,14 @@ public class SettingsActivity extends AppConstants {
             @Override
             public void onSuccess(String result) {
                 try {
-                    Log.e("result","result"+result);
+                    Log.e("result", "result" + result);
                     jsonObject = new JSONObject(result);
                     int status = jsonObject.getInt("status");
                     if (status == 1) {
                         PrefManager.getIn().setSubscription_auto_renew("no");
                         cancelSubscription.setText("Subscription Cancelled");
                         Utility.alertDialog(SettingsActivity.this, "Alert", "Successfully subscription cancelled.");
-                    }else{
+                    } else {
                         Utility.alertDialog(SettingsActivity.this, "Alert", jsonObject.getString("message"));
                     }
                 } catch (Exception e) {

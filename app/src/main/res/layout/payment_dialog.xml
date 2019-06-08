@@ -1,0 +1,108 @@
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                                    android:id="@+id/card_view"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    card_view:cardCornerRadius="0dp"
+                                    card_view:cardElevation="0dp"
+                                    card_view:cardUseCompatPadding="true">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+        <TextView
+                android:id="@+id/title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:fontFamily="@font/cera_gr_bold"
+                android:text="Payment Options"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/colorPrimary"/>
+
+
+        <LinearLayout
+                android:id="@+id/lay_google"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+            <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@mipmap/gpay_icon"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="2dp"
+                    android:fontFamily="@font/cera_gr_medium"
+                    android:layout_gravity="center"
+                    android:text="Google Payment"
+                    android:textColor="#000000"
+                    android:textSize="14sp"/>
+        </LinearLayout>
+
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#d3d3d3"/>
+
+
+        <LinearLayout
+                android:id="@+id/lay_razor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+            <ImageView
+                     android:layout_width="36dp"
+                     android:layout_height="36dp"
+                     android:src="@mipmap/razorpay_icon"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="2dp"
+                    android:fontFamily="@font/cera_gr_medium"
+                    android:layout_gravity="center"
+                    android:text="Razor Payment"
+                    android:textColor="#000000"
+                    android:textSize="14sp"/>
+        </LinearLayout>
+
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#d3d3d3"/>
+
+        <Button
+                android:id="@+id/btn_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:layout_gravity="right"
+                android:background="@android:color/white"
+                android:padding="5dp"
+                android:text="@string/cancel"
+                android:fontFamily="@font/cera_gr_medium"
+                android:textColor="@color/colorPrimary"
+                android:textSize="13sp"/>
+
+    </LinearLayout>
+
+
+</android.support.v7.widget.CardView>

@@ -70,6 +70,7 @@ class Spalsh : AppCompatActivity() {
                         PrefManager.getIn().setServer_version_mode(jsonObject.getString("server_version_mode"))
                         PrefManager.getIn().setShow_splash_message(jsonObject.getString("show_splash_message"))
                         PrefManager.getIn().setSplash_message(jsonObject.getString("splash_message"))
+                        PrefManager.getIn().setGateway(jsonObject.getString("gateway"))
                         val userObject = jsonObject.getJSONObject("data")
                         PrefManager.getIn().setName(userObject.getString("name"))
                         PrefManager.getIn().setEmail(userObject.getString("email"))
