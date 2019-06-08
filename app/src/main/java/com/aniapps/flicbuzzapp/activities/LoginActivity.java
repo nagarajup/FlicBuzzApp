@@ -1,6 +1,5 @@
 package com.aniapps.flicbuzzapp.activities;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -372,23 +371,31 @@ public class LoginActivity extends AppConstants implements MySMSBroadcastReceive
     int interval = 1000; // 10 secs
     Runnable runnable;
     Handler handler;
+    public  void alertDialog(final Context context, String title, String msg) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        int width = metrics.widthPixels;
+        final Dialog alert_dialog = new Dialog(context);
+        alert_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        alert_dialog.setContentView(R.layout.alert_dialog);
+        alert_dialog.setCanceledOnTouchOutside(false);
+        alert_dialog.getWindow().setLayout((6 * width) / 7, LinearLayout.LayoutParams.WRAP_CONTENT);
+        TextView txt_alert_title = (TextView) alert_dialog.findViewById(R.id.custom_alert_dialog_title);
+        txt_alert_title.setText(title);
+        TextView txt_alert_description = (TextView) alert_dialog.findViewById(R.id.custom_alert_dialog_msg);
+        LinearLayout main = (LinearLayout) alert_dialog.findViewById(R.id.main);
+        Button txt_ok = (Button) alert_dialog.findViewById(R.id.ok);
+        txt_ok.setVisibility(View.GONE);
+        Button txt_cancel = (Button) alert_dialog.findViewById(R.id.cancel);
+        main.setVisibility(View.VISIBLE);
+        txt_alert_description.setText(msg);
+        txt_cancel.setText("OK");
+        txt_ok.setText("CANCEL");
+        txt_cancel.setOnClickListener(new View.OnClickListener() {
 
-    public void alertDialog(final Context context, String title, String msg) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(msg);
-        builder.setTitle(title);
-        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int i) {
+            public void onClick(View v) {
+                alert_dialog.dismiss();
                 trackEvent(LoginActivity.this, "Login", "Login|Popup|Cancel");
-                dialog.dismiss();
-            }
-        });
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                trackEvent(LoginActivity.this, "Login", "Login|Popup|Cancel");
-                dialog.dismiss();
                 HashMap<String, String> params = new HashMap<>();
                 params.put("mobile", mobile_num);
                 params.put("from_source", "android");
@@ -396,11 +403,21 @@ public class LoginActivity extends AppConstants implements MySMSBroadcastReceive
                 params.put("user_id", user_id);
                 params.put("language", PrefManager.getIn().getLanguage().toLowerCase());
                 ApiCall(params, 3);
+            }
+        });
+
+        txt_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                trackEvent(LoginActivity.this, "Login", "Login|Popup|Cancel");
+                alert_dialog.dismiss();
 
             }
         });
-        builder.show();
+
+        alert_dialog.show();
     }
+
 
     public void countDown(final TextView mTextField) {
         // validateMobile.setBackground(getDrawable(R.drawable.rounded_corners_grey));

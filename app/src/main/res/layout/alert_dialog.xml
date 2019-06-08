@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="5dp"
+                android:background="#fff"
+                android:orientation="vertical">
+
+    <LinearLayout
+            android:id="@+id/main"
+            android:visibility="gone"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right|center_vertical"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+        <TextView
+                android:id="@+id/custom_alert_dialog_title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="3dp"
+                android:layout_marginTop="3dp"
+                android:gravity="center"
+                tools:text="Are you sure you want to proceed with your cancellation"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:fontFamily="@font/cera_gr_black"
+                android:textStyle="bold"/>
+    </LinearLayout>
+
+    <LinearLayout
+            android:id="@+id/head"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/main"
+            android:layout_gravity="center"
+            android:background="#ffffff"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+        <TextView
+                android:id="@+id/custom_alert_dialog_msg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:text="Medium Text"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:fontFamily="@font/cera_gr_regular"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/head"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:padding="10dp">
+        <LinearLayout android:gravity="center"
+                      android:orientation="horizontal"
+                      android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginTop="15dp">
+            <Button android:textSize="14.0sp"
+                    android:textColor="@color/black"
+                    android:id="@+id/ok"
+                    android:background="@drawable/rounded_btn_white"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="CONFIRM"
+                    android:fontFamily="@font/cera_gr_medium"/>
+        </LinearLayout>
+        <LinearLayout android:gravity="center"
+                      android:orientation="horizontal"
+                      android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginTop="15dp">
+            <Button android:textSize="14.0sp"
+                    android:textColor="#ffffffff"
+                    android:id="@+id/cancel"
+                    android:background="@drawable/rounded_corners_signup"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="NOT NOW"
+                    android:fontFamily="@font/cera_gr_medium"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

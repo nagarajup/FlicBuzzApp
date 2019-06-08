@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="host">*.flicbuzz.com</string>
-    <string name="base">https://www.flicbuzz.com</string>
-    <string name="core_live">https://www.flicbuzz.com/apis/</string>
+    <!--live-->
+   <!-- <string name="base">https://www.flicbuzz.com</string>
+    <string name="core_live">https://www.flicbuzz.com/apis/</string>-->
 
     <!--test-->
-    <!--<string name="base">https://flicbuzz.adgully.com</string>
-    <string name="core_live">https://flicbuzz.adgully.com/apis/</string>-->
+    <string name="base">https://flicbuzz.adgully.com</string>
+    <string name="core_live">https://flicbuzz.adgully.com/apis/</string>
 </resources>

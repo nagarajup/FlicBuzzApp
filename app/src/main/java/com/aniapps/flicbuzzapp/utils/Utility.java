@@ -1,18 +1,26 @@
 package com.aniapps.flicbuzzapp.utils;
 
-import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.DisplayMetrics;
+import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import com.aniapps.flicbuzzapp.R;
 import com.aniapps.flicbuzzapp.activities.LoginActivity;
 import com.aniapps.flicbuzzapp.activities.SettingsActivity;
 import com.aniapps.flicbuzzapp.activities.SignIn;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -97,18 +105,42 @@ public class Utility {
     }
 
     public static void alertDialog(final Context context, String title, String msg) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(msg);
-        builder.setTitle(title);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        int width = metrics.widthPixels;
+        final Dialog alert_dialog = new Dialog(context);
+        alert_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        alert_dialog.setContentView(R.layout.alert_dialog);
+        alert_dialog.setCanceledOnTouchOutside(false);
+        alert_dialog.getWindow().setLayout((6 * width) / 7, LinearLayout.LayoutParams.WRAP_CONTENT);
+        TextView txt_alert_title = (TextView) alert_dialog.findViewById(R.id.custom_alert_dialog_title);
+        txt_alert_title.setText(title);
+        TextView txt_alert_description = (TextView) alert_dialog.findViewById(R.id.custom_alert_dialog_msg);
+        LinearLayout main = (LinearLayout) alert_dialog.findViewById(R.id.main);
+        Button txt_ok = (Button) alert_dialog.findViewById(R.id.ok);
+        txt_ok.setVisibility(View.GONE);
+        Button txt_cancel = (Button) alert_dialog.findViewById(R.id.cancel);
+        main.setVisibility(View.VISIBLE);
+        txt_alert_description.setText(msg);
+        txt_cancel.setText("OK");
+        txt_cancel.setOnClickListener(new View.OnClickListener() {
+
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+            public void onClick(View v) {
+
+
+                alert_dialog.dismiss();
+            }
+        });
+
+        txt_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alert_dialog.dismiss();
 
             }
         });
-        //builder.setNegativeButton("NO", null);
-        builder.show();
+
+        alert_dialog.show();
     }
 
     public static boolean isConnectingToInternet(Context context) {
@@ -125,25 +157,52 @@ public class Utility {
         }
         return false;
     }
-    public static void alertDialog(final Context context,  String msg) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(msg);
-        builder.setTitle("Notice");
 
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+    public static void alertDialog(final Context context, String msg) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        int width = metrics.widthPixels;
+        final Dialog alert_dialog = new Dialog(context);
+        alert_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        alert_dialog.setContentView(R.layout.alert_dialog);
+        alert_dialog.setCanceledOnTouchOutside(false);
+        alert_dialog.getWindow().setLayout((6 * width) / 7, LinearLayout.LayoutParams.WRAP_CONTENT);
+        TextView txt_alert_title = (TextView) alert_dialog.findViewById(R.id.custom_alert_dialog_title);
+        txt_alert_title.setText("NOTICE");
+        TextView txt_alert_description = (TextView) alert_dialog.findViewById(R.id.custom_alert_dialog_msg);
+        LinearLayout main = (LinearLayout) alert_dialog.findViewById(R.id.main);
+        Button txt_ok = (Button) alert_dialog.findViewById(R.id.ok);
+        txt_ok.setVisibility(View.GONE);
+        Button txt_cancel = (Button) alert_dialog.findViewById(R.id.cancel);
+        main.setVisibility(View.VISIBLE);
+        txt_alert_description.setText(msg);
+        txt_cancel.setText("OK");
+        txt_cancel.setOnClickListener(new View.OnClickListener() {
+
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                PrefManager.getIn().clearLogins();
-                //PrefManager.getIn().setLogin(false);
-                Intent intent =new Intent(context, SignIn.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                context.startActivity(intent);
+            public void onClick(View v) {
+                alert_dialog.dismiss();
+                if(!(context instanceof LoginActivity)) {
+                    PrefManager.getIn().clearLogins();
+                    //PrefManager.getIn().setLogin(false);
+                    Intent intent = new Intent(context, SignIn.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    context.startActivity(intent);
+                }
+            }
+        });
+
+        txt_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alert_dialog.dismiss();
 
             }
         });
-        builder.show();
+
+        alert_dialog.show();
     }
+
 }

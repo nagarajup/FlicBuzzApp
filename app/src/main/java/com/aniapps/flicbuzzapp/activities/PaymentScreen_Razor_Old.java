@@ -2,16 +2,19 @@ package com.aniapps.flicbuzzapp.activities;
 
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -133,18 +136,41 @@ public class PaymentScreen_Razor_Old extends AppCompatActivity implements Paymen
     }
 
     public void alertDialog(String title, String msg) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(PaymentScreen_Razor_Old.this);
-        builder.setMessage(msg);
-        builder.setTitle(title);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int width = metrics.widthPixels;
+        final Dialog alert_dialog = new Dialog(PaymentScreen_Razor_Old.this);
+        alert_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        alert_dialog.setContentView(R.layout.alert_dialog);
+        alert_dialog.setCanceledOnTouchOutside(false);
+        alert_dialog.getWindow().setLayout((6 * width) / 7, LinearLayout.LayoutParams.WRAP_CONTENT);
+        TextView txt_alert_title = (TextView) alert_dialog.findViewById(R.id.custom_alert_dialog_title);
+        txt_alert_title.setText(title);
+        TextView txt_alert_description = (TextView) alert_dialog.findViewById(R.id.custom_alert_dialog_msg);
+        LinearLayout main = (LinearLayout) alert_dialog.findViewById(R.id.main);
+        Button txt_ok = (Button) alert_dialog.findViewById(R.id.ok);
+        txt_ok.setVisibility(View.GONE);
+        Button txt_cancel = (Button) alert_dialog.findViewById(R.id.cancel);
+        main.setVisibility(View.VISIBLE);
+        txt_alert_description.setText(msg);
+        txt_cancel.setText("OK");
+        txt_cancel.setOnClickListener(new View.OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
+                alert_dialog.dismiss();
 
             }
         });
-        //builder.setNegativeButton("NO", null);
-        builder.show();
+
+        txt_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alert_dialog.dismiss();
+
+            }
+        });
+
+        alert_dialog.show();
     }
 
     public void planCall() {
