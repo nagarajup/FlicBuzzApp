@@ -28,7 +28,6 @@
                             android:layout_below="@+id/text"
                             android:layout_height="wrap_content">
                 <android.support.design.widget.TextInputLayout
-                        android:theme="@style/TextLabel"
                         android:focusable="true"
                         android:focusableInTouchMode="true"
                         android:layout_width="fill_parent"
@@ -145,7 +144,6 @@
                                       android:layout_marginLeft="5dp"/>
                     </LinearLayout>
                     <android.support.design.widget.TextInputLayout
-                            android:theme="@style/TextLabel"
                             android:orientation="vertical"
                             android:focusable="true"
                             android:focusableInTouchMode="true"
@@ -171,7 +169,6 @@
                     <RelativeLayout android:layout_width="fill_parent"
                                     android:layout_height="wrap_content">
                         <android.support.design.widget.TextInputLayout
-                                android:theme="@style/TextLabel"
                                 android:focusable="true"
                                 android:focusableInTouchMode="true"
                                 android:layout_width="fill_parent"
