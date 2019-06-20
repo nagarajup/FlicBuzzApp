@@ -2,7 +2,6 @@ package com.aniapps.flicbuzzapp.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -21,6 +20,7 @@ class SignIn : AppConstants() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signin)
+
         //notification_tokens
         FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener(this@SignIn,
             OnSuccessListener<InstanceIdResult> { instanceIdResult ->
@@ -46,15 +46,4 @@ class SignIn : AppConstants() {
 
         }
     }
-
-
-
-
-
-
-
-
-
-
-
 }

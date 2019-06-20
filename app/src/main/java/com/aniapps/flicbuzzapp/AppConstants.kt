@@ -1,9 +1,14 @@
 package com.aniapps.flicbuzzapp
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import com.aniapps.flicbuzzapp.networkcall.APIResponse
 import com.aniapps.flicbuzzapp.networkcall.RetrofitClient
@@ -11,10 +16,15 @@ import com.aniapps.flicbuzzapp.utils.PrefManager
 import com.appsflyer.AFInAppEventType
 import com.appsflyer.AppsFlyerLib
 import com.appsflyer.AFInAppEventParameterName
+import android.support.v4.content.ContextCompat
+import android.content.DialogInterface
+import android.R
+import android.support.v7.app.AlertDialog
 
 
 @SuppressLint("Registered")
 open class AppConstants : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -35,6 +45,10 @@ open class AppConstants : AppCompatActivity() {
          AppsFlyerLib.getInstance().setAdditionalData(CustomDataMap)*/
 
     }
+
+
+
+
 
 
 }

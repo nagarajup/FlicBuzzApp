@@ -1,11 +1,17 @@
 package com.aniapps.flicbuzzapp.activities;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -17,15 +23,19 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.aniapps.flicbuzzapp.AppConstants;
 import com.aniapps.flicbuzzapp.R;
 import com.aniapps.flicbuzzapp.networkcall.APIResponse;
 import com.aniapps.flicbuzzapp.networkcall.RetrofitClient;
-import com.aniapps.flicbuzzapp.player.LandingPage;
 import com.aniapps.flicbuzzapp.util.IabHelper;
 import com.aniapps.flicbuzzapp.util.IabResult;
 import com.aniapps.flicbuzzapp.util.Purchase;
+import com.aniapps.flicbuzzapp.utils.AppLocationService;
 import com.aniapps.flicbuzzapp.utils.PrefManager;
 import com.aniapps.flicbuzzapp.utils.Utility;
+import com.appsflyer.AFInAppEventParameterName;
+import com.appsflyer.AFInAppEventType;
+import com.appsflyer.AppsFlyerLib;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentData;
 import com.razorpay.PaymentResultWithDataListener;
@@ -36,8 +46,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
-public class PaymentScreen_Razor extends AppCompatActivity implements PaymentResultWithDataListener {
+public class PaymentScreen_Razor extends AppConstants implements PaymentResultWithDataListener {
 
     ConstraintLayout threemonths, sixmonths, oneyear;
     LinearLayout plan_details;
@@ -50,6 +61,10 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
     private boolean threemonthsflag, sixmonthsflag, oneyearflag, trailFlag;
     String subDate = "";
     String selection = "";
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+
+    String latitude = "", longitude = "";
+    AppLocationService appLocationService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +77,17 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        if (checkLocationPermission()) {
+            appLocationService = new AppLocationService(PaymentScreen_Razor.this);
+            if (appLocationService.isLocationAvailable()) {
+                latitude = "" + appLocationService.getLatitude();
+                longitude = "" + appLocationService.getLongitude();
+            } else {
+                latitude = "0.0";
+                longitude = "0.0";
+            }
+        }
 
         plan_details = (LinearLayout) findViewById(R.id.plan_details);
         plan_text = (TextView) findViewById(R.id.plan_text);
@@ -91,6 +117,12 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
 
                     // planCall();
                 }
+
+
+                //  Log.e("latitude", "" + latitude);
+                //  Log.e("longitude", "" + longitude);
+                //Toast.makeText(PaymentScreen_Razor.this, "latitude"+latitude+" "+"longitude"+longitude, Toast.LENGTH_SHORT).show();
+
             }
         });
         sixmonths.setOnClickListener(new View.OnClickListener() {
@@ -112,6 +144,11 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
 
                     //planCall();
                 }
+
+                //Log.e("latitude", "" + latitude);
+                // Log.e("longitude", "" + longitude);
+
+                // Toast.makeText(PaymentScreen_Razor.this, "latitude" + latitude + " " + "longitude" + longitude, Toast.LENGTH_SHORT).show();
             }
         });
         oneyear.setOnClickListener(new View.OnClickListener() {
@@ -296,7 +333,10 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
         params.put("subscription_id", subscription_id);
         params.put("subscription_ids_id", subscription_ids_id);
         params.put("payment_data", payment_details);
+        params.put("latitude", "" + latitude);
+        params.put("longitude", "" + longitude);
         params.put("status", payment_status);
+
 
         transactionApiCall(params);
     }
@@ -320,9 +360,27 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
                         PrefManager.getIn().setDeveloper_mode(jsonObject.getString("developer_mode"));
                         PrefManager.getIn().setServer_version_mode(jsonObject.getString("server_version_mode"));
                         PrefManager.getIn().setShow_splash_message(jsonObject.getString("show_splash_message"));
-                        PrefManager.getIn().setSplash_message(jsonObject.getString("splash_message"));
                         PrefManager.getIn().setGateway("razorpay");
                         PrefManager.getIn().setSubscription_auto_renew("yes");
+
+                        if (jsonObject.getString("current_plan").equals("trial")) {
+                            Map<String, Object> eventValue2 = new HashMap<String, Object>();
+                            eventValue2.put("trial_method", "trial");
+                            eventValue2.put("trial_method_identifier", "razorpay");
+                            AppsFlyerLib.getInstance().trackEvent(getApplicationContext(),
+                                    AFInAppEventType.START_TRIAL, eventValue2);
+                        } else {
+                            Map<String, Object> eventValue = new HashMap<String, Object>();
+                            eventValue.put("new_subscription", true);
+                            eventValue.put(AFInAppEventParameterName.COUPON_CODE, jsonObject.getString("subscription_name"));
+                            eventValue.put("coupon_code_value", "");
+                            eventValue.put(AFInAppEventParameterName.REVENUE, jsonObject.getString("subscription_revenue"));
+                            eventValue.put(AFInAppEventParameterName.CURRENCY, "INR");
+                            eventValue.put("subscription_method", "razorpay");
+                            eventValue.put("expiration_date", jsonObject.getString("subscription_end_date"));
+                            AppsFlyerLib.getInstance().trackEvent(getApplicationContext(), AFInAppEventType.SUBSCRIBE, eventValue);
+                        }
+
                         Intent intent = new Intent(PaymentScreen_Razor.this, PaymentSuccuss.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -479,6 +537,9 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
         } else if (package_data.equals("expired")) {
             params.put("package", "expired");
         }
+        params.put("latitude", "" + latitude);
+        params.put("longitude", "" + longitude);
+
         params.put("language", PrefManager.getIn().getLanguage().toLowerCase());
         ApiCall(params, renewal);
     }
@@ -493,7 +554,44 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
                     jsonObject = new JSONObject(result);
                     int status = jsonObject.getInt("status");
                     if (status == 1) {
-                        if (params.get("package").equals("expired")) {
+                        PrefManager.getIn().setPayment_data(jsonObject.getString("payment_data"));
+                        PrefManager.getIn().setSubscription_start_date(jsonObject.getString("subscription_start_date"));
+                        PrefManager.getIn().setSubscription_end_date(jsonObject.getString("subscription_end_date"));
+                        PrefManager.getIn().setPayment_mode(jsonObject.getString("payment_mode"));
+                        PrefManager.getIn().setPlan(jsonObject.getString("plan"));
+                        PrefManager.getIn().setDeveloper_mode(jsonObject.getString("developer_mode"));
+                        PrefManager.getIn().setServer_version_mode(jsonObject.getString("server_version_mode"));
+                        PrefManager.getIn().setShow_splash_message(jsonObject.getString("show_splash_message"));
+                        PrefManager.getIn().setGateway("googlepay");
+                        PrefManager.getIn().setSubscription_auto_renew("yes");
+
+
+                        if (jsonObject.getString("current_plan").equals("trial")) {
+                            Map<String, Object> eventValue2 = new HashMap<String, Object>();
+                            eventValue2.put("trial_method", "trial");
+                            eventValue2.put("trial_method_identifier", "googlepay");
+                            AppsFlyerLib.getInstance().trackEvent(getApplicationContext(),
+                                    AFInAppEventType.START_TRIAL, eventValue2);
+                        } else {
+                            Map<String, Object> eventValue = new HashMap<String, Object>();
+                            eventValue.put("new_subscription", true);
+                            eventValue.put(AFInAppEventParameterName.COUPON_CODE, jsonObject.getString("subscription_name"));
+                            eventValue.put("coupon_code_value", "");
+                            eventValue.put(AFInAppEventParameterName.REVENUE, jsonObject.getString("subscription_revenue"));
+                            eventValue.put(AFInAppEventParameterName.CURRENCY, "INR");
+                            eventValue.put("subscription_method", "googlepay");
+                            eventValue.put("expiration_date", jsonObject.getString("subscription_end_date"));
+                            AppsFlyerLib.getInstance().trackEvent(getApplicationContext(), AFInAppEventType.SUBSCRIBE, eventValue);
+                        }
+
+                        Intent intent = new Intent(PaymentScreen_Razor.this, PaymentSuccuss.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
+
+                       /* if (params.get("package").equals("expired")) {
                             threemonthsflag = false;
                             sixmonthsflag = false;
                             oneyearflag = false;
@@ -544,13 +642,24 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
                         }
                         //if (renewal == 0) {
                         if (!PrefManager.getIn().getPlan().equals("expired")) {
+
+                            Map<String, Object> eventValue = new HashMap<String, Object>();
+                            eventValue.put("new_subscription", true);
+                            eventValue.put(AFInAppEventParameterName.COUPON_CODE, jsonObject.getString("plan"));
+                            eventValue.put("coupon_code_value", "");
+                            eventValue.put(AFInAppEventParameterName.REVENUE, jsonObject.getString("revenue"));
+                            eventValue.put(AFInAppEventParameterName.CURRENCY, "INR");
+                            eventValue.put("subscription_method", "googlepay");
+                            eventValue.put("expiration_date",jsonObject.getString("subscription_end_date"));
+                            AppsFlyerLib.getInstance().trackEvent(getApplicationContext(), AFInAppEventType.SUBSCRIBE, eventValue);
+
                             Intent intent = new Intent(PaymentScreen_Razor.this, PaymentSuccuss.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
                             overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
-                        }
+                        }*/
                         // }
                     } else if (status == 14) {
                         Utility.alertDialog(PaymentScreen_Razor.this, jsonObject.getString("message"));
@@ -570,5 +679,82 @@ public class PaymentScreen_Razor extends AppCompatActivity implements PaymentRes
         });
     }
 
+    public boolean checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
 
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                /*new AlertDialog.Builder(this)
+                        .setTitle(R.string.title_location_permission)
+                        .setMessage(R.string.text_location_permission)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {*/
+                //Prompt the user once explanation has been shown
+                ActivityCompat.requestPermissions(PaymentScreen_Razor.this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+                           /* }
+                        })
+                        .create()
+                        .show();*/
+
+
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // location-related task you need to do.
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+
+                        //Request location updates:
+                        //locationManager.requestLocationUpdates(provider, 400, 1, this);
+                        appLocationService = new AppLocationService(PaymentScreen_Razor.this);
+                        if (appLocationService.isLocationAvailable()) {
+                            latitude = "" + appLocationService.getLatitude();
+                            longitude = "" + appLocationService.getLongitude();
+                        } else {
+                            latitude = "0.0";
+                            longitude = "0.0";
+                        }
+                    }
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+
+                }
+                return;
+            }
+
+        }
+    }
 }

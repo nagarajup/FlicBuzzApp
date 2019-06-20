@@ -8,10 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 import com.aniapps.flicbuzzapp.BuildConfig;
 import com.aniapps.flicbuzzapp.R;
-import com.aniapps.flicbuzzapp.utils.CryptSession;
-import com.aniapps.flicbuzzapp.utils.CryptoHandler;
-import com.aniapps.flicbuzzapp.utils.FlickLoading;
-import com.aniapps.flicbuzzapp.utils.PrefManager;
+import com.aniapps.flicbuzzapp.utils.*;
 import com.google.gson.Gson;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -40,6 +37,7 @@ public class RetrofitClient extends AppCompatActivity {
     private APIService apiService;
     private String TAG = "##Retrofit##", encrypted = "", from = "", decrypted = "",
             encryptedData = "", keyencrypted = "", keydecrypted = "", upToNCharacters = "";
+
 
     public static RetrofitClient getInstance() {
         if (uniqInstance == null) {

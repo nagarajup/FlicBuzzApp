@@ -46,6 +46,7 @@ import com.aniapps.flicbuzzapp.util.IabHelper
 import com.aniapps.flicbuzzapp.utils.CircleImageView
 import com.aniapps.flicbuzzapp.utils.PrefManager
 import com.aniapps.flicbuzzapp.utils.Utility
+import com.crashlytics.android.Crashlytics
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
@@ -135,6 +136,16 @@ class LandingPage : AppConstants(), View.OnClickListener {
         playingVideos = ArrayList()
         // val jsonArray = intent.getStringExtra("jsonArray")
         //myData(jsonArray)
+
+       /* val crashButton = Button(this)
+        crashButton.text = "Crash!"
+        crashButton.setOnClickListener {
+            Crashlytics.getInstance().crash() // Force a crash
+        }
+
+        addContentView(crashButton, ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT))*/
 
         // Toast.makeText(this, PrefManager.getIn().getPayment_data().toString(), Toast.LENGTH_SHORT).show()
         val toggle = ActionBarDrawerToggle(
@@ -1238,10 +1249,12 @@ class LandingPage : AppConstants(), View.OnClickListener {
                 sendIntent.putExtra(Intent.EXTRA_SUBJECT, "FlickBuzz")
                 sendIntent.putExtra(
                     Intent.EXTRA_TEXT,
-                    "Hi, I Sharing FlicBuzz - A Complete Entertainment App download link from Google Play! \nflicbuzz.com/fbapp"
+                    "Hi, I Sharing FlicBuzz - A Complete Entertainment App download link from Google Play! \nhttps://go.onelink.me/app/ef427af9"
                 )
                 sendIntent.type = "text/plain"
                 startActivity(sendIntent)
+
+                //flicbuzz.com/fbapp
 
             }
 
