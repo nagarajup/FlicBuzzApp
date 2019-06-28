@@ -8,43 +8,51 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
-import android.support.v7.app.AppCompatActivity
-import com.aniapps.flicbuzzapp.networkcall.APIResponse
-import com.aniapps.flicbuzzapp.networkcall.RetrofitClient
+import androidx.appcompat.app.AppCompatActivity
+
 import com.aniapps.flicbuzzapp.utils.PrefManager
-import com.appsflyer.AFInAppEventType
-import com.appsflyer.AppsFlyerLib
-import com.appsflyer.AFInAppEventParameterName
-import android.support.v4.content.ContextCompat
-import android.content.DialogInterface
-import android.R
-import android.support.v7.app.AlertDialog
+import com.crashlytics.android.Crashlytics
+import com.google.firebase.analytics.FirebaseAnalytics
 
 
 @SuppressLint("Registered")
 open class AppConstants : AppCompatActivity() {
-
+    public var mFirebaseAnalytics: FirebaseAnalytics? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        AppsFlyerLib.getInstance().setCustomerUserId(PrefManager.getIn().getMobile());
+      //  AppsFlyerLib.getInstance().setCustomerUserId(PrefManager.getIn().getMobile());
+        Crashlytics.setUserIdentifier(PrefManager.getIn().getMobile())
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this@AppConstants);
+        mFirebaseAnalytics!!.setUserProperty("user_id", PrefManager.getIn().getMobile());
+        mFirebaseAnalytics!!.setUserId(PrefManager.getIn().getMobile());
+
 
     }
 
     /*https://support.appsflyer.com/hc/en-us/articles/207032126-AppsFlyer-SDK-Integration-Android*/
     /*https://support.appsflyer.com/hc/en-us/articles/208386173-AppsFlyer-Android-Sample-App*/
     fun trackEvent(context: Activity, eventCategory: String, eventAction: String) {
-        val eventValue = HashMap<String, Any>()
+       /* val eventValue = HashMap<String, Any>()
         eventValue["category"] = eventCategory
         eventValue["action"] = eventAction
         eventValue["user_id"] = PrefManager.getIn().getMobile()
-        AppsFlyerLib.getInstance().trackEvent(context, "my_events", eventValue)
+        AppsFlyerLib.getInstance().trackEvent(context, "my_events", eventValue)*/
 
         /* CustomDataMap.put("custom_param_1", "value_of_param_1")
          AppsFlyerLib.getInstance().setAdditionalData(CustomDataMap)*/
+        if (null == mFirebaseAnalytics) {
+            mFirebaseAnalytics = FirebaseAnalytics.getInstance(context)
+        }
+        val bundle = Bundle()
+        bundle.putString("Category", eventCategory)
+        bundle.putString("Action", eventAction)
+        mFirebaseAnalytics!!.logEvent("my_events", bundle)
 
     }
+
+
 
 
 

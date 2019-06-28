@@ -5,16 +5,27 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.support.annotation.RequiresApi
-import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.aniapps.flicbuzzapp.R
 import com.aniapps.flicbuzzapp.networkcall.APIResponse
 import com.aniapps.flicbuzzapp.networkcall.RetrofitClient
 import com.aniapps.flicbuzzapp.player.LandingPage
 import com.aniapps.flicbuzzapp.utils.PrefManager
 import com.aniapps.flicbuzzapp.utils.Utility
+import io.branch.indexing.BranchUniversalObject
+import io.branch.referral.Branch
+import io.branch.referral.BranchError
+import io.branch.referral.SharingHelper
+import io.branch.referral.util.ContentMetadata
+import io.branch.referral.util.LinkProperties
+import io.branch.referral.util.ShareSheetStyle
 import org.json.JSONObject
+import java.util.*
+import kotlin.collections.HashMap
 
 
 class Spalsh : AppCompatActivity() {
@@ -26,34 +37,21 @@ class Spalsh : AppCompatActivity() {
 
 
 
-        if (!PrefManager.getIn().login) {
 
-            Handler().postDelayed({
-                val i = Intent(this@Spalsh, IntroductionScreen::class.java)
-                startActivity(i)
-                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
-
-                finish()
-            }, 2000)
-        } else {
-
-            if (Utility.isConnectingToInternet(this@Spalsh)) {
-                ApiCall()
-            } else {
-                Toast.makeText(this@Spalsh, "No Internet", Toast.LENGTH_SHORT).show()
-            }
-        }
 
     }
 
     fun ApiCall() {
         val params = HashMap<String, String>()
         params["action"] = "home"
+        params["branchData"] = PrefManager.getIn().branchData
         params["language"] = PrefManager.getIn().language.toLowerCase()
+
         var jsonObject: JSONObject
         RetrofitClient.getInstance().doBackProcess(this@Spalsh, params, "online", object : APIResponse {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             override fun onSuccess(result: String) {
+                Log.e("abcd","branc"+PrefManager.getIn().branchData);
                 try {
                     jsonObject = JSONObject(result)
                     val status = jsonObject.getInt("status")
@@ -138,6 +136,94 @@ class Spalsh : AppCompatActivity() {
         finish()
 
     }
+    override fun onStart() {
+        super.onStart()
+
+        // Branch init
+        //https://docs.branch.io/apps/android/
+        Branch.getInstance().initSession(object : Branch.BranchReferralInitListener {
+            override fun onInitFinished(referringParams: JSONObject, error: BranchError?) {
+                if (error == null) {
+                    Log.e("BRANCH SDK", referringParams.toString())
 
 
+
+                    PrefManager.getIn().branchData=referringParams.toString(2);
+
+                  //  Toast.makeText(this@Spalsh, referringParams.toString(2), Toast.LENGTH_SHORT).show()
+                    // Retrieve deeplink keys from 'referringParams' and evaluate the values to determine where to route the user
+                    // Check '+clicked_branch_link' before deciding whether to use your Branch routing logic
+                } else {
+                    Log.e("BRANCH SDK", error.message)
+                }
+            }
+        }, this.intent.data, this)
+
+        val buo = BranchUniversalObject()
+            .setCanonicalIdentifier("content/12345")
+            .setTitle("My Content Title")
+            .setContentDescription("My Content Description")
+            .setContentIndexingMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC)
+            .setLocalIndexMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC)
+            .setContentMetadata(ContentMetadata().addCustomMetadata("key1", "value1"))
+        buo.listOnGoogleSearch(this)
+
+       /* val lp = LinkProperties()
+            .setChannel("facebook")
+            .setFeature("sharing")
+            .setCampaign("content 123 launch")
+            .setStage("new user")
+            .addControlParameter("desktop_url", "https://www.flicbuzz.com/")
+            .addControlParameter("custom", "data")
+            .addControlParameter("custom_random", ""+Calendar.getInstance().timeInMillis)
+
+        buo.generateShortUrl(this, lp, Branch.BranchLinkCreateListener { url, error ->
+            if (error == null) {
+                Log.i("BRANCH SDK", "got my Branch link to share: " + url)
+            }
+        })*/
+
+
+       /* val ss = ShareSheetStyle(this@Spalsh, "Check this out!", "This stuff is awesome: ")
+            .setCopyUrlStyle(ContextCompat.getDrawable(this@Spalsh, android.R.drawable.ic_menu_send), "Copy", "Added to clipboard")
+            .setMoreOptionStyle(ContextCompat.getDrawable(this@Spalsh, android.R.drawable.ic_menu_search), "Show more")
+            .addPreferredSharingOption(SharingHelper.SHARE_WITH.FACEBOOK)
+            .addPreferredSharingOption(SharingHelper.SHARE_WITH.EMAIL)
+            .addPreferredSharingOption(SharingHelper.SHARE_WITH.MESSAGE)
+            .addPreferredSharingOption(SharingHelper.SHARE_WITH.HANGOUT)
+            .setAsFullWidthStyle(true)
+            .setSharingTitle("Share With")
+
+        buo.showShareSheet(this, lp, ss, object : Branch.BranchLinkShareListener {
+            override fun onShareLinkDialogLaunched() {}
+            override fun onShareLinkDialogDismissed() {}
+            override fun onLinkShareResponse(sharedLink: String, sharedChannel: String, error: BranchError) {}
+            override fun onChannelSelected(channelName: String) {}
+        })*/
+       // keytool -list -v -keystore "C:\Users\MXC\.android\debug.keystore" -alias androiddebugkey -storepass android -keypass android
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        this.intent = intent
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (!PrefManager.getIn().login) {
+            Handler().postDelayed({
+                val i = Intent(this@Spalsh, IntroductionScreen::class.java)
+                startActivity(i)
+                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+                finish()
+            }, 2000)
+        } else {
+            if (Utility.isConnectingToInternet(this@Spalsh)) {
+                ApiCall()
+            } else {
+                Toast.makeText(this@Spalsh, "No Internet", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 }

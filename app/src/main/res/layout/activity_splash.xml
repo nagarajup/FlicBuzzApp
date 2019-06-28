@@ -16,5 +16,5 @@
               android:layout_marginTop="30.0dip"
               android:text="FlicBuzz"
               android:lineSpacingExtra="9.0sp"
-              android:fontFamily="@font/cera_gr_black"/>-->-->
+              android:fontFamily="@font/cera_gr_black"/>-->
 </LinearLayout>

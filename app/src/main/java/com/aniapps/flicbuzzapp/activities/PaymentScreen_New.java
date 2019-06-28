@@ -2,12 +2,8 @@ package com.aniapps.flicbuzzapp.activities;
 
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
@@ -16,6 +12,9 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import com.aniapps.flicbuzzapp.R;
 import com.aniapps.flicbuzzapp.networkcall.APIResponse;
 import com.aniapps.flicbuzzapp.networkcall.RetrofitClient;
@@ -26,10 +25,6 @@ import com.aniapps.flicbuzzapp.util.Inventory;
 import com.aniapps.flicbuzzapp.util.Purchase;
 import com.aniapps.flicbuzzapp.utils.PrefManager;
 import com.aniapps.flicbuzzapp.utils.Utility;
-import com.appsflyer.AFInAppEventParameterName;
-import com.appsflyer.AFInAppEventType;
-import com.appsflyer.AppsFlyerLib;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;
@@ -37,7 +32,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 
 public class PaymentScreen_New extends AppCompatActivity {
 

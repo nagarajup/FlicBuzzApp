@@ -36,7 +36,7 @@
             <RelativeLayout android:layout_width="fill_parent"
                             android:layout_below="@+id/text"
                             android:layout_height="wrap_content">
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                         android:focusable="true"
                         android:focusableInTouchMode="true"
                         android:layout_width="fill_parent"
@@ -50,7 +50,7 @@
                               android:layout_height="wrap_content"
                               android:hint="Enter your OTP code here"
                               android:inputType="number"/>
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
                 <TextView android:textSize="14.0sp"
                           android:textColor="#ff53ba00"
                           android:id="@+id/resendOTP"
@@ -91,8 +91,7 @@
                       android:layout_height="fill_parent"
                       android:layout_marginLeft="20dp"
                       android:layout_marginTop="20dp"
-                      android:layout_marginRight="20dp"
-                      android:layout_above="@+id/signup_btn_lay">
+                      android:layout_marginRight="20dp">
             <TextView android:textSize="20sp"
                       android:textColor="#ff2f2f2f"
                       android:layout_width="wrap_content"
@@ -105,7 +104,7 @@
                 <LinearLayout android:orientation="vertical"
                               android:layout_width="fill_parent"
                               android:layout_height="wrap_content">
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                             android:orientation="vertical"
                             android:focusable="true"
                             android:focusableInTouchMode="true"
@@ -117,7 +116,7 @@
                                   android:layout_width="fill_parent"
                                   android:layout_height="wrap_content"
                                   android:hint="Full Name"/>
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
                     <TextView
                             android:id="@+id/name_error"
                             android:layout_width="match_parent"
@@ -126,7 +125,7 @@
                             android:visibility="invisible"
                             android:textColor="@color/red"
                             android:textSize="@dimen/error_text_size"/>
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                             android:focusable="true"
                             android:focusableInTouchMode="true"
                             android:layout_width="fill_parent"
@@ -138,7 +137,7 @@
                                   android:layout_height="wrap_content"
                                   android:hint="Email ID"
                                   android:inputType="textEmailAddress"/>
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
                     <TextView
                             android:id="@+id/email_error"
                             android:layout_width="match_parent"
@@ -155,7 +154,7 @@
                                   android:layout_marginTop="30dp"
                                   android:text="+91"
                                   android:layout_weight="0.9"/>
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                                 android:focusable="true"
                                 android:focusableInTouchMode="true"
                                 android:layout_width="fill_parent"
@@ -169,7 +168,7 @@
                                       android:hint="Mobile Number"
                                       android:maxLength="10"
                                       android:inputType="number"/>
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
                     <TextView
                             android:id="@+id/mobile_error"
@@ -181,7 +180,7 @@
                             android:textSize="@dimen/error_text_size"/>
                     <RelativeLayout android:layout_width="fill_parent"
                                     android:layout_height="wrap_content">
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                             android:focusable="true"
                             android:focusableInTouchMode="true"
                             android:layout_width="fill_parent"
@@ -194,7 +193,7 @@
                                   android:hint="Password"
                                   android:paddingRight="40dp"
                                   android:inputType="textPassword"/>
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
                         <ImageView
                                 android:id="@+id/psw_img_eye"
                                 android:layout_width="wrap_content"
@@ -218,7 +217,7 @@
                             android:textSize="@dimen/error_text_size"/>
                     <RelativeLayout android:layout_width="fill_parent"
                                     android:layout_height="wrap_content">
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                             android:focusable="true"
                             android:focusableInTouchMode="true"
                             android:layout_width="fill_parent"
@@ -231,7 +230,7 @@
                                   android:layout_height="wrap_content"
                                   android:hint="Confirm Password"
                                   android:inputType="textPassword"/>
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
                         <ImageView
                                 android:id="@+id/psw_confirm_img_eye"
                                 android:layout_width="wrap_content"
@@ -253,7 +252,7 @@
                             android:visibility="invisible"
                             android:textColor="@color/red"
                             android:textSize="@dimen/error_text_size"/>
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                             android:focusable="true"
                             android:focusableInTouchMode="true"
                             android:layout_width="fill_parent"
@@ -264,7 +263,7 @@
                                   android:layout_width="fill_parent"
                                   android:layout_height="wrap_content"
                                   android:hint="City"/>
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
                     <TextView
                             android:id="@+id/city_error"
                             android:layout_width="match_parent"
@@ -280,7 +279,7 @@
                                       android:layout_width="fill_parent"
                                       android:layout_weight="0.5"
                                       android:layout_height="wrap_content">
-                            <android.support.design.widget.TextInputLayout
+                            <com.google.android.material.textfield.TextInputLayout
                                     android:focusable="true"
                                     android:focusableInTouchMode="true"
                                     android:layout_width="fill_parent"
@@ -292,7 +291,7 @@
                                           android:layout_height="wrap_content"
                                           android:hint="Pin Code"
                                           android:inputType="number"/>
-                            </android.support.design.widget.TextInputLayout>
+                            </com.google.android.material.textfield.TextInputLayout>
                             <TextView
                                     android:id="@+id/pincode_error"
                                     android:layout_width="match_parent"
@@ -306,7 +305,7 @@
                                       android:layout_width="fill_parent"
                                       android:layout_weight="0.5"
                                       android:layout_height="wrap_content">
-                            <android.support.design.widget.TextInputLayout
+                            <com.google.android.material.textfield.TextInputLayout
                                     android:focusable="true"
                                     android:focusableInTouchMode="true"
                                     android:layout_width="fill_parent"
@@ -320,7 +319,7 @@
                                           android:layout_height="wrap_content"
                                           android:hint="Date of Birth"
                                           android:editable="false"/>
-                            </android.support.design.widget.TextInputLayout>
+                            </com.google.android.material.textfield.TextInputLayout>
 
                             <TextView
                                     android:id="@+id/dob_error"

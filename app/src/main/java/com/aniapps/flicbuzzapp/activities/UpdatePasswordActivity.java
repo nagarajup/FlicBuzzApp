@@ -2,13 +2,12 @@ package com.aniapps.flicbuzzapp.activities;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.Toolbar;
 import com.aniapps.flicbuzzapp.AppConstants;
 import com.aniapps.flicbuzzapp.R;
 import com.aniapps.flicbuzzapp.networkcall.APIResponse;
@@ -33,7 +32,7 @@ public class UpdatePasswordActivity extends AppConstants {
         setContentView(R.layout.activity_changepassword);
 
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        TextView  header_title = (TextView) findViewById(R.id.tvheader);
+        TextView header_title = (TextView) findViewById(R.id.tvheader);
         header_title.setText("Change Password");
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

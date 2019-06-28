@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
-import android.util.Log;
-import android.widget.Toast;
+import androidx.annotation.RequiresApi;
 import com.aniapps.flicbuzzapp.AppConstants;
 import com.aniapps.flicbuzzapp.R;
 import com.aniapps.flicbuzzapp.models.MyVideos;
@@ -21,7 +19,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class DeeplinkBrowser extends AppConstants {
     ArrayList<MyVideos> itemsList = new ArrayList<MyVideos>();

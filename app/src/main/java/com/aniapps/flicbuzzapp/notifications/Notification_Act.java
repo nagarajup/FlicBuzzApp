@@ -2,22 +2,23 @@ package com.aniapps.flicbuzzapp.notifications;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
+
+
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.aniapps.flicbuzzapp.AppConstants;
 import com.aniapps.flicbuzzapp.R;
 import com.aniapps.flicbuzzapp.adapters.NotificationAdapter;
 import com.aniapps.flicbuzzapp.db.DBCallBacks;
 import com.aniapps.flicbuzzapp.db.LocalDB;
 import com.aniapps.flicbuzzapp.db.NotificationData;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;

@@ -11,19 +11,16 @@ import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.*;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import com.aniapps.flicbuzzapp.AppConstants;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import com.aniapps.flicbuzzapp.R;
 import com.aniapps.flicbuzzapp.db.DBCallBacks;
 import com.aniapps.flicbuzzapp.db.LocalDB;
 import com.aniapps.flicbuzzapp.db.NotificationData;
 import com.aniapps.flicbuzzapp.utils.PrefManager;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.google.gson.Gson;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.InputStream;
@@ -32,7 +29,6 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 public class FCMMessaging extends FirebaseMessagingService {
     private Context context = this;

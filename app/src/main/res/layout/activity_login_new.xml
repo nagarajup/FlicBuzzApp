@@ -27,7 +27,7 @@
             <RelativeLayout android:layout_width="fill_parent"
                             android:layout_below="@+id/text"
                             android:layout_height="wrap_content">
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                         android:focusable="true"
                         android:focusableInTouchMode="true"
                         android:layout_width="fill_parent"
@@ -41,7 +41,7 @@
                               android:layout_height="wrap_content"
                               android:hint="Enter your OTP code here"
                               android:inputType="number"/>
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
                 <TextView android:textSize="14.0sp"
                           android:textColor="#ff53ba00"
                           android:id="@+id/resendOTP"
@@ -143,7 +143,7 @@
                                       android:layout_height="1dp"
                                       android:layout_marginLeft="5dp"/>
                     </LinearLayout>
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                             android:orientation="vertical"
                             android:focusable="true"
                             android:focusableInTouchMode="true"
@@ -156,7 +156,7 @@
                                   android:layout_width="fill_parent"
                                   android:layout_height="wrap_content"
                                   android:hint="Email Id/Mobile No."/>
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
                     <TextView
                             android:id="@+id/req_customer_email_error"
                             android:layout_width="match_parent"
@@ -168,7 +168,7 @@
 
                     <RelativeLayout android:layout_width="fill_parent"
                                     android:layout_height="wrap_content">
-                        <android.support.design.widget.TextInputLayout
+                        <com.google.android.material.textfield.TextInputLayout
                                 android:focusable="true"
                                 android:focusableInTouchMode="true"
                                 android:layout_width="fill_parent"
@@ -182,7 +182,7 @@
                                       android:layout_height="wrap_content"
                                       android:hint="Password"
                                       android:inputType="textPassword"/>
-                        </android.support.design.widget.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
                         <LinearLayout
                                 android:id="@+id/icons_layout"
                                 android:layout_width="wrap_content"

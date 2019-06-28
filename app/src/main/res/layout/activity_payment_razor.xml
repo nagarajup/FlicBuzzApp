@@ -27,7 +27,7 @@
                       android:text=""
                       android:fontFamily="@font/cera_gr_bold"/>
         </LinearLayout>
-        <android.support.constraint.ConstraintLayout android:layout_width="match_parent"
+        <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
                                                      android:padding="5dp"
                                                      android:id="@+id/oneyear"
                                                      android:layout_alignParentBottom="true"
@@ -78,9 +78,9 @@
                       android:background="@mipmap/pack_specialofferbg"
                       android:layout_marginBottom="16dp" app:layout_constraintStart_toStartOf="parent"
                       app:layout_constraintEnd_toEndOf="parent" app:layout_constraintHorizontal_bias="0.92"/>
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <android.support.constraint.ConstraintLayout android:layout_width="match_parent"
+        <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
                                                      android:padding="5dp"
                                                      android:id="@+id/sixmonths"
                                                      android:layout_alignParentBottom="true"
@@ -132,9 +132,9 @@
                       android:background="@mipmap/pack_specialofferbg"
                       android:layout_marginBottom="16dp" app:layout_constraintStart_toStartOf="parent"
                       app:layout_constraintEnd_toEndOf="parent" app:layout_constraintHorizontal_bias="0.92"/>
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <android.support.constraint.ConstraintLayout android:layout_width="match_parent"
+        <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
                                                      android:padding="5dp"
                                                      android:id="@+id/threemonths"
                                                      android:layout_alignParentBottom="true"
@@ -185,6 +185,6 @@
                       android:background="@mipmap/pack_specialofferbg"
                       android:layout_marginBottom="16dp" app:layout_constraintStart_toStartOf="parent"
                       app:layout_constraintEnd_toEndOf="parent" app:layout_constraintHorizontal_bias="0.93"/>
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </RelativeLayout>
 </RelativeLayout>

@@ -1,9 +1,9 @@
 package com.aniapps.flicbuzzapp.db;
 
 import android.annotation.SuppressLint;
-import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.util.Log;
+import androidx.room.Room;
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -30,7 +30,7 @@ public class LocalDB {
 
     public LocalDB(Context context) {
         this.context = context;
-        db=Room.databaseBuilder(context,AppDataBase.class,DB_NAME).allowMainThreadQueries().build();
+        db= Room.databaseBuilder(context,AppDataBase.class,DB_NAME).allowMainThreadQueries().build();
     }
 
     public AppDataBase getDb() {

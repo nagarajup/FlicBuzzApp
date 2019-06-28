@@ -11,9 +11,8 @@ import android.util.Log;
 import android.widget.ImageView;
 import com.aniapps.flicbuzzapp.utils.AppSignatureHelper;
 import com.aniapps.flicbuzzapp.utils.PrefManager;
-import com.appsflyer.AppsFlyerConversionListener;
-import com.appsflyer.AppsFlyerLib;
 import com.razorpay.Checkout;
+import io.branch.referral.Branch;
 
 import java.util.Map;
 
@@ -28,13 +27,18 @@ public class AppApplication extends Application {
         Checkout.preload(getApplicationContext());
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
+        // Branch logging for debugging
+        Branch.enableTestMode();
+
+        // Branch object initialization
+        Branch.getAutoInstance(this);
         if (PrefManager.getIn().getDeviceId().equals("")) {
             PrefManager.getIn().saveDeviceId(Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID));
         }
         //Log.e("###Deviceid", "" + PrefManager.getIn().getDeviceId());
         Log.e("OTP HASH","###"+new AppSignatureHelper(app_ctx).getAppSignatures().get(0));
         initChannel();
-        AppsFlyerConversionListener conversionDataListener =
+        /*AppsFlyerConversionListener conversionDataListener =
                 new AppsFlyerConversionListener() {
 
                     @Override
@@ -59,7 +63,7 @@ public class AppApplication extends Application {
                 };
         AppsFlyerLib.getInstance().setDebugLog(true);
         AppsFlyerLib.getInstance().init(AF_DEV_KEY, conversionDataListener, getApplicationContext());
-        AppsFlyerLib.getInstance().startTracking(this);
+        AppsFlyerLib.getInstance().startTracking(this);*/
 
     }
 

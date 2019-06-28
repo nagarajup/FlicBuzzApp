@@ -11,11 +11,6 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.*
-import android.support.annotation.RequiresApi
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.text.Html
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -25,6 +20,11 @@ import android.util.Rational
 import android.view.*
 import android.view.animation.AnimationUtils
 import android.widget.*
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.aniapps.flicbuzzapp.AppConstants
 import com.aniapps.flicbuzzapp.R
 import com.aniapps.flicbuzzapp.utils.MySpannable

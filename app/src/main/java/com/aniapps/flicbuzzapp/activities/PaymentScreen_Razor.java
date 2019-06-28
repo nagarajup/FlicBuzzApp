@@ -4,16 +4,9 @@ package com.aniapps.flicbuzzapp.activities;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
@@ -23,6 +16,10 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import com.aniapps.flicbuzzapp.AppConstants;
 import com.aniapps.flicbuzzapp.R;
 import com.aniapps.flicbuzzapp.networkcall.APIResponse;
@@ -33,9 +30,7 @@ import com.aniapps.flicbuzzapp.util.Purchase;
 import com.aniapps.flicbuzzapp.utils.AppLocationService;
 import com.aniapps.flicbuzzapp.utils.PrefManager;
 import com.aniapps.flicbuzzapp.utils.Utility;
-import com.appsflyer.AFInAppEventParameterName;
-import com.appsflyer.AFInAppEventType;
-import com.appsflyer.AppsFlyerLib;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentData;
 import com.razorpay.PaymentResultWithDataListener;
@@ -364,13 +359,20 @@ public class PaymentScreen_Razor extends AppConstants implements PaymentResultWi
                         PrefManager.getIn().setSubscription_auto_renew("yes");
 
                         if (jsonObject.getString("current_plan").equals("trial")) {
-                            Map<String, Object> eventValue2 = new HashMap<String, Object>();
+                            /*Map<String, Object> eventValue2 = new HashMap<String, Object>();
                             eventValue2.put("trial_method", "trial");
                             eventValue2.put("trial_method_identifier", "razorpay");
                             AppsFlyerLib.getInstance().trackEvent(getApplicationContext(),
-                                    AFInAppEventType.START_TRIAL, eventValue2);
+                                    AFInAppEventType.START_TRIAL, eventValue2);*/
+
+                            FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(PaymentScreen_Razor.this);
+                            Bundle bundle = new Bundle();
+                            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "trial");
+                            bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "razorpay");
+                            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "subscription");
+                            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_TO_WISHLIST, bundle);
                         } else {
-                            Map<String, Object> eventValue = new HashMap<String, Object>();
+                            /*Map<String, Object> eventValue = new HashMap<String, Object>();
                             eventValue.put("new_subscription", true);
                             eventValue.put(AFInAppEventParameterName.COUPON_CODE, jsonObject.getString("subscription_name"));
                             eventValue.put("coupon_code_value", "");
@@ -378,7 +380,20 @@ public class PaymentScreen_Razor extends AppConstants implements PaymentResultWi
                             eventValue.put(AFInAppEventParameterName.CURRENCY, "INR");
                             eventValue.put("subscription_method", "razorpay");
                             eventValue.put("expiration_date", jsonObject.getString("subscription_end_date"));
-                            AppsFlyerLib.getInstance().trackEvent(getApplicationContext(), AFInAppEventType.SUBSCRIBE, eventValue);
+                            AppsFlyerLib.getInstance().trackEvent(getApplicationContext(), AFInAppEventType.SUBSCRIBE, eventValue);*/
+
+
+
+                            FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(PaymentScreen_Razor.this);
+                            Bundle bundle = new Bundle();
+                            bundle.putString(FirebaseAnalytics.Param.CURRENCY, "INR");
+                            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, jsonObject.getString("subscription_name"));
+                            bundle.putString(FirebaseAnalytics.Param.PRICE, jsonObject.getString("subscription_revenue"));
+                            bundle.putString(FirebaseAnalytics.Param.END_DATE, jsonObject.getString("subscription_end_date"));
+                            bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "razorpay");
+                            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "subscription");
+                            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.ECOMMERCE_PURCHASE, bundle);
+
                         }
 
                         Intent intent = new Intent(PaymentScreen_Razor.this, PaymentSuccuss.class);
@@ -567,13 +582,22 @@ public class PaymentScreen_Razor extends AppConstants implements PaymentResultWi
 
 
                         if (jsonObject.getString("current_plan").equals("trial")) {
-                            Map<String, Object> eventValue2 = new HashMap<String, Object>();
+                            /*Map<String, Object> eventValue2 = new HashMap<String, Object>();
                             eventValue2.put("trial_method", "trial");
                             eventValue2.put("trial_method_identifier", "googlepay");
                             AppsFlyerLib.getInstance().trackEvent(getApplicationContext(),
-                                    AFInAppEventType.START_TRIAL, eventValue2);
+                                    AFInAppEventType.START_TRIAL, eventValue2);*/
+                            FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(PaymentScreen_Razor.this);
+                            Bundle bundle = new Bundle();
+                            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "trial");
+                            bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "googlepay");
+                            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "subscription");
+                            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_TO_WISHLIST, bundle);
+
+
+
                         } else {
-                            Map<String, Object> eventValue = new HashMap<String, Object>();
+                          /*  Map<String, Object> eventValue = new HashMap<String, Object>();
                             eventValue.put("new_subscription", true);
                             eventValue.put(AFInAppEventParameterName.COUPON_CODE, jsonObject.getString("subscription_name"));
                             eventValue.put("coupon_code_value", "");
@@ -581,7 +605,17 @@ public class PaymentScreen_Razor extends AppConstants implements PaymentResultWi
                             eventValue.put(AFInAppEventParameterName.CURRENCY, "INR");
                             eventValue.put("subscription_method", "googlepay");
                             eventValue.put("expiration_date", jsonObject.getString("subscription_end_date"));
-                            AppsFlyerLib.getInstance().trackEvent(getApplicationContext(), AFInAppEventType.SUBSCRIBE, eventValue);
+                            AppsFlyerLib.getInstance().trackEvent(getApplicationContext(), AFInAppEventType.SUBSCRIBE, eventValue);*/
+
+                            FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(PaymentScreen_Razor.this);
+                            Bundle bundle = new Bundle();
+                            bundle.putString(FirebaseAnalytics.Param.CURRENCY, "INR");
+                            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, jsonObject.getString("subscription_name"));
+                            bundle.putString(FirebaseAnalytics.Param.PRICE, jsonObject.getString("subscription_revenue"));
+                            bundle.putString(FirebaseAnalytics.Param.END_DATE, jsonObject.getString("subscription_end_date"));
+                            bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "googlepay");
+                            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "subscription");
+                            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.ECOMMERCE_PURCHASE, bundle);
                         }
 
                         Intent intent = new Intent(PaymentScreen_Razor.this, PaymentSuccuss.class);

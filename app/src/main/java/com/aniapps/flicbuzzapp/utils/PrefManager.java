@@ -218,6 +218,18 @@ public class PrefManager {
         editor.commit();
     }
 
+
+    public String getBranchData() {
+        return pref.getString("branchData", "");
+    }
+
+    public void setBranchData(String name) {
+        editor.putString("branchData", name);
+        editor.commit();
+    }
+
+
+
     public String getEmail() {
         return pref.getString("email", "");
     }

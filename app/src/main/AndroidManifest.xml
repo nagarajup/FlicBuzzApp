@@ -14,6 +14,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="com.android.vending.BILLING"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE" />
 
 
     <application
@@ -27,11 +29,27 @@
             tools:ignore="GoogleAppIndexingWarning">
 
         <activity android:name="com.aniapps.flicbuzzapp.activities.Spalsh"
+                  android:launchMode="singleTask"
                   android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <!-- Branch URI scheme -->
+            <intent-filter>
+                <data android:scheme="flicbuzz" android:host="open" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+
+            <!-- Branch App Links -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="s8mm2.app.link" />
             </intent-filter>
         </activity>
 
@@ -55,10 +73,10 @@
                 android:screenOrientation="portrait"
                 android:windowSoftInputMode="adjustPan|adjustResize"/>
 
-        <activity
+        <!--<activity
                 android:name="com.aniapps.flicbuzzapp.player.MyFav"
                 android:screenOrientation="portrait"
-                android:windowSoftInputMode="adjustPan|adjustResize"/>
+                android:windowSoftInputMode="adjustPan|adjustResize"/>-->
         <activity
                 android:name="com.aniapps.flicbuzzapp.player.MyPlayer"
                 android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|uiMode|keyboardHidden"
@@ -126,11 +144,11 @@
                   android:screenOrientation="portrait"/>
 
         <!--for appsyfyler-->
-        <receiver android:name="com.appsflyer.SingleInstallBroadcastReceiver" android:exported="true">
+       <!-- <receiver android:name="com.appsflyer.SingleInstallBroadcastReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="com.android.vending.INSTALL_REFERRER"/>
             </intent-filter>
-        </receiver>
+        </receiver>-->
 
 
         <meta-data
@@ -202,6 +220,66 @@
                 <action android:name="com.google.android.gms.auth.api.phone.SMS_RETRIEVED" />
             </intent-filter>
         </receiver>
+
+
+     <!--   <receiver android:name="com.appsflyer.MultipleInstallBroadcastReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>-->
+
+        <receiver android:name="com.aniapps.flicbuzzapp.utils.CampaignReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>
+
+        <!--firebase install referer -->
+        <receiver
+                android:name="com.google.android.gms.measurement.AppMeasurementReceiver"
+                android:enabled="true"
+                android:exported="false" >
+        </receiver>
+        <receiver
+                android:name="com.google.android.gms.measurement.AppMeasurementInstallReferrerReceiver"
+                android:enabled="true"
+                android:exported="true"
+                android:permission="android.permission.INSTALL_PACKAGES" >
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>
+
+        <service
+                android:name="com.google.android.gms.measurement.AppMeasurementService"
+                android:enabled="true"
+                android:exported="false" />
+        <service
+                android:name="com.google.android.gms.measurement.AppMeasurementJobService"
+                android:enabled="true"
+                android:exported="false"
+                android:permission="android.permission.BIND_JOB_SERVICE" />
+
+
+        <!-- Branch init -->
+        <meta-data android:name="io.branch.sdk.BranchKey" android:value="key_live_kmNEttE4I5o38FiV5v5dRggfEygCAS3x" />
+        <meta-data android:name="io.branch.sdk.BranchKey.test" android:value="key_test_kcVyBxD6H7d33EbK9x9orepjvrmxAPXf" />
+
+        <!--secret_live_SYecKdajepJvZX1VgLxdfdDGMTGFr338-->
+        <!--secret_test_ds9BRdexvhj81ejNXnAIEM6ArZtTdhRt-->
+
+        <!-- Branch testing (TestMode "true" to simulate fresh installs on dev environment) -->
+        <meta-data android:name="io.branch.sdk.TestMode" android:value="false" />
+
+        <!-- Branch install referrer tracking -->
+        <receiver android:name="io.branch.referral.InstallListener" android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Used for install referrer tracking-->
+
 
     </application>
 

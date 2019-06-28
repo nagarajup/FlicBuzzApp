@@ -13,22 +13,21 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.app.NotificationCompat
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.GravityCompat
-import android.support.v4.view.MenuItemCompat
-import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SearchView
-import android.support.v7.widget.Toolbar
 import android.text.*
 import android.text.style.StyleSpan
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.app.NotificationCompat
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
+import androidx.core.view.MenuItemCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.aniapps.flicbuzzapp.AppConstants
 import com.aniapps.flicbuzzapp.BuildConfig
 import com.aniapps.flicbuzzapp.R
@@ -43,14 +42,11 @@ import com.aniapps.flicbuzzapp.networkcall.APIResponse
 import com.aniapps.flicbuzzapp.networkcall.RetrofitClient
 import com.aniapps.flicbuzzapp.notifications.Notification_Act
 import com.aniapps.flicbuzzapp.util.IabHelper
-import com.aniapps.flicbuzzapp.utils.CircleImageView
 import com.aniapps.flicbuzzapp.utils.PrefManager
 import com.aniapps.flicbuzzapp.utils.Utility
-import com.crashlytics.android.Crashlytics
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.base_menu.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -60,7 +56,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.set
-import android.widget.SearchView.OnQueryTextListener as OnQueryTextListener1
+import com.aniapps.flicbuzzapp.utils.CircleImageView as CircleImageView1
 
 class LandingPage : AppConstants(), View.OnClickListener {
 
@@ -73,7 +69,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
     internal var layoutManager: LinearLayoutManager? = null
     internal var total_records = ""
     private var pbr: ProgressBar? = null
-    internal lateinit var imageView: CircleImageView
+    internal lateinit var imageView: CircleImageView1
     internal lateinit var nav_about: TextView
     internal lateinit var tvtitle: TextView
     internal lateinit var nav_profile: TextView
@@ -119,6 +115,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
     private var mNotificationManager: NotificationManager? = null
     private var mBuilder: NotificationCompat.Builder? = null
     val NOTIFICATION_CHANNEL_ID = "10001"
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -179,7 +176,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
             }
         }
         tv_profile_name = findViewById<TextView>(R.id.tv_profile_name);
-        imageView = findViewById<CircleImageView>(R.id.imageView);
+        imageView = findViewById<CircleImageView1>(R.id.imageView);
         tv_profile_email = findViewById<TextView>(R.id.tv_profile_email);
         tv_profile_plan = findViewById<TextView>(R.id.tv_profile_plan);
         tvtitle = findViewById<TextView>(R.id.tvtitle);
@@ -852,7 +849,6 @@ class LandingPage : AppConstants(), View.OnClickListener {
     internal lateinit var clear: ImageView
     internal lateinit var menuItem: MenuItem
     private val searchView: SearchView? = null
-    private val mSearchAutoComplete: SearchView.SearchAutoComplete? = null
     internal lateinit var autoSuggestAdapter: AutoSuggestAdapter
     internal lateinit var mHighlightArrayAdapter: SearchAdapter
     internal lateinit var handler: Handler

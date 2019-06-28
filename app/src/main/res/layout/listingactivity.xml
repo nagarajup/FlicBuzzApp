@@ -6,7 +6,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar11"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -44,7 +44,7 @@
     <!--<include layout="@layout/activity_player"/>-->
 
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/my_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

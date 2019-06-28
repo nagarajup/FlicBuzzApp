@@ -64,7 +64,7 @@
                           android:layout_height="1dp" 
                           android:layout_marginLeft="5dp" />
         </LinearLayout>
-        <android.support.design.widget.TextInputLayout 
+        <com.google.android.material.textfield.TextInputLayout
                 android:orientation="vertical"
                 android:focusable="true"
                 android:focusableInTouchMode="true" 
@@ -76,10 +76,10 @@
                       android:layout_width="fill_parent" 
                       android:layout_height="wrap_content" 
                       android:hint="Email ID" />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
         <RelativeLayout android:layout_width="fill_parent" 
                         android:layout_height="wrap_content">
-            <android.support.design.widget.TextInputLayout 
+            <com.google.android.material.textfield.TextInputLayout
                     android:focusable="true"
                     android:focusableInTouchMode="true" 
                     android:layout_width="fill_parent" 
@@ -91,7 +91,7 @@
                           android:layout_height="wrap_content" 
                           android:hint="Password" 
                           android:inputType="textPassword" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
             <TextView android:textSize="14.0sp" 
                       android:textColor="#ff53ba00" 
                       android:layout_width="wrap_content" 

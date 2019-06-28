@@ -1,7 +1,8 @@
 package com.aniapps.flicbuzzapp.db;
 
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.RoomDatabase;
+
+import androidx.room.Database;
+import androidx.room.RoomDatabase;
 
 @Database(entities = {NotificationData.class}, version = 1)
 public abstract class AppDataBase extends RoomDatabase {
