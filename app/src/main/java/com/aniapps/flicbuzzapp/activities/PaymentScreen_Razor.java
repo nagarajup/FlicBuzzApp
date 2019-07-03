@@ -34,6 +34,9 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentData;
 import com.razorpay.PaymentResultWithDataListener;
+import io.branch.referral.util.BRANCH_STANDARD_EVENT;
+import io.branch.referral.util.BranchEvent;
+import io.branch.referral.util.CurrencyType;
 import org.json.JSONObject;
 
 import java.text.ParseException;
@@ -365,6 +368,12 @@ public class PaymentScreen_Razor extends AppConstants implements PaymentResultWi
                             AppsFlyerLib.getInstance().trackEvent(getApplicationContext(),
                                     AFInAppEventType.START_TRIAL, eventValue2);*/
 
+                            new BranchEvent(BRANCH_STANDARD_EVENT.INITIATE_PURCHASE)
+                                    .setCoupon("trial")
+                                    .setDescription("razorpay")
+                                    .setSearchQuery("subscription")
+                                    .logEvent(PaymentScreen_Razor.this);
+
                             FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(PaymentScreen_Razor.this);
                             Bundle bundle = new Bundle();
                             bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "trial");
@@ -382,7 +391,15 @@ public class PaymentScreen_Razor extends AppConstants implements PaymentResultWi
                             eventValue.put("expiration_date", jsonObject.getString("subscription_end_date"));
                             AppsFlyerLib.getInstance().trackEvent(getApplicationContext(), AFInAppEventType.SUBSCRIBE, eventValue);*/
 
-
+                            new BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE)
+                                    .setCurrency(CurrencyType.INR)
+                                    .setCoupon(jsonObject.getString("subscription_name"))
+                                    .setRevenue(Double.parseDouble(jsonObject.getString("subscription_revenue")))
+                                    .setDescription("razorpay")
+                                    .setAffiliation(jsonObject.getString("subscription_name"))
+                                    .setSearchQuery("subscription")
+                                    .addCustomDataProperty("end_date", jsonObject.getString("subscription_end_date"))
+                                    .logEvent(PaymentScreen_Razor.this);
 
                             FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(PaymentScreen_Razor.this);
                             Bundle bundle = new Bundle();
@@ -594,6 +611,12 @@ public class PaymentScreen_Razor extends AppConstants implements PaymentResultWi
                             bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "subscription");
                             mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_TO_WISHLIST, bundle);
 
+                            new BranchEvent(BRANCH_STANDARD_EVENT.INITIATE_PURCHASE)
+                                    .setCoupon("trial")
+                                    .setDescription("googlepay")
+                                    .setSearchQuery("subscription")
+                                    .logEvent(PaymentScreen_Razor.this);
+
 
 
                         } else {
@@ -606,6 +629,16 @@ public class PaymentScreen_Razor extends AppConstants implements PaymentResultWi
                             eventValue.put("subscription_method", "googlepay");
                             eventValue.put("expiration_date", jsonObject.getString("subscription_end_date"));
                             AppsFlyerLib.getInstance().trackEvent(getApplicationContext(), AFInAppEventType.SUBSCRIBE, eventValue);*/
+
+                            new BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE)
+                                    .setCurrency(CurrencyType.INR)
+                                    .setCoupon(jsonObject.getString("subscription_name"))
+                                    .setRevenue(Double.parseDouble(jsonObject.getString("subscription_revenue")))
+                                    .setDescription("googlepay")
+                                    .setAffiliation(jsonObject.getString("subscription_name"))
+                                    .setSearchQuery("subscription")
+                                    .addCustomDataProperty("end_date", jsonObject.getString("subscription_end_date"))
+                                    .logEvent(PaymentScreen_Razor.this);
 
                             FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(PaymentScreen_Razor.this);
                             Bundle bundle = new Bundle();

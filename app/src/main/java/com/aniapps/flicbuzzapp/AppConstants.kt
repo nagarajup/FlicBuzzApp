@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.aniapps.flicbuzzapp.utils.PrefManager
 import com.crashlytics.android.Crashlytics
 import com.google.firebase.analytics.FirebaseAnalytics
+import io.branch.referral.util.BRANCH_STANDARD_EVENT
+import io.branch.referral.util.BranchEvent
 
 
 @SuppressLint("Registered")
@@ -42,6 +44,13 @@ open class AppConstants : AppCompatActivity() {
 
         /* CustomDataMap.put("custom_param_1", "value_of_param_1")
          AppsFlyerLib.getInstance().setAdditionalData(CustomDataMap)*/
+
+        BranchEvent("my_events")
+            .addCustomDataProperty("Category", eventCategory)
+            .addCustomDataProperty("Action", eventAction)
+            .logEvent(context);
+
+
         if (null == mFirebaseAnalytics) {
             mFirebaseAnalytics = FirebaseAnalytics.getInstance(context)
         }
