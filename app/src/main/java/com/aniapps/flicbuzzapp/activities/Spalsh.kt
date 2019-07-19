@@ -35,16 +35,12 @@ class Spalsh : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-
-
-
-
     }
 
     fun ApiCall() {
         val params = HashMap<String, String>()
         params["action"] = "home"
-        params["branchData"] = PrefManager.getIn().branchData
+        params["referral_code"] = PrefManager.getIn().branchData
         params["language"] = PrefManager.getIn().language.toLowerCase()
 
         var jsonObject: JSONObject
@@ -145,9 +141,6 @@ class Spalsh : AppCompatActivity() {
             override fun onInitFinished(referringParams: JSONObject, error: BranchError?) {
                 if (error == null) {
                     Log.e("BRANCH SDK", referringParams.toString())
-
-
-
                     PrefManager.getIn().branchData=referringParams.toString(2);
 
                   //  Toast.makeText(this@Spalsh, referringParams.toString(2), Toast.LENGTH_SHORT).show()
@@ -210,7 +203,6 @@ class Spalsh : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
         if (!PrefManager.getIn().login) {
             Handler().postDelayed({
                 val i = Intent(this@Spalsh, IntroductionScreen::class.java)

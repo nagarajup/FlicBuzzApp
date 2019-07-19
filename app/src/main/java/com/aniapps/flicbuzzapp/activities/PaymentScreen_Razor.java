@@ -300,7 +300,7 @@ public class PaymentScreen_Razor extends AppConstants implements PaymentResultWi
             @Override
             public void onSuccess(String result) {
                 try {
-                    Log.e("res", "res:" + result);
+                    //Log.e("res", "res:" + result);
                     jsonObject = new JSONObject(result);
                     int status = jsonObject.getInt("status");
                     if (status == 1) {
@@ -346,7 +346,7 @@ public class PaymentScreen_Razor extends AppConstants implements PaymentResultWi
             @Override
             public void onSuccess(String result) {
                 try {
-                    Log.e("res", "res:" + result);
+                   // Log.e("res", "res:" + result);
                     jsonObject = new JSONObject(result);
                     int status = jsonObject.getInt("status");
                     if (status == 1) {
@@ -483,7 +483,7 @@ public class PaymentScreen_Razor extends AppConstants implements PaymentResultWi
     @Override
     public void onPaymentError(int i, String s, PaymentData paymentData) {
         try {
-            Log.e("res", s + "res" + paymentData.getData());
+           // Log.e("res", s + "res" + paymentData.getData());
         } catch (Exception e) {
         }
     }

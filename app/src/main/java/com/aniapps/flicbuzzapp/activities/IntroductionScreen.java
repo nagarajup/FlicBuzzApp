@@ -8,15 +8,25 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import com.aniapps.flicbuzzapp.R;
+import com.aniapps.flicbuzzapp.networkcall.APIResponse;
+import com.aniapps.flicbuzzapp.networkcall.RetrofitClient;
+import com.aniapps.flicbuzzapp.player.LandingPage;
 import com.aniapps.flicbuzzapp.utils.PrefManager;
+import com.aniapps.flicbuzzapp.utils.Utility;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class IntroductionScreen extends Activity {
     private ViewPager viewPager;
@@ -33,7 +43,7 @@ public class IntroductionScreen extends Activity {
             launchHomeScreen();
             finish();
         }
-
+        TrackReferral();
         // Making notification bar transparent
         if (Build.VERSION.SDK_INT >= 21) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
@@ -195,4 +205,30 @@ public class IntroductionScreen extends Activity {
             container.removeView(view);
         }
     }
+
+    public void TrackReferral() {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("action", "track_referral");
+        params.put("referral_code", PrefManager.getIn().getBranchData());
+        params.put("language", PrefManager.getIn().getLanguage().toLowerCase());
+        RetrofitClient.getInstance().doBackProcess(IntroductionScreen.this, params, "online", new APIResponse() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    int status = jsonObject.getInt("status");
+                    Log.e("RES", "res#########" + result);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(String res) {
+            }
+        });
+    }
+
 }

@@ -157,14 +157,14 @@ public class RetrofitClient extends AppCompatActivity {
                             if (type.equals("encrypted")) {
                                 encrypted = jObj.getString("data");
                                 decrypted = cte_crypt_login.decrypt(encrypted);
-                                Log.e("RES", "resres encrypted" + encrypted);
-                                Log.e("RES", "resres decrypted" + decrypted);
+                               // Log.e("RES", "resres encrypted" + encrypted);
+                               // Log.e("RES", "resres decrypted" + decrypted);
                                 api_res.onSuccess(decrypted);
                             } else {
                                 api_res.onSuccess(res.body().trim());
                             }
                         } else {
-                            Toast.makeText(context, "Res" + res.body(), Toast.LENGTH_SHORT).show();
+                         //   Toast.makeText(context, "Res" + res.body(), Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

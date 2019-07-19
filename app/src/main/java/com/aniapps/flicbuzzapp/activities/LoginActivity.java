@@ -202,6 +202,7 @@ public class LoginActivity extends AppConstants implements MySMSBroadcastReceive
                 params.put("email", emailEditText.getText().toString());
                 params.put("from_source", "android");
                 params.put("action", "login");
+                params.put("referral_code", PrefManager.getIn().getBranchData());
                 params.put("system_info", reqString);
                 params.put("language", PrefManager.getIn().getLanguage().toLowerCase());
                 ApiCall(params, 2);

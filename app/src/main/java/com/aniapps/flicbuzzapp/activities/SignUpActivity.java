@@ -310,6 +310,7 @@ public class SignUpActivity extends AppConstants implements  MySMSBroadcastRecei
                 params.put("gender", ((RadioButton) findViewById(gender.getCheckedRadioButtonId())).getText().toString().toLowerCase());
                 params.put("from_source", "android");
                 params.put("action", "register");
+                params.put("referral_code", PrefManager.getIn().getBranchData());
                 params.put("language", PrefManager.getIn().getLanguage().toLowerCase());
                 ApiCall(params, 2);
             }

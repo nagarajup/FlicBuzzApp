@@ -121,7 +121,6 @@ class NotificationAdapter(var context: Activity, var itemsList: List<Notificatio
         params["video_id"] = videoid
         params["language"] = language
 
-        Log.e("resres","postparm"+params)
 
 
         RetrofitClient.getInstance().doBackProcess(context, params, "online", object : APIResponse {
