@@ -210,6 +210,25 @@ class LandingPage : AppConstants(), View.OnClickListener {
             lay_notifications_count.visibility = View.GONE
         }
 
+
+        if(PrefManager.getIn().userId.equals("")){
+            nav_profile.visibility=View.GONE
+            nav_fav.visibility=View.GONE
+            nav_settings.visibility=View.GONE
+            nav_logout.visibility=View.GONE
+            tv_profile_email.visibility=View.GONE
+            tv_profile_plan.visibility=View.GONE
+            tv_profile_name.setText("LOGIN")
+        }else{
+            nav_profile.visibility=View.VISIBLE
+            nav_fav.visibility=View.VISIBLE
+            nav_settings.visibility=View.VISIBLE
+            nav_logout.visibility=View.VISIBLE
+            tv_profile_email.visibility=View.VISIBLE
+            tv_profile_plan.visibility=View.VISIBLE
+            tv_profile_name.setText(PrefManager.getIn().getName())
+        }
+
         nav_about.setOnClickListener(this@LandingPage)
         nav_profile.setOnClickListener(this@LandingPage)
         nav_privacy.setOnClickListener(this@LandingPage)
@@ -229,7 +248,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
         nav_hindi = findViewById<TextView>(R.id.nav_lang_hindi)
         setColor(nav_lang, 2)
         setLangSelection()
-        tv_profile_name.setText(PrefManager.getIn().getName())
+
         tv_profile_email.setText(PrefManager.getIn().getEmail())
         if (PrefManager.getIn().getPlan().equals("3")) {
             tv_profile_plan.setText("Plan : Three Months")
@@ -304,10 +323,22 @@ class LandingPage : AppConstants(), View.OnClickListener {
         myvideos.clear()
         apiCall(tag_id)
         imageView.setOnClickListener(View.OnClickListener {
-            val myintent = Intent(this@LandingPage, UpdateProfileActivity::class.java)
-            startActivity(myintent)
+
+            if(PrefManager.getIn().userId.equals("")){
+                val myintent = Intent(this@LandingPage, SignIn::class.java)
+                startActivity(myintent)
+            }else {
+                val myintent = Intent(this@LandingPage, UpdateProfileActivity::class.java)
+                startActivity(myintent)
+            }
             overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
         })
+        if(PrefManager.getIn().userId.equals("")) {
+            tv_profile_name.setOnClickListener(View.OnClickListener {
+                val myintent = Intent(this@LandingPage, SignIn::class.java)
+                startActivity(myintent)
+            })
+        }
         my_recycler_view!!.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -340,7 +371,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
                         PrefManager.getIn().getServer_date_time()
                     )
                 ) {*/
-                mHelper?.queryInventoryAsync(mGotInventoryListener) //Getting inventory of purchases and assigning listener
+               // mHelper?.queryInventoryAsync(mGotInventoryListener) //Getting inventory of purchases and assigning listener
                 //}
             }
         })
@@ -355,7 +386,11 @@ class LandingPage : AppConstants(), View.OnClickListener {
                 .error(R.mipmap.launcher_icon)
                 .into(imageView);
         }
-        tv_profile_name.setText(PrefManager.getIn().getName())
+        if(PrefManager.getIn().userId.equals("")) {
+            tv_profile_name.setText("LOGIN")
+        }else{
+            tv_profile_name.setText(PrefManager.getIn().getName())
+        }
         tv_profile_email.setText(PrefManager.getIn().getEmail())
         if (PrefManager.getIn().getPlan().equals("3")) {
             tv_profile_plan.setText("Plan : Three Months")
@@ -638,7 +673,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
 
                     }
                 } else {
-                    if (PrefManager.getIn().getPayment_mode() == "3") {
+                   /* if (PrefManager.getIn().getPayment_mode() == "3") {
                         planUpdate(
                             "expired",
                             PrefManager.getIn().getSubscription_start_date(),
@@ -646,7 +681,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
                             PrefManager.getIn().getPayment_data(),
                             1
                         )
-                    }
+                    }*/
                 }
                 //}
             }
@@ -1383,7 +1418,9 @@ class LandingPage : AppConstants(), View.OnClickListener {
                                 this@LandingPage,
                                 jobj.getString("message")
                             )
-                        } else {
+                        } else if(status == 99){
+                            Toast.makeText(this@LandingPage, "free status 99" + status, Toast.LENGTH_LONG).show()
+                        }else{
                             Toast.makeText(this@LandingPage, "status" + status, Toast.LENGTH_LONG).show()
                         }
                         if (pbr!!.visibility == View.VISIBLE) {
@@ -1469,8 +1506,6 @@ class LandingPage : AppConstants(), View.OnClickListener {
                         if (status == 1) {
                             val data = jobj.getJSONObject("data")
                             val videodata = data.getJSONObject("video")
-
-
                             var lead = Gson().fromJson(
                                 videodata.toString(),
                                 MyVideos::class.java

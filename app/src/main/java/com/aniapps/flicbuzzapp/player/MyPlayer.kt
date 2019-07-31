@@ -27,6 +27,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.aniapps.flicbuzzapp.AppConstants
 import com.aniapps.flicbuzzapp.R
+import com.aniapps.flicbuzzapp.activities.IntroductionScreen
+import com.aniapps.flicbuzzapp.activities.PaymentScreen_Razor
+import com.aniapps.flicbuzzapp.activities.SignIn
 import com.aniapps.flicbuzzapp.utils.MySpannable
 import com.aniapps.flicbuzzapp.adapters.MainAdapter
 import com.aniapps.flicbuzzapp.models.MyVideos
@@ -46,6 +49,8 @@ import com.google.android.exoplayer2.upstream.*
 import com.google.android.exoplayer2.util.EventLogger
 import com.google.android.exoplayer2.util.Util.SDK_INT
 import com.google.gson.Gson
+import io.branch.referral.util.BRANCH_STANDARD_EVENT
+import io.branch.referral.util.BranchEvent
 import kotlinx.android.synthetic.main.myplayer.*
 import org.json.JSONObject
 import java.util.ArrayList
@@ -230,11 +235,6 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
         } else {
             params["language"] = language;
         }
-        //Log.e("&&&&&&", " video id 3" +mySequence.get(currentWindow).id)
-        //Log.e("&&&&&&", " video id 3A" +myVideo.id)
-        //Log.e("###", "Impression Vidoe ID" + myVideo.id)
-        // Log.e("###", "Impression title" + myVideo.headline)
-        // Log.e("###", "Impression window ID" + currentWindow)
 
         RetrofitClient.getInstance()
             .doBackProcess(this@MyPlayer, params, "", object : APIResponse {
@@ -244,25 +244,26 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
                         val status = jobj.getInt("status")
                         val details = jobj.getString("details")
                         if (status == 1) {
-                            /*val jsonArray = jobj.getJSONArray("next")
-                            var lead = Gson().fromJson(
-                                jsonArray.get(0).toString(),
-                                MyVideos::class.java
-                            )
-                            mySequence.add(lead)*/
-                            /* if (!from.equals("previous")) {
-                                 val jsonArray = jobj.getJSONArray("next")
-                                 for (i in 0 until jsonArray.length()) {
-                                     var lead = Gson().fromJson(
-                                         jsonArray.get(i).toString(),
-                                         MyVideos::class.java
-                                     )
-                                     *//*if (!LandingPage.playingVideos.contains(lead)) {
-                                        LandingPage.playingVideos.add(lead)
-                                    }*//*
-                                }
-                            }*/
+                            BranchEvent(BRANCH_STANDARD_EVENT.VIEW_ITEM)
+                                .setDescription(myVideo.headline)
+                                .logEvent(this@MyPlayer)
                             myPlayerApi(myVideo)
+                        } else if (status == 99) {
+                            if (jobj.getString("next_screen").equals("require_registration")) {
+                                val intent = Intent(this@MyPlayer, SignIn::class.java)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                startActivity(intent)
+                                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+                            } else {
+                                val intent = Intent(this@MyPlayer, PaymentScreen_Razor::class.java)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                startActivity(intent)
+                                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+                            }
                         } else {
                             Toast.makeText(this@MyPlayer, "status" + details, Toast.LENGTH_LONG).show()
                         }
@@ -597,6 +598,12 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
         img_fav = findViewById(R.id.img_fav)
         img_fav_done = findViewById(R.id.img_fav_done)
         img_share = findViewById(R.id.img_share)
+
+        if(PrefManager.getIn().userId.equals("")){
+            lay_fav.visibility=View.GONE
+        }else{
+            lay_fav.visibility=View.VISIBLE
+        }
 
         if (myVideo.fav_video.equals("y")) {
             img_fav_done.visibility = View.VISIBLE

@@ -14,8 +14,11 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.aniapps.flicbuzzapp.AppApplication
+import com.aniapps.flicbuzzapp.AppConstants
 import com.aniapps.flicbuzzapp.player.MyPlayer
 import com.aniapps.flicbuzzapp.R
+import com.aniapps.flicbuzzapp.activities.PaymentScreen_Razor
+import com.aniapps.flicbuzzapp.activities.SignIn
 import com.aniapps.flicbuzzapp.models.MyVideos
 import com.aniapps.flicbuzzapp.networkcall.APIResponse
 import com.aniapps.flicbuzzapp.networkcall.RetrofitClient
@@ -23,6 +26,9 @@ import com.aniapps.flicbuzzapp.utils.PrefManager
 import com.aniapps.flicbuzzapp.utils.Utility
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
+import io.branch.referral.util.BRANCH_STANDARD_EVENT
+import io.branch.referral.util.BranchEvent
+import io.branch.referral.util.CurrencyType
 import org.json.JSONObject
 
 
@@ -85,6 +91,9 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
                                 //  LandingPage.playingVideos.add(lead)
                             }
 
+                            BranchEvent(BRANCH_STANDARD_EVENT.VIEW_ITEM)
+                                .setDescription(myVideo.headline)
+                                .logEvent(context)
 
                             if (from.equals("main") || from.equals("fav")) {
                                 val player_in = Intent(context, MyPlayer::class.java)
@@ -117,7 +126,23 @@ class MainAdapter(var context: Activity, var itemsList: ArrayList<MyVideos>, var
                                 context,
                                 jobj.getString("message")
                             )
-                        } else {
+                        }  else if (status == 99) {
+                            if (jobj.getString("next_screen").equals("require_registration")) {
+                                val intent = Intent(context, SignIn::class.java)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                context.startActivity(intent)
+                                context.overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+                            } else {
+                                val intent = Intent(context, PaymentScreen_Razor::class.java)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                context.startActivity(intent)
+                                context.overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+                            }
+                        }else {
                             Toast.makeText(context, "status" + details, Toast.LENGTH_LONG).show()
                         }
 

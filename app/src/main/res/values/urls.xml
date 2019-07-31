@@ -6,6 +6,6 @@
     <string name="core_live">https://www.flicbuzz.com/apis/</string>
 
     <!--test-->
-    <!--<string name="base">https://flicbuzz.adgully.com</string>
+   <!--<string name="base">https://flicbuzz.adgully.com</string>
     <string name="core_live">https://flicbuzz.adgully.com/apis/</string>-->
 </resources>

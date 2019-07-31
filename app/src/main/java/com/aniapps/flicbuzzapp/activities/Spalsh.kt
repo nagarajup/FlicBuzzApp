@@ -105,10 +105,25 @@ class Spalsh : AppCompatActivity() {
                             e.printStackTrace()
                         }
                         finish()
-                    } else if (status == 90) {
+                    } else if (status == 90 || status == 11) {
                         alertDialog(this@Spalsh)
                     } else if (status == 14) {
                         Utility.alertDialog(this@Spalsh, jsonObject.getString("message"))
+                    }else if (status == 98){
+                        val intent = Intent(this@Spalsh, LandingPage::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+                    }else if(status==99){
+                        PrefManager.getIn().setSplash_message(jsonObject.getString("splash_message"))
+                        val intent = Intent(this@Spalsh, PaymentScreen_Razor::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
                     }
 
                 } catch (e: Exception) {

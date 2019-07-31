@@ -257,21 +257,21 @@ public class LoginActivity extends AppConstants implements MySMSBroadcastReceive
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                            if (PrefManager.getIn().getPayment_mode().equals("1") && !PrefManager.getIn().getPlan().equalsIgnoreCase("expired")) {
+                           // if (PrefManager.getIn().getPayment_mode().equals("1") && !PrefManager.getIn().getPlan().equalsIgnoreCase("expired")) {
                                 Intent intent = new Intent(LoginActivity.this, LandingPage.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
-                            } else {
+                           /* } else {
                                 Intent intent = new Intent(LoginActivity.this, PaymentScreen_Razor.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
-                            }
+                            }*/
 
                         } else if (status == 18) {
                             PrefManager.getIn().saveUserId(jsonObject.getString("user_id"));
@@ -321,21 +321,21 @@ public class LoginActivity extends AppConstants implements MySMSBroadcastReceive
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                            if (PrefManager.getIn().getPayment_mode().equals("1") && !PrefManager.getIn().getPlan().equalsIgnoreCase("expired")) {
+                           // if (PrefManager.getIn().getPayment_mode().equals("1") && !PrefManager.getIn().getPlan().equalsIgnoreCase("expired")) {
                                 Intent intent = new Intent(LoginActivity.this, LandingPage.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
-                            } else {
+                           /* } else {
                                 Intent intent = new Intent(LoginActivity.this, PaymentScreen_Razor.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
-                            }
+                            }*/
 
                         } else if (status == 14) {
                             Utility.alertDialog(LoginActivity.this, jsonObject.getString("message"));

@@ -33,6 +33,9 @@ import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import io.branch.referral.util.BRANCH_STANDARD_EVENT;
+import io.branch.referral.util.BranchEvent;
+import io.branch.referral.util.CurrencyType;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
@@ -338,6 +341,10 @@ public class SignUpActivity extends AppConstants implements  MySMSBroadcastRecei
                             trackEvent(SignUpActivity.this,"SignUp","SignUp");
 
 
+                            new BranchEvent(BRANCH_STANDARD_EVENT.COMPLETE_REGISTRATION)
+                                    .setDescription("Registration Success")
+                                    .logEvent(SignUpActivity.this);
+
                             user_id = jsonObject.getString("user_id");
                             PrefManager.getIn().saveUserId(jsonObject.getString("user_id"));
                             if (status == 14) {
@@ -375,21 +382,21 @@ public class SignUpActivity extends AppConstants implements  MySMSBroadcastRecei
                             PrefManager.getIn().setDob(userObject.getString("dob"));
                             PrefManager.getIn().setProfile_pic(userObject.getString("profile_pic"));
                             trackEvent(SignUpActivity.this,"OTP","Verify OTP");
-                            if (PrefManager.getIn().getPayment_mode().equals("1") && !PrefManager.getIn().getPlan().equalsIgnoreCase("expired")) {
+                            //if (PrefManager.getIn().getPayment_mode().equals("1") && !PrefManager.getIn().getPlan().equalsIgnoreCase("expired")) {
                                 Intent intent = new Intent(SignUpActivity.this, LandingPage.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
-                            } else {
+                           /* } else {
                                 Intent intent = new Intent(SignUpActivity.this, PaymentScreen_Razor.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
-                            }
+                            }*/
                         } else {
                             Utility.alertDialog(SignUpActivity.this, "Alert", jsonObject.getString("message"));
                         }
