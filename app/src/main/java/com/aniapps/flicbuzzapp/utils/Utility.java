@@ -90,11 +90,14 @@ public class Utility {
 
     public static boolean validatePassword(EditText editText) {
         String text = editText.getText().toString().trim();
-        if (text.length() >= 5 && text.length() < 20) {
-            return !text.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$");
+        return text.length() >= 8;
+
+      /*  if (text.length() >= 8 && text.length() < 20) {
+        //    return !text.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$");
+            return true;
 
         }
-        return true;
+        return true;*/
     }
 
     public static boolean validateEmail(EditText editText) {

@@ -45,7 +45,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class SignUpActivity extends AppConstants implements  MySMSBroadcastReceiver.OTPReceiveListener {
+public class SignUpActivity extends AppConstants implements MySMSBroadcastReceiver.OTPReceiveListener {
     Button signUp, validateMobile;
     TextView emailError, passwordError, confirmPasswordError, dobError, cityError, mobileError, genderError, nameError, pincodeError, otpErro, resendOTP;
     EditText otpEditText, nameEditText, emailEditText, passwordEditText, confirmPasswordEditText, cityEditText, mobileEditText, pincodeEditText, dobEditText;
@@ -55,9 +55,10 @@ public class SignUpActivity extends AppConstants implements  MySMSBroadcastRecei
     RadioButton male, female;
     RelativeLayout registerLL, otpLL;
     String user_id = "";
-    ImageView psw_confirm_img_eye,psw_img_eye;
-    boolean check_visibility=true,check_visibility_confirm=true;
+    ImageView psw_confirm_img_eye, psw_img_eye;
+    boolean check_visibility = true, check_visibility_confirm = true;
     private MySMSBroadcastReceiver myReceiver = new MySMSBroadcastReceiver();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,8 +99,8 @@ public class SignUpActivity extends AppConstants implements  MySMSBroadcastRecei
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(handler!=null){
-            if(runnable!=null)
+        if (handler != null) {
+            if (runnable != null)
                 handler.removeCallbacks(runnable);
         }
         if (registerLL.getVisibility() == View.VISIBLE) {
@@ -141,8 +142,8 @@ public class SignUpActivity extends AppConstants implements  MySMSBroadcastRecei
         male = (RadioButton) findViewById(R.id.male_radio);
         female = (RadioButton) findViewById(R.id.female_radio);
         loginLL = (LinearLayout) findViewById(R.id.loginLL);
-        psw_img_eye = (ImageView)findViewById(R.id.psw_img_eye);
-        psw_confirm_img_eye = (ImageView)findViewById(R.id.psw_confirm_img_eye);
+        psw_img_eye = (ImageView) findViewById(R.id.psw_img_eye);
+        psw_confirm_img_eye = (ImageView) findViewById(R.id.psw_confirm_img_eye);
         dobEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -168,7 +169,6 @@ public class SignUpActivity extends AppConstants implements  MySMSBroadcastRecei
                 //datePickerDialog(SignUpActivity.this, dobEditText, Calendar.getInstance());
             }
         });
-
 
 
         psw_img_eye.setOnClickListener(new View.OnClickListener() {
@@ -249,6 +249,7 @@ public class SignUpActivity extends AppConstants implements  MySMSBroadcastRecei
                     HashMap<String, String> params = new HashMap<>();
                     params.put("mobile", mobileEditText.getText().toString());
                     params.put("otp", otpEditText.getText().toString());
+                    params.put("verifty_otp_from","1");
                     params.put("user_id", user_id);
                     params.put("from_source", "android");
                     params.put("action", "verify_otp");
@@ -260,6 +261,7 @@ public class SignUpActivity extends AppConstants implements  MySMSBroadcastRecei
     }
 
     public void checkValidation() {
+        Log.e("####", "In validations");
         nameError.setVisibility(View.INVISIBLE);
         emailError.setVisibility(View.INVISIBLE);
         passwordError.setVisibility(View.INVISIBLE);
@@ -279,10 +281,11 @@ public class SignUpActivity extends AppConstants implements  MySMSBroadcastRecei
         } else if (Utility.hasMobileNumber(mobileEditText)) {
             mobileEditText.requestFocus();
             mobileError.setVisibility(View.VISIBLE);
-        } else if (Utility.validatePassword(passwordEditText)) {
+        } else if (!Utility.validatePassword(passwordEditText)) {
             passwordEditText.requestFocus();
             passwordError.setVisibility(View.VISIBLE);
-        } else if (Utility.validatePassword(confirmPasswordEditText) && !passwordEditText.getText().toString().equalsIgnoreCase(confirmPasswordEditText.getText().toString())) {
+        } else if (!Utility.validatePassword(confirmPasswordEditText)
+                || !passwordEditText.getText().toString().equals(confirmPasswordEditText.getText().toString())) {
             confirmPasswordEditText.requestFocus();
             confirmPasswordError.setText("Password not matched");
             confirmPasswordError.setVisibility(View.VISIBLE);
@@ -315,7 +318,7 @@ public class SignUpActivity extends AppConstants implements  MySMSBroadcastRecei
                 params.put("action", "register");
                 params.put("referral_code", PrefManager.getIn().getBranchData());
                 params.put("language", PrefManager.getIn().getLanguage().toLowerCase());
-                ApiCall(params, 2);
+                 ApiCall(params, 2);
             }
 
 
@@ -338,7 +341,7 @@ public class SignUpActivity extends AppConstants implements  MySMSBroadcastRecei
                     if (from == 2) {
                         if (status == 1 || status == 14) {
 
-                            trackEvent(SignUpActivity.this,"SignUp","SignUp");
+                            trackEvent(SignUpActivity.this, "SignUp", "SignUp");
 
 
                             new BranchEvent(BRANCH_STANDARD_EVENT.COMPLETE_REGISTRATION)
@@ -346,7 +349,7 @@ public class SignUpActivity extends AppConstants implements  MySMSBroadcastRecei
                                     .logEvent(SignUpActivity.this);
 
                             user_id = jsonObject.getString("user_id");
-                            PrefManager.getIn().saveUserId(jsonObject.getString("user_id"));
+                            //  PrefManager.getIn().saveUserId(jsonObject.getString("user_id"));
                             if (status == 14) {
                                 Toast.makeText(SignUpActivity.this, "OTP sent successfully", Toast.LENGTH_SHORT).show();
                             } else {
@@ -381,14 +384,14 @@ public class SignUpActivity extends AppConstants implements  MySMSBroadcastRecei
                             PrefManager.getIn().setPincode(userObject.getString("pincode"));
                             PrefManager.getIn().setDob(userObject.getString("dob"));
                             PrefManager.getIn().setProfile_pic(userObject.getString("profile_pic"));
-                            trackEvent(SignUpActivity.this,"OTP","Verify OTP");
+                            trackEvent(SignUpActivity.this, "OTP", "Verify OTP");
                             //if (PrefManager.getIn().getPayment_mode().equals("1") && !PrefManager.getIn().getPlan().equalsIgnoreCase("expired")) {
-                                Intent intent = new Intent(SignUpActivity.this, LandingPage.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
-                                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
+                            Intent intent = new Intent(SignUpActivity.this, LandingPage.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
                            /* } else {
                                 Intent intent = new Intent(SignUpActivity.this, PaymentScreen_Razor.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -512,6 +515,7 @@ public class SignUpActivity extends AppConstants implements  MySMSBroadcastRecei
         });
         date_picker.show();
     }
+
     public static void datePickerDialog(Context context, final EditText editText, final Calendar myCalendar) {
         Calendar mcurrentDate = Calendar.getInstance();
         int mYear = mcurrentDate.get(Calendar.YEAR);
@@ -544,7 +548,7 @@ public class SignUpActivity extends AppConstants implements  MySMSBroadcastRecei
             LocalBroadcastManager.getInstance(this).unregisterReceiver(myReceiver);
         }
         otpEditText.setText(getVerificationCode(otp));
-       // validateMobile.performClick();
+        // validateMobile.performClick();
     }
 
     @Override
@@ -568,7 +572,7 @@ public class SignUpActivity extends AppConstants implements  MySMSBroadcastRecei
         return code;
     }*/
 
-  private String getVerificationCode(String message) {
+    private String getVerificationCode(String message) {
         String code = null;
         int index = message.indexOf("<#>");
 

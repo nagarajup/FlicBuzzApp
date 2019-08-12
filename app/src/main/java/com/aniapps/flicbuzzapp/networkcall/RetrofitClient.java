@@ -100,7 +100,16 @@ public class RetrofitClient extends AppCompatActivity {
         postParams.put("version_code", "" + BuildConfig.VERSION_CODE);
         postParams.put("api_key", "fb2019v1.0");
         postParams.put("device_id", Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID));
-        if (!postParams.get("action").equals("login")) {
+        boolean verifty_otp_from= false;
+        try{
+            if(postParams.get("verifty_otp_from").equals("1")){
+                verifty_otp_from=true;
+            }
+        }catch (Exception e){
+            verifty_otp_from=false;
+        }
+
+        if (!postParams.get("action").equals("login") && !verifty_otp_from) {
             postParams.put("user_id", PrefManager.getIn().getUserId());
         }
         postParams.put("from_source", "android");

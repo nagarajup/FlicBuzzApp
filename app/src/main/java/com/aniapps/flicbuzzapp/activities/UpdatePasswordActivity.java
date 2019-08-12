@@ -121,13 +121,13 @@ public class UpdatePasswordActivity extends AppConstants {
         confirmPasswordError.setVisibility(View.INVISIBLE);
         oldPasswordError.setVisibility(View.INVISIBLE);
 
-        if (Utility.validatePassword(oldPasswordEditText)) {
+        if (!Utility.validatePassword(oldPasswordEditText)) {
             oldPasswordEditText.requestFocus();
             oldPasswordError.setVisibility(View.VISIBLE);
-        } else if (Utility.validatePassword(passwordEditText)) {
+        } else if (!Utility.validatePassword(passwordEditText)) {
             passwordEditText.requestFocus();
             passwordError.setVisibility(View.VISIBLE);
-        } else if (Utility.validatePassword(confirmPasswordEditText) && !passwordEditText.getText().toString().equalsIgnoreCase(confirmPasswordEditText.getText().toString())) {
+        } else if (!Utility.validatePassword(confirmPasswordEditText) || !passwordEditText.getText().toString().equalsIgnoreCase(confirmPasswordEditText.getText().toString())) {
             confirmPasswordEditText.requestFocus();
             confirmPasswordError.setText("New Password not matched");
             confirmPasswordError.setVisibility(View.VISIBLE);

@@ -194,10 +194,10 @@ public class ForgotPasswordActivity extends AppCompatActivity implements  MySMSB
         } else {
             passwordError.setVisibility(View.INVISIBLE);
             confirmPasswordError.setVisibility(View.INVISIBLE);
-            if (Utility.validatePassword(passwordEditText)) {
+            if (!Utility.validatePassword(passwordEditText)) {
                 passwordEditText.requestFocus();
                 passwordError.setVisibility(View.VISIBLE);
-            } else if (Utility.validatePassword(confirmPasswordEditText) && !passwordEditText.getText().toString().equalsIgnoreCase(confirmPasswordEditText.getText().toString())) {
+            } else if (!Utility.validatePassword(confirmPasswordEditText) || !passwordEditText.getText().toString().equalsIgnoreCase(confirmPasswordEditText.getText().toString())) {
                 confirmPasswordEditText.requestFocus();
                 confirmPasswordError.setText("New Password not matched");
                 confirmPasswordError.setVisibility(View.VISIBLE);
