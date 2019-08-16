@@ -32,6 +32,7 @@ public class Utility {
     public static final String six_months = "sixmonths_sub";
     public static final String six_months_trail = "sixmonths_sub_trail";
     public static final String one_year = "oneyear_subs";
+    public static final String one_year_latest = "one_year_latest_plan";
     public static final String one_year_trail = "oneyear_subs_trail";
     public static final String threemonths = "threemonthsub";
     public static final String threemonths_threedaytrail = "threemonths_threedaytrail";
