@@ -65,7 +65,7 @@ public class PaymentScreen_Latest extends AppConstants implements PaymentResultW
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_payment_razor);
+        setContentView(R.layout.activity_payment_updated);
 
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         TextView header_title = (TextView) findViewById(R.id.tvheader);
