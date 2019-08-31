@@ -10,8 +10,8 @@ android {
         applicationId "com.aniapps.flicbuzzapp"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 29
-        versionName "2.7"
+        versionCode 30
+        versionName "2.8"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
