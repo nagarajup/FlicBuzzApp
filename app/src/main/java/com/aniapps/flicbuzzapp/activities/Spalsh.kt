@@ -87,7 +87,7 @@ class Spalsh : AppCompatActivity() {
                             startActivity(intent)
                             overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
                         } else {
-                            val intent = Intent(this@Spalsh, PaymentScreen_Razor::class.java)
+                            val intent = Intent(this@Spalsh, PaymentScreenLimitedAccess::class.java)
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -116,14 +116,16 @@ class Spalsh : AppCompatActivity() {
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         startActivity(intent)
                         overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+                        finish()
                     }else if(status==99){
                         PrefManager.getIn().setSplash_message(jsonObject.getString("splash_message"))
-                        val intent = Intent(this@Spalsh, PaymentScreen_Razor::class.java)
+                        val intent = Intent(this@Spalsh, PaymentScreenLimitedAccess::class.java)
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         startActivity(intent)
                         overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+                        finish()
                     }
 
                 } catch (e: Exception) {

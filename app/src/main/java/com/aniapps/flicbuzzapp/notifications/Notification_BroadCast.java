@@ -87,7 +87,7 @@ public class Notification_BroadCast extends BroadcastReceiver {
                     if (remember) {
                         try {
                             notificationIntent = new Intent(context,
-                                    PaymentScreen_Razor.class);
+                                    PaymentScreenLimitedAccess.class);
                             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             context.startActivity(notificationIntent);
                         } catch (Exception e) {

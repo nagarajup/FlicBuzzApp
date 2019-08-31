@@ -19,6 +19,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.aniapps.flicbuzzapp.AppApplication
 import com.aniapps.flicbuzzapp.R
+import com.aniapps.flicbuzzapp.activities.PaymentScreenLimitedAccess
 import com.aniapps.flicbuzzapp.activities.PaymentScreen_New
 import com.aniapps.flicbuzzapp.activities.PaymentScreen_Razor
 import com.aniapps.flicbuzzapp.db.LocalDB
@@ -89,7 +90,7 @@ class NotificationAdapter(var context: Activity, var itemsList: List<Notificatio
                 try {
                     val notificationIntent = Intent(
                         context,
-                        PaymentScreen_Razor::class.java
+                        PaymentScreenLimitedAccess::class.java
                     )
                     notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     context.startActivity(notificationIntent)

@@ -13,13 +13,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
 import com.aniapps.flicbuzzapp.AppConstants;
 import com.aniapps.flicbuzzapp.R;
 import com.aniapps.flicbuzzapp.networkcall.APIResponse;
@@ -34,9 +36,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentData;
 import com.razorpay.PaymentResultWithDataListener;
-import io.branch.referral.util.BRANCH_STANDARD_EVENT;
-import io.branch.referral.util.BranchEvent;
-import io.branch.referral.util.CurrencyType;
+
 import org.json.JSONObject;
 
 import java.text.ParseException;
@@ -45,11 +45,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
+import io.branch.referral.util.BRANCH_STANDARD_EVENT;
+import io.branch.referral.util.BranchEvent;
+import io.branch.referral.util.CurrencyType;
+
 public class PaymentScreen_Latest extends AppConstants implements PaymentResultWithDataListener {
 
-    ConstraintLayout oneyear;
-    LinearLayout plan_details;
-    TextView plan_text;
+    Button proceed;
     String subscription_id = "", subscription_ids_id = "", transaction_id = "", payment_details = "";
     String payment_status = "", plan = "";
     public static IabHelper mHelper;
@@ -58,9 +60,10 @@ public class PaymentScreen_Latest extends AppConstants implements PaymentResultW
     private boolean oneyearflag;
     String selection = "";
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-
+    String order_id = "";
     String latitude = "", longitude = "";
     AppLocationService appLocationService;
+    CheckBox termsofservice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +76,7 @@ public class PaymentScreen_Latest extends AppConstants implements PaymentResultW
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
+        Checkout.preload(getApplicationContext());
         if (checkLocationPermission()) {
             appLocationService = new AppLocationService(PaymentScreen_Latest.this);
             if (appLocationService.isLocationAvailable()) {
@@ -84,27 +87,34 @@ public class PaymentScreen_Latest extends AppConstants implements PaymentResultW
                 longitude = "0.0";
             }
         }
-
-        plan_details = (LinearLayout) findViewById(R.id.plan_details);
-        plan_text = (TextView) findViewById(R.id.plan_text);
-        plan_details.setVisibility(View.VISIBLE);
-
+        termsofservice = (CheckBox) findViewById(R.id.termsofservice);
         mHelper = new IabHelper(PaymentScreen_Latest.this, Utility.sharedKey);
-        oneyear = (ConstraintLayout) findViewById(R.id.oneyear);
-        plan_text.setText(PrefManager.getIn().getSplash_message());
-        oneyear.setOnClickListener(new View.OnClickListener() {
+        proceed = (Button) findViewById(R.id.proceed);
+        proceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (PrefManager.getIn().getPayment_mode().equals("1") && !PrefManager.getIn().getPlan().equalsIgnoreCase("trail")) {
-                    String message = "";
-                    if (PrefManager.getIn().getPlan().equals("12")) {
-                        message = "One Year";
-                    }
-                    alertDialog("Subscription", "You already subscribed for " + message + " Plan.");
+                if (!termsofservice.isChecked()) {
+                    Toast.makeText(PaymentScreen_Latest.this, "Please check terms of service", Toast.LENGTH_SHORT).show();
                 } else {
                     plan = "12";
-                    paymentDialog("12");
-                    //planCall();
+                    // paymentDialog("12");
+                    new BranchEvent(BRANCH_STANDARD_EVENT.INITIATE_PURCHASE)
+                            .setCurrency(CurrencyType.INR)
+                            .setDescription("razorpay")
+                            .setSearchQuery("simple payment")
+                            .logEvent(PaymentScreen_Latest.this);
+
+                    FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(PaymentScreen_Latest.this);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(FirebaseAnalytics.Param.CURRENCY, "INR");
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "1 Year");
+                    bundle.putString(FirebaseAnalytics.Param.PRICE, "150");
+                    bundle.putString(FirebaseAnalytics.Param.END_DATE, "");
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "razorpay");
+                    bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "simple payment");
+                    bundle.putString(FirebaseAnalytics.Param.CONTENT, "Initiate Payment");
+                    mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.ECOMMERCE_PURCHASE, bundle);
+                    initiatePayment();
                 }
             }
         });
@@ -258,11 +268,10 @@ public class PaymentScreen_Latest extends AppConstants implements PaymentResultW
 
     public void transactionCall() {
         HashMap<String, String> params = new HashMap<>();
-        params.put("action", "update_transaction2");
+        params.put("action", "simple_payment_capture_razorpay");
         params.put("plan", plan);
         params.put("transaction_id", transaction_id);
-        params.put("subscription_id", subscription_id);
-        params.put("subscription_ids_id", subscription_ids_id);
+        params.put("order_id", order_id);
         params.put("payment_data", payment_details);
         params.put("latitude", "" + latitude);
         params.put("longitude", "" + longitude);
@@ -279,7 +288,7 @@ public class PaymentScreen_Latest extends AppConstants implements PaymentResultW
             @Override
             public void onSuccess(String result) {
                 try {
-                   // Log.e("res", "res:" + result);
+                    // Log.e("res", "res:" + result);
                     jsonObject = new JSONObject(result);
                     int status = jsonObject.getInt("status");
                     if (status == 1) {
@@ -330,7 +339,7 @@ public class PaymentScreen_Latest extends AppConstants implements PaymentResultW
                                     .setRevenue(Double.parseDouble(jsonObject.getString("subscription_revenue")))
                                     .setDescription("razorpay")
                                     .setAffiliation(jsonObject.getString("subscription_name"))
-                                    .setSearchQuery("subscription")
+                                    .setSearchQuery("simple payment")
                                     .addCustomDataProperty("end_date", jsonObject.getString("subscription_end_date"))
                                     .logEvent(PaymentScreen_Latest.this);
 
@@ -341,7 +350,8 @@ public class PaymentScreen_Latest extends AppConstants implements PaymentResultW
                             bundle.putString(FirebaseAnalytics.Param.PRICE, jsonObject.getString("subscription_revenue"));
                             bundle.putString(FirebaseAnalytics.Param.END_DATE, jsonObject.getString("subscription_end_date"));
                             bundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, "razorpay");
-                            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "subscription");
+                            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "simple payment");
+                            bundle.putString(FirebaseAnalytics.Param.CONTENT, "Payment Done");
                             mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.ECOMMERCE_PURCHASE, bundle);
 
                         }
@@ -398,26 +408,60 @@ public class PaymentScreen_Latest extends AppConstants implements PaymentResultW
         }
     }
 
+    public void initiatePayment() {
+        /*
+          You need to pass current activity in order to let Razorpay create CheckoutActivity
+         */
+        final Activity activity = this;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("ddMMyyyyhhmmss");
+        String format = simpleDateFormat.format(new Date());
+        final Checkout co = new Checkout();
+
+        try {
+            order_id = "User_" + PrefManager.getIn().getUserId() + format;
+            JSONObject options = new JSONObject();
+            options.put("name", "FlicBuzz");
+            options.put("description", "One year package");
+            // options.put("image", getResources().getDrawable(R.mipmap.ic_launcher));
+            // options.put("order_id",order_id);
+            options.put("currency", "INR");
+            options.put("amount", "15000");
+
+            JSONObject preFill = new JSONObject();
+            preFill.put("email", PrefManager.getIn().getEmail());
+            preFill.put("contact", PrefManager.getIn().getMobile());
+
+            options.put("prefill", preFill);
+
+            co.open(activity, options);
+        } catch (Exception e) {
+            Toast.makeText(activity, "Error in payment: " + e.getMessage(), Toast.LENGTH_SHORT)
+                    .show();
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public void onPaymentSuccess(String s, PaymentData paymentData) {
         try {
+            Log.e("res", s + "res" + paymentData.getData());
             transaction_id = paymentData.getPaymentId();
             payment_details = paymentData.getData().toString();
             payment_status = "success";
             transactionCall();
-            // Log.e("res", s + "res" + paymentData.getData());
-            // Toast.makeText(this, "Payment Successful: " + paymentData.getData(), Toast.LENGTH_SHORT).show();
-
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     @Override
     public void onPaymentError(int i, String s, PaymentData paymentData) {
         try {
-           // Log.e("res", s + "res" + paymentData.getData());
+            Log.e("res", s + "res" + paymentData.getData());
+            Toast.makeText(PaymentScreen_Latest.this, "" + paymentData.getData(), Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -451,9 +495,7 @@ public class PaymentScreen_Latest extends AppConstants implements PaymentResultW
 
             Log.d(TAG, "Purchase successful.");
 
-            // Toast.makeText(PaymentScreen_New.this, purchase.toString() + "::" + purchase.getPurchaseTime(), Toast.LENGTH_SHORT).show();
             Log.e("", "" + purchase);
-            //2019-04-20 21:54:06
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date(purchase.getPurchaseTime());
             String startdate = sdf.format(date);
@@ -528,11 +570,7 @@ public class PaymentScreen_Latest extends AppConstants implements PaymentResultW
 
 
                         if (jsonObject.getString("current_plan").equals("trial")) {
-                            /*Map<String, Object> eventValue2 = new HashMap<String, Object>();
-                            eventValue2.put("trial_method", "trial");
-                            eventValue2.put("trial_method_identifier", "googlepay");
-                            AppsFlyerLib.getInstance().trackEvent(getApplicationContext(),
-                                    AFInAppEventType.START_TRIAL, eventValue2);*/
+
                             FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(PaymentScreen_Latest.this);
                             Bundle bundle = new Bundle();
                             bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "trial");
@@ -547,18 +585,7 @@ public class PaymentScreen_Latest extends AppConstants implements PaymentResultW
                                     .logEvent(PaymentScreen_Latest.this);
 
 
-
                         } else {
-                          /*  Map<String, Object> eventValue = new HashMap<String, Object>();
-                            eventValue.put("new_subscription", true);
-                            eventValue.put(AFInAppEventParameterName.COUPON_CODE, jsonObject.getString("subscription_name"));
-                            eventValue.put("coupon_code_value", "");
-                            eventValue.put(AFInAppEventParameterName.REVENUE, jsonObject.getString("subscription_revenue"));
-                            eventValue.put(AFInAppEventParameterName.CURRENCY, "INR");
-                            eventValue.put("subscription_method", "googlepay");
-                            eventValue.put("expiration_date", jsonObject.getString("subscription_end_date"));
-                            AppsFlyerLib.getInstance().trackEvent(getApplicationContext(), AFInAppEventType.SUBSCRIBE, eventValue);*/
-
                             new BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE)
                                     .setCurrency(CurrencyType.INR)
                                     .setCoupon(jsonObject.getString("subscription_name"))
@@ -587,76 +614,6 @@ public class PaymentScreen_Latest extends AppConstants implements PaymentResultW
                         startActivity(intent);
                         overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
 
-                       /* if (params.get("package").equals("expired")) {
-                            threemonthsflag = false;
-                            sixmonthsflag = false;
-                            oneyearflag = false;
-                            trailFlag = false;
-                        }
-                        PrefManager.getIn().setPayment_data(params.get("payment_data"));
-                        PrefManager.getIn().setSubscription_start_date(params.get("subscription_start_date"));
-                        PrefManager.getIn().setSubscription_renewal_date(params.get("subscription_renewal_date"));
-                        PrefManager.getIn().setSubscription_end_date(params.get("subscription_end_date"));
-                        PrefManager.getIn().setGateway("googlepay");
-                        PrefManager.getIn().setSubscription_auto_renew("yes");
-                        try {
-                            PrefManager.getIn().setSplash_message(jsonObject.getString("splash_message"));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        PrefManager.getIn().setPlan(params.get("package"));
-                        if (PrefManager.getIn().getPlan().equals("3")) {
-                            threemonthsflag = true;
-                            PrefManager.getIn().setPayment_mode("1");
-                            plan_text.setText(jsonObject.getString("splash_message"));
-                        } else if (PrefManager.getIn().getPlan().equals("6")) {
-                            PrefManager.getIn().setPayment_mode("1");
-                            plan_text.setText(jsonObject.getString("splash_message"));
-                            // expirylabel.setVisibility(View.VISIBLE);
-                            sixmonthsflag = true;
-                        } else if (PrefManager.getIn().getPlan().equals("12")) {
-                            PrefManager.getIn().setPayment_mode("1");
-                            plan_text.setText(jsonObject.getString("splash_message"));
-                            oneyearflag = true;
-                            // expirylabel.setVisibility(View.VISIBLE);
-                        } else if (PrefManager.getIn().getPlan().equals("expired")) {
-                            PrefManager.getIn().setPayment_mode("3");
-                            plan_text.setText(jsonObject.getString("splash_message"));
-                            //expirylabel.setVisibility(View.GONE);
-                        } else if (PrefManager.getIn().getPlan().equals("trail")) {
-                            PrefManager.getIn().setPayment_mode("1");
-                            plan_text.setText(jsonObject.getString("splash_message"));
-                            //expirylabel.setVisibility(View.VISIBLE);
-                            trailFlag = true;
-                        }
-                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        try {
-                            Date date = format.parse(PrefManager.getIn().getSubscription_end_date());
-                            SimpleDateFormat simple = new SimpleDateFormat("dd MMM yyyy HH:mm a");
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        //if (renewal == 0) {
-                        if (!PrefManager.getIn().getPlan().equals("expired")) {
-
-                            Map<String, Object> eventValue = new HashMap<String, Object>();
-                            eventValue.put("new_subscription", true);
-                            eventValue.put(AFInAppEventParameterName.COUPON_CODE, jsonObject.getString("plan"));
-                            eventValue.put("coupon_code_value", "");
-                            eventValue.put(AFInAppEventParameterName.REVENUE, jsonObject.getString("revenue"));
-                            eventValue.put(AFInAppEventParameterName.CURRENCY, "INR");
-                            eventValue.put("subscription_method", "googlepay");
-                            eventValue.put("expiration_date",jsonObject.getString("subscription_end_date"));
-                            AppsFlyerLib.getInstance().trackEvent(getApplicationContext(), AFInAppEventType.SUBSCRIBE, eventValue);
-
-                            Intent intent = new Intent(PaymentScreen_Razor.this, PaymentSuccuss.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
-                        }*/
-                        // }
                     } else if (status == 14) {
                         Utility.alertDialog(PaymentScreen_Latest.this, jsonObject.getString("message"));
                     } else {

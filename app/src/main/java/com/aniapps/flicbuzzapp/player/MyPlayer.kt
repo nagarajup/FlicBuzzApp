@@ -28,7 +28,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.aniapps.flicbuzzapp.AppConstants
 import com.aniapps.flicbuzzapp.R
 import com.aniapps.flicbuzzapp.activities.IntroductionScreen
-import com.aniapps.flicbuzzapp.activities.PaymentScreen_Razor
+import com.aniapps.flicbuzzapp.activities.PaymentScreenLimitedAccess
 import com.aniapps.flicbuzzapp.activities.SignIn
 import com.aniapps.flicbuzzapp.utils.MySpannable
 import com.aniapps.flicbuzzapp.adapters.MainAdapter
@@ -257,7 +257,7 @@ class MyPlayer : AppConstants()/*, MyPlayerIns*/ {
                                 startActivity(intent)
                                 overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
                             } else {
-                                val intent = Intent(this@MyPlayer, PaymentScreen_Razor::class.java)
+                                val intent = Intent(this@MyPlayer, PaymentScreenLimitedAccess::class.java)
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)

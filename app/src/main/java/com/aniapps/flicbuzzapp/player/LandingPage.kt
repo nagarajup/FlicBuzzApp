@@ -790,7 +790,7 @@ class LandingPage : AppConstants(), View.OnClickListener {
             alert_dialog.dismiss()
             if (from == 1) {
                 trackEvent(this@LandingPage, "MainPage", "Plan Expired|Ok")
-                val intent = Intent(this@LandingPage, PaymentScreen_Razor::class.java)
+                val intent = Intent(this@LandingPage, PaymentScreenLimitedAccess::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -1201,22 +1201,29 @@ class LandingPage : AppConstants(), View.OnClickListener {
             }
             R.id.nav_package -> {
                 trackEvent(this@LandingPage, "MainPage", "Packages")
-                val myintent = Intent(this@LandingPage, PaymentScreen_Razor::class.java)
-                myintent.putExtra("title", "Packages")
-                myintent.putExtra("url", "")
-                startActivity(myintent)
-                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+                if(!PrefManager.getIn().login) {
+                     Toast.makeText(this, "Please login and try again", Toast.LENGTH_SHORT).show()
+                }else {
+                    val myintent = Intent(this@LandingPage, PaymentScreenLimitedAccess::class.java)
+                    myintent.putExtra("title", "Packages")
+                    myintent.putExtra("url", "")
+                    startActivity(myintent)
+                    overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+                }
 
-                // Toast.makeText(this, "Clicked item fav", Toast.LENGTH_SHORT).show()
+
             }
             R.id.nav_package_razor -> {
                 trackEvent(this@LandingPage, "MainPage", "Packages Razor")
-                val myintent = Intent(this@LandingPage, PaymentScreen_Razor::class.java)
-                myintent.putExtra("title", "Packages Razor")
-                myintent.putExtra("url", "")
-                startActivity(myintent)
-                overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
-
+                if(!PrefManager.getIn().login) {
+                    Toast.makeText(this, "Please login and try again", Toast.LENGTH_SHORT).show()
+                }else {
+                    val myintent = Intent(this@LandingPage, PaymentScreenLimitedAccess::class.java)
+                    myintent.putExtra("title", "Packages Razor")
+                    myintent.putExtra("url", "")
+                    startActivity(myintent)
+                    overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
+                }
                 // Toast.makeText(this, "Clicked item fav", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_refund -> {

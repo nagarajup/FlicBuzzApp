@@ -2,15 +2,19 @@ package com.aniapps.flicbuzzapp.activities;
 
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.Toast;
+import android.widget.*;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import com.aniapps.flicbuzzapp.AppConstants;
 import com.aniapps.flicbuzzapp.player.LandingPage;
 import com.aniapps.flicbuzzapp.R;
 import com.aniapps.flicbuzzapp.util.IabHelper;
@@ -20,47 +24,10 @@ import com.aniapps.flicbuzzapp.util.Purchase;
 import com.aniapps.flicbuzzapp.utils.PrefManager;
 import com.aniapps.flicbuzzapp.utils.Utility;
 
-public class PaymentScreenLimitedAccess extends Activity {
-    Button proceed;
-    CheckBox termsofservice;
-    public static IabHelper mHelper;
-    private final int PURCHSE_REQUEST = 3;
-
-    IabHelper.QueryInventoryFinishedListener mReceivedInventoryListener
-            = new IabHelper.QueryInventoryFinishedListener() {
-        public void onQueryInventoryFinished(IabResult result,
-                                             Inventory inventory)  {
-
-
-            if (result.isFailure()) {
-                // Handle failure
-            }
-            if(inventory.hasPurchase(Utility.tendaysubs)) {
-                Toast.makeText(PaymentScreenLimitedAccess.this,inventory.getPurchase("10days").toString() ,Toast.LENGTH_SHORT).show();
-                Log.e("inventory", inventory.getPurchase("10days").toString() + "inventory" + inventory.toString());
-            }else if(inventory.hasPurchase(Utility.threemonths)) {
-                Toast.makeText(PaymentScreenLimitedAccess.this,inventory.getPurchase(Utility.threemonths).toString() ,Toast.LENGTH_SHORT).show();
-            }
-        }
-    };
-    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
-        public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
-            if (result.isFailure()) {
-                // Handle error
-                Log.e("failure", "failure");
-
-            } else {
-                Toast.makeText(PaymentScreenLimitedAccess.this,""+purchase.getPurchaseTime(),Toast.LENGTH_SHORT).show();
-                Log.e("",""+purchase);
-                PrefManager.getIn().setPackage(true);
-                Intent intent = new Intent(PaymentScreenLimitedAccess.this, LandingPage.class);
-                startActivity(intent);
-                // consumeItem();
-
-            }
-
-        }
-    };
+public class PaymentScreenLimitedAccess extends AppConstants {
+    ConstraintLayout oneyear;
+    LinearLayout plan_details;
+    TextView plan_text;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,91 +35,80 @@ public class PaymentScreenLimitedAccess extends Activity {
         // Making notification bar transparent
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_payment_limited);
+        setContentView(R.layout.activity_payment_latest);
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setTitle(getString(R.string.app_name));
-        mToolbar.setNavigationIcon(R.drawable.arrow);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        TextView header_title = (TextView) findViewById(R.id.tvheader);
+        header_title.setText("Packages");
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        plan_details = (LinearLayout) findViewById(R.id.plan_details);
+        plan_text = (TextView) findViewById(R.id.plan_text);
+        plan_details.setVisibility(View.VISIBLE);
+
+        oneyear = (ConstraintLayout) findViewById(R.id.oneyear);
+        plan_text.setText(PrefManager.getIn().getSplash_message());
+        oneyear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
-                overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
-            }
-        });
-        proceed = (Button) findViewById(R.id.proceed);
-        termsofservice = (CheckBox) findViewById(R.id.termsofservice);
-
-        proceed.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (!termsofservice.isChecked()) {
-                    Toast.makeText(PaymentScreenLimitedAccess.this, "Please check terms of service", Toast.LENGTH_SHORT).show();
-                }else{
-                        mHelper.flagEndAsync();
-                        mHelper.launchPurchaseFlow(PaymentScreenLimitedAccess.this, Utility.tendaysubs, PURCHSE_REQUEST, mPurchaseFinishedListener, null);
-
+                if (PrefManager.getIn().getPlan().equals("12")) {
+                    alertDialog("Subscription", "You already purchased this plan.");
+                } else {
+                    Intent intent = new Intent(PaymentScreenLimitedAccess.this, PaymentScreen_Latest.class);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);
                 }
+            }
+        });
+    }
+    public void alertDialog(String title, String msg) {
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int width = metrics.widthPixels;
+        final Dialog alert_dialog = new Dialog(PaymentScreenLimitedAccess.this);
+        alert_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        alert_dialog.setContentView(R.layout.alert_dialog);
+        alert_dialog.setCanceledOnTouchOutside(false);
+        alert_dialog.getWindow().setLayout((6 * width) / 7, LinearLayout.LayoutParams.WRAP_CONTENT);
+        TextView txt_alert_title = (TextView) alert_dialog.findViewById(R.id.custom_alert_dialog_title);
+        txt_alert_title.setText(title);
+        TextView txt_alert_description = (TextView) alert_dialog.findViewById(R.id.custom_alert_dialog_msg);
+        LinearLayout main = (LinearLayout) alert_dialog.findViewById(R.id.main);
+        Button txt_ok = (Button) alert_dialog.findViewById(R.id.ok);
+        txt_ok.setVisibility(View.GONE);
+        Button txt_cancel = (Button) alert_dialog.findViewById(R.id.cancel);
+        main.setVisibility(View.VISIBLE);
+        txt_alert_description.setText(msg);
+        txt_cancel.setText("OK");
+        txt_cancel.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                alert_dialog.dismiss();
 
             }
         });
-        mHelper = new IabHelper(PaymentScreenLimitedAccess.this, Utility.sharedKey);
-        mHelper.startSetup(new
-                                   IabHelper.OnIabSetupFinishedListener() {
-                                       public void onIabSetupFinished(IabResult result) {
-                                           if (!result.isSuccess()) {
-                                               Log.e("limited", "In-app Billing is not set up OK");
-                                           } else {
 
-                                               Log.v("Limites", "YAY, in app billing set up! " + result);
-                                                   mHelper.queryInventoryAsync(mReceivedInventoryListener); //Getting inventory of purchases and assigning listener
+        txt_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alert_dialog.dismiss();
 
-                                           }
+            }
+        });
 
-                                       }
-
-
-                                   });
-
+        alert_dialog.show();
     }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
 
-        // very important:
-        Log.d("", "Destroying helper.");
-        if (mHelper != null) {
-            mHelper.dispose();
-            mHelper = null;
-        }
     }
-
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("", "onActivityResult(" + requestCode + "," + resultCode + "," + data);
-        if (mHelper == null) return;
-
-        // Pass on the activity result to the helper for handling
-        if (!mHelper.handleActivityResult(requestCode, resultCode, data)) {
-            // not handled, so handle it ourselves (here's where you'd
-            // perform any handling of activity results not related to in-app
-            // billing...
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-        else {
-            Log.d("", "onActivityResult handled by IABUtil.");
-        }
-    }
-    public void consumeItem() {
-        mHelper.queryInventoryAsync(mReceivedInventoryListener);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        overridePendingTransition(R.anim.right_slide_in, R.anim.right_slide_out);
+        return super.onOptionsItemSelected(item);
     }
 
-    boolean verifyDeveloperPayload(Purchase p) {
-        String payload = p.getDeveloperPayload();
-
-
-        return true;
-    }
 
 }
