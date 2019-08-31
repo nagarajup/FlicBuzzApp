@@ -43,6 +43,7 @@ public class IntroductionScreen extends Activity {
             launchHomeScreen();
             finish();
         }
+
         TrackReferral();
         // Making notification bar transparent
         if (Build.VERSION.SDK_INT >= 21) {
@@ -122,7 +123,7 @@ public class IntroductionScreen extends Activity {
 
     private void launchHomeScreen() {
         PrefManager.getIn().setFirstTimeLaunch(false);
-      //  startActivity(new Intent(IntroductionScreen.this, SignIn.class));
+        //  startActivity(new Intent(IntroductionScreen.this, SignIn.class));
         startActivity(new Intent(IntroductionScreen.this, LandingPage.class));
         finish();
         overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out);

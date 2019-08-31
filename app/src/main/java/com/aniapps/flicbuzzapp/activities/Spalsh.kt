@@ -20,9 +20,7 @@ import io.branch.indexing.BranchUniversalObject
 import io.branch.referral.Branch
 import io.branch.referral.BranchError
 import io.branch.referral.SharingHelper
-import io.branch.referral.util.ContentMetadata
-import io.branch.referral.util.LinkProperties
-import io.branch.referral.util.ShareSheetStyle
+import io.branch.referral.util.*
 import org.json.JSONObject
 import java.util.*
 import kotlin.collections.HashMap
@@ -47,7 +45,7 @@ class Spalsh : AppCompatActivity() {
         RetrofitClient.getInstance().doBackProcess(this@Spalsh, params, "online", object : APIResponse {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             override fun onSuccess(result: String) {
-                Log.e("abcd","branc"+PrefManager.getIn().branchData);
+                Log.e("abcd", "branc" + PrefManager.getIn().branchData);
                 try {
                     jsonObject = JSONObject(result)
                     val status = jsonObject.getInt("status")
@@ -87,7 +85,7 @@ class Spalsh : AppCompatActivity() {
                             startActivity(intent)
                             overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
                         } else {
-                            val intent = Intent(this@Spalsh, PaymentScreenLimitedAccess::class.java)
+                            val intent = Intent(this@Spalsh, PaymentScreen_Razor::class.java)
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -109,34 +107,32 @@ class Spalsh : AppCompatActivity() {
                         alertDialog(this@Spalsh)
                     } else if (status == 14) {
                         Utility.alertDialog(this@Spalsh, jsonObject.getString("message"))
-                    }else if (status == 98){
+                    } else if (status == 98) {
                         val intent = Intent(this@Spalsh, LandingPage::class.java)
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         startActivity(intent)
                         overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
-                        finish()
-                    }else if(status==99){
+                    } else if (status == 99) {
                         PrefManager.getIn().setSplash_message(jsonObject.getString("splash_message"))
-                        val intent = Intent(this@Spalsh, PaymentScreenLimitedAccess::class.java)
+                        val intent = Intent(this@Spalsh, PaymentScreen_Razor::class.java)
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         startActivity(intent)
                         overridePendingTransition(R.anim.left_slide_in, R.anim.left_slide_out)
-                        finish()
                     }
 
                 } catch (e: Exception) {
-                    Utility.alertDialog(this@Spalsh,"Alert!",e.message);
+                    Utility.alertDialog(this@Spalsh, "Alert!", e.message);
                     e.printStackTrace()
                 }
 
             }
 
             override fun onFailure(res: String) {
-                Utility.alertDialog(this@Spalsh,"Alert!",res);
+                Utility.alertDialog(this@Spalsh, "Alert!", res);
             }
         })
     }
@@ -149,6 +145,7 @@ class Spalsh : AppCompatActivity() {
         finish()
 
     }
+
     override fun onStart() {
         super.onStart()
 
@@ -158,9 +155,13 @@ class Spalsh : AppCompatActivity() {
             override fun onInitFinished(referringParams: JSONObject, error: BranchError?) {
                 if (error == null) {
                     Log.e("BRANCH SDK", referringParams.toString())
-                    PrefManager.getIn().branchData=referringParams.toString(2);
+                    PrefManager.getIn().branchData = referringParams.toString(2);
 
-                  //  Toast.makeText(this@Spalsh, referringParams.toString(2), Toast.LENGTH_SHORT).show()
+                    BranchEvent(BRANCH_STANDARD_EVENT.SEARCH)
+                        .setDescription("Branch UTM Source"+ referringParams.toString(2))
+                        .logEvent(this@Spalsh)
+
+                    //  Toast.makeText(this@Spalsh, referringParams.toString(2), Toast.LENGTH_SHORT).show()
                     // Retrieve deeplink keys from 'referringParams' and evaluate the values to determine where to route the user
                     // Check '+clicked_branch_link' before deciding whether to use your Branch routing logic
                 } else {
@@ -178,39 +179,39 @@ class Spalsh : AppCompatActivity() {
             .setContentMetadata(ContentMetadata().addCustomMetadata("key1", "value1"))
         buo.listOnGoogleSearch(this)
 
-       /* val lp = LinkProperties()
-            .setChannel("facebook")
-            .setFeature("sharing")
-            .setCampaign("content 123 launch")
-            .setStage("new user")
-            .addControlParameter("desktop_url", "https://www.flicbuzz.com/")
-            .addControlParameter("custom", "data")
-            .addControlParameter("custom_random", ""+Calendar.getInstance().timeInMillis)
+        /* val lp = LinkProperties()
+             .setChannel("facebook")
+             .setFeature("sharing")
+             .setCampaign("content 123 launch")
+             .setStage("new user")
+             .addControlParameter("desktop_url", "https://www.flicbuzz.com/")
+             .addControlParameter("custom", "data")
+             .addControlParameter("custom_random", ""+Calendar.getInstance().timeInMillis)
 
-        buo.generateShortUrl(this, lp, Branch.BranchLinkCreateListener { url, error ->
-            if (error == null) {
-                Log.i("BRANCH SDK", "got my Branch link to share: " + url)
-            }
-        })*/
+         buo.generateShortUrl(this, lp, Branch.BranchLinkCreateListener { url, error ->
+             if (error == null) {
+                 Log.i("BRANCH SDK", "got my Branch link to share: " + url)
+             }
+         })*/
 
 
-       /* val ss = ShareSheetStyle(this@Spalsh, "Check this out!", "This stuff is awesome: ")
-            .setCopyUrlStyle(ContextCompat.getDrawable(this@Spalsh, android.R.drawable.ic_menu_send), "Copy", "Added to clipboard")
-            .setMoreOptionStyle(ContextCompat.getDrawable(this@Spalsh, android.R.drawable.ic_menu_search), "Show more")
-            .addPreferredSharingOption(SharingHelper.SHARE_WITH.FACEBOOK)
-            .addPreferredSharingOption(SharingHelper.SHARE_WITH.EMAIL)
-            .addPreferredSharingOption(SharingHelper.SHARE_WITH.MESSAGE)
-            .addPreferredSharingOption(SharingHelper.SHARE_WITH.HANGOUT)
-            .setAsFullWidthStyle(true)
-            .setSharingTitle("Share With")
+        /* val ss = ShareSheetStyle(this@Spalsh, "Check this out!", "This stuff is awesome: ")
+             .setCopyUrlStyle(ContextCompat.getDrawable(this@Spalsh, android.R.drawable.ic_menu_send), "Copy", "Added to clipboard")
+             .setMoreOptionStyle(ContextCompat.getDrawable(this@Spalsh, android.R.drawable.ic_menu_search), "Show more")
+             .addPreferredSharingOption(SharingHelper.SHARE_WITH.FACEBOOK)
+             .addPreferredSharingOption(SharingHelper.SHARE_WITH.EMAIL)
+             .addPreferredSharingOption(SharingHelper.SHARE_WITH.MESSAGE)
+             .addPreferredSharingOption(SharingHelper.SHARE_WITH.HANGOUT)
+             .setAsFullWidthStyle(true)
+             .setSharingTitle("Share With")
 
-        buo.showShareSheet(this, lp, ss, object : Branch.BranchLinkShareListener {
-            override fun onShareLinkDialogLaunched() {}
-            override fun onShareLinkDialogDismissed() {}
-            override fun onLinkShareResponse(sharedLink: String, sharedChannel: String, error: BranchError) {}
-            override fun onChannelSelected(channelName: String) {}
-        })*/
-       // keytool -list -v -keystore "C:\Users\MXC\.android\debug.keystore" -alias androiddebugkey -storepass android -keypass android
+         buo.showShareSheet(this, lp, ss, object : Branch.BranchLinkShareListener {
+             override fun onShareLinkDialogLaunched() {}
+             override fun onShareLinkDialogDismissed() {}
+             override fun onLinkShareResponse(sharedLink: String, sharedChannel: String, error: BranchError) {}
+             override fun onChannelSelected(channelName: String) {}
+         })*/
+        // keytool -list -v -keystore "C:\Users\MXC\.android\debug.keystore" -alias androiddebugkey -storepass android -keypass android
     }
 
     override fun onNewIntent(intent: Intent) {

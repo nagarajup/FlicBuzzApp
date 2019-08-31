@@ -263,14 +263,14 @@
 
         <!-- Branch init -->
         <meta-data android:name="io.branch.sdk.BranchKey" android:value="key_live_kmNEttE4I5o38FiV5v5dRggfEygCAS3x" />
-        <meta-data android:name="io.branch.sdk.BranchKey.test" android:value="key_test_kcVyBxD6H7d33EbK9x9orepjvrmxAPXf" />
+       <!-- <meta-data android:name="io.branch.sdk.BranchKey.test" android:value="key_test_kcVyBxD6H7d33EbK9x9orepjvrmxAPXf" />-->
 
         <!--secret_live_SYecKdajepJvZX1VgLxdfdDGMTGFr338-->
         <!--secret_test_ds9BRdexvhj81ejNXnAIEM6ArZtTdhRt-->
 
-        <!-- Branch testing (TestMode "true" to simulate fresh installs on dev environment) -->
+     <!--   &lt;!&ndash; Branch testing (TestMode "true" to simulate fresh installs on dev environment) &ndash;&gt;
         <meta-data android:name="io.branch.sdk.TestMode" android:value="false" />
-
+-->
         <!-- Branch install referrer tracking -->
         <receiver android:name="io.branch.referral.InstallListener" android:exported="true">
             <intent-filter>
