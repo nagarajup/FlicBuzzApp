@@ -300,6 +300,7 @@ public class PaymentScreen_Latest extends AppConstants implements PaymentResultW
                         PrefManager.getIn().setDeveloper_mode(jsonObject.getString("developer_mode"));
                         PrefManager.getIn().setServer_version_mode(jsonObject.getString("server_version_mode"));
                         PrefManager.getIn().setShow_splash_message(jsonObject.getString("show_splash_message"));
+                        PrefManager.getIn().setSplash_message(jsonObject.getString("splash_message"));
                         PrefManager.getIn().setGateway("razorpay");
                         PrefManager.getIn().setSubscription_auto_renew("yes");
 
@@ -565,6 +566,7 @@ public class PaymentScreen_Latest extends AppConstants implements PaymentResultW
                         PrefManager.getIn().setDeveloper_mode(jsonObject.getString("developer_mode"));
                         PrefManager.getIn().setServer_version_mode(jsonObject.getString("server_version_mode"));
                         PrefManager.getIn().setShow_splash_message(jsonObject.getString("show_splash_message"));
+                        PrefManager.getIn().setSplash_message(jsonObject.getString("splash_message"));
                         PrefManager.getIn().setGateway("googlepay");
                         PrefManager.getIn().setSubscription_auto_renew("yes");
 
