@@ -61,12 +61,7 @@ open class AppConstants : AppCompatActivity() {
 
     }
 
-    companion object {
-        @JvmStatic
-        fun trackEvent() {
 
-        }
-    }
 
 
 }
